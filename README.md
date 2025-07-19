@@ -1,4 +1,4 @@
-# PromptWaffel
+# PromptWaffle
 
 **Break it. Remix it. Generate better.**
 ![PromptWaffle Screenshot](https://i.imgur.com/djAuC7U.png)
