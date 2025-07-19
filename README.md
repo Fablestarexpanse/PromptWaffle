@@ -6,64 +6,88 @@ PromptWaffel is a desktop application for managing, organizing, and composing AI
 
 ## 🚀 Quick Start - Beta Program
 
-### **For New Users (No Electron Required!)**
+### **Getting Started (Source-Based Installation)**
 
-Welcome to the PromptWaffel Beta Program! This guide will get you up and running in minutes, even if you've never used Electron before.
+Welcome to the PromptWaffel Beta Program! This is a source-based application that requires Node.js to run. Don't worry - we'll guide you through the setup process step by step.
 
-#### **Step 1: Download the Beta**
+#### **Step 1: Install Prerequisites**
 
-1. **Visit**: [GitHub Releases](https://github.com/Fablestarexpanse/PromptWaffel/releases)
-2. **Download**: Choose the latest release for your operating system:
-   - **Windows**: `PromptWaffel-Setup-1.2.2.exe` (or latest version)
-   - **macOS**: `PromptWaffel-1.2.2.dmg` (or latest version)
-   - **Linux**: `PromptWaffel-1.2.2.AppImage` (or latest version)
+**You need Node.js installed first:**
 
-#### **Step 2: Install & Launch**
+1. **Download Node.js**: Visit https://nodejs.org/
+2. **Install**: Download the LTS version (18.x or higher) and run the installer
+3. **Verify**: Open a terminal/command prompt and type:
+   ```bash
+   node --version
+   npm --version
+   ```
+   Both should show version numbers if installed correctly.
 
-**Windows Users:**
-1. **Run the installer**: Double-click the `.exe` file
-2. **Install**: Follow the installation wizard
-3. **Launch**: 
-   - **Option A** (Recommended): Press `Win + R`, type `npm run launch`, press Enter
-   - **Option B**: Open PowerShell in the PromptWaffel folder and run `npm run launch`
-   - **Option C**: Use the desktop shortcut created during installation
+#### **Step 2: Download & Setup PromptWaffel**
 
-**macOS Users:**
-1. **Open the DMG**: Double-click the downloaded `.dmg` file
-2. **Drag to Applications**: Drag PromptWaffel to your Applications folder
-3. **Launch**: Open from Applications or Spotlight search
+**Option A: Clone from GitHub (Recommended)**
+```bash
+# Clone the repository
+git clone https://github.com/Fablestarexpanse/PromptWaffel.git
 
-**Linux Users:**
-1. **Make executable**: Right-click the `.AppImage` → Properties → Permissions → Allow executing
-2. **Run**: Double-click the `.AppImage` file
+# Navigate to the project folder
+cd PromptWaffel
 
-#### **Step 3: First Launch Experience**
+# Install dependencies
+npm install
+```
+
+**Option B: Download ZIP**
+1. **Visit**: [GitHub Repository](https://github.com/Fablestarexpanse/PromptWaffel)
+2. **Download**: Click the green "Code" button → "Download ZIP"
+3. **Extract**: Extract the ZIP file to a folder of your choice
+4. **Open terminal**: Navigate to the extracted folder
+5. **Install dependencies**: Run `npm install`
+
+#### **Step 3: Launch the Application**
+
+```bash
+# Start the application
+npm start
+```
+
+**Alternative launch methods:**
+```bash
+# Development mode with dev tools
+npm run dev
+
+# Or use the launcher script (if available)
+npm run launch
+```
+
+#### **Step 4: First Launch Experience**
 
 1. **Welcome Tutorial**: Complete the interactive tutorial (takes 2-3 minutes)
 2. **Create Your First Snippet**: Click the "+" button in the sidebar
 3. **Organize**: Create folders to organize your snippets by category
 4. **Build Prompts**: Drag snippets onto boards to compose complex prompts
 
-### **For Developers & Advanced Users**
+### **For Advanced Users & Contributors**
 
-If you want to run from source or contribute:
+If you want to contribute or customize:
 
 ```bash
 # Clone the repository
 git clone https://github.com/Fablestarexpanse/PromptWaffel.git
 cd PromptWaffel
 
-# Install dependencies (requires Node.js 16+)
+# Install dependencies
 npm install
 
-# Launch the application
-npm start
-```
+# Run linting and formatting
+npm run lint:format
 
-**Prerequisites for Development:**
-- Node.js 16 or higher
-- npm or yarn package manager
-- Git (for cloning the repository)
+# Launch in development mode
+npm run dev
+
+# Build for distribution (creates executables)
+npm run build
+```
 
 ### **Troubleshooting & Common Issues**
 
@@ -80,9 +104,10 @@ If you see "Windows protected your PC" when launching:
 If you get this error, you need to install Node.js:
 
 1. **Download Node.js**: Visit https://nodejs.org/
-2. **Install**: Run the installer and follow the setup wizard
+2. **Install**: Download the LTS version (18.x or higher) and run the installer
 3. **Restart**: Close and reopen PowerShell/Command Prompt
-4. **Verify**: Type `node --version` to confirm installation
+4. **Verify**: Type `node --version` and `npm --version` to confirm installation
+5. **Alternative**: If you're on macOS, you can also use Homebrew: `brew install node`
 
 #### **Permission Errors**
 
@@ -94,17 +119,21 @@ If you get permission errors:
 
 #### **Application Won't Start**
 
-1. **Check Node.js**: Ensure Node.js 16+ is installed (`node --version`)
-2. **Reinstall dependencies**: Run `npm install` in the PromptWaffel folder
-3. **Clear cache**: Delete `node_modules` folder and run `npm install` again
-4. **Check logs**: Look for error messages in the terminal/console
+1. **Check Node.js**: Ensure Node.js 18+ is installed (`node --version`)
+2. **Check npm**: Ensure npm is installed (`npm --version`)
+3. **Reinstall dependencies**: Run `npm install` in the PromptWaffel folder
+4. **Clear cache**: Delete `node_modules` folder and run `npm install` again
+5. **Check logs**: Look for error messages in the terminal/console
+6. **Try development mode**: Run `npm run dev` for more detailed error information
 
 ### **Beta Program Notes**
 
 - **This is beta software**: Expect occasional bugs and report them via GitHub Issues
-- **Regular updates**: Check for updates using Ctrl+Shift+U or the update button
-- **Data safety**: All your data is stored locally and backed up automatically
+- **Source-based**: This is a development version that requires Node.js to run
+- **Regular updates**: Pull latest changes with `git pull` and run `npm install` if needed
+- **Data safety**: All your data is stored locally in the `boards/` and `snippets/` folders
 - **Feedback welcome**: Share your experience and suggestions via GitHub Issues
+- **Development friendly**: Easy to modify and contribute to the codebase
 
 ### **System Requirements**
 
@@ -121,9 +150,10 @@ If you get permission errors:
 - **Internet**: Stable connection for updates and version checking
 
 #### **For Development**
-- **Node.js**: Version 16 or higher
+- **Node.js**: Version 18 or higher (LTS recommended)
 - **npm**: Version 7 or higher
 - **Git**: For cloning the repository
+- **Electron**: Will be installed automatically via npm
 
 ### **Getting Started Guide**
 
@@ -192,10 +222,11 @@ Found a bug or have a suggestion?
 
 ### **Stay Updated**
 
-- **Automatic updates**: The app checks for updates on startup
-- **Manual check**: Press `Ctrl+Shift+U` or use the update button
-- **Release notes**: Read what's new in each update
-- **GitHub**: Follow the repository for latest news
+- **Git updates**: Pull latest changes with `git pull origin main`
+- **Dependencies**: Run `npm install` after pulling to update dependencies
+- **Manual check**: Press `Ctrl+Shift+U` or use the update button in the app
+- **Release notes**: Read what's new in each update via GitHub releases
+- **GitHub**: Follow the repository for latest news and development updates
 
 ---
 
