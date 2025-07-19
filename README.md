@@ -4,97 +4,200 @@
 
 PromptWaffel is a desktop application for managing, organizing, and composing AI prompts. Built with Electron, it provides an intuitive visual interface for creating complex prompts from reusable components with drag-and-drop functionality.
 
-## 🚀 Quick Start
+## 🚀 Quick Start - Beta Program
 
-### Installation & Setup
+### **For New Users (No Electron Required!)**
 
-#### **Option 1: Download Pre-built Release (Recommended)**
+Welcome to the PromptWaffel Beta Program! This guide will get you up and running in minutes, even if you've never used Electron before.
 
-1. **Download**: Get the latest release for your platform from [GitHub Releases](https://github.com/PromptWaffle/PromptWaffle/releases)
-2. **Install**: Run the installer for your operating system
-3. **Launch**:
-   - **Windows**: Use `npm run launch` from PowerShell/Command Prompt (recommended)
-   - **macOS/Linux**: Use the provided launcher scripts
+#### **Step 1: Download the Beta**
 
-#### **Option 2: Development Setup**
+1. **Visit**: [GitHub Releases](https://github.com/Fablestarexpanse/PromptWaffel/releases)
+2. **Download**: Choose the latest release for your operating system:
+   - **Windows**: `PromptWaffel-Setup-1.2.2.exe` (or latest version)
+   - **macOS**: `PromptWaffel-1.2.2.dmg` (or latest version)
+   - **Linux**: `PromptWaffel-1.2.2.AppImage` (or latest version)
 
-```bash
-# Clone the repository
-git clone https://github.com/PromptWaffle/PromptWaffle.git
-cd PromptWaffle
+#### **Step 2: Install & Launch**
 
-# Install dependencies
-npm install
+**Windows Users:**
+1. **Run the installer**: Double-click the `.exe` file
+2. **Install**: Follow the installation wizard
+3. **Launch**: 
+   - **Option A** (Recommended): Press `Win + R`, type `npm run launch`, press Enter
+   - **Option B**: Open PowerShell in the PromptWaffel folder and run `npm run launch`
+   - **Option C**: Use the desktop shortcut created during installation
 
-# Launch with launcher (recommended)
-npm run launch
+**macOS Users:**
+1. **Open the DMG**: Double-click the downloaded `.dmg` file
+2. **Drag to Applications**: Drag PromptWaffel to your Applications folder
+3. **Launch**: Open from Applications or Spotlight search
 
-# Or launch directly (development)
-npm start
-```
+**Linux Users:**
+1. **Make executable**: Right-click the `.AppImage` → Properties → Permissions → Allow executing
+2. **Run**: Double-click the `.AppImage` file
 
-### Launching the Application
+#### **Step 3: First Launch Experience**
 
-#### **Windows Users:**
-
-```powershell
-# Option 1: Use npm (recommended - bypasses SmartScreen)
-npm run launch
-
-# Option 2: PowerShell launcher (better error handling)
-.\launch-promptwaffel.ps1
-
-# Option 3: Batch file (may trigger SmartScreen warning)
-launch-promptwaffel.bat
-```
-
-**⚠️ Windows SmartScreen Warning:**
-If you see a "Windows protected your PC" warning when double-clicking the launcher:
-
-1. Click "More info" in the warning dialog
-2. Click "Run anyway" to proceed
-3. **Alternative**: Use `npm run launch` from PowerShell/Command Prompt (bypasses SmartScreen)
-
-#### **macOS/Linux Users:**
-
-```bash
-# Make executable and run
-chmod +x launch-promptwaffel.sh
-./launch-promptwaffel.sh
-
-# Or use npm
-npm run launch
-```
-
-#### **First Time Setup:**
-
-1. **Welcome Tutorial**: Complete the interactive tutorial to learn the basics
-2. **Create Your First Snippet**: Use the "+" button or right-click on the board
+1. **Welcome Tutorial**: Complete the interactive tutorial (takes 2-3 minutes)
+2. **Create Your First Snippet**: Click the "+" button in the sidebar
 3. **Organize**: Create folders to organize your snippets by category
 4. **Build Prompts**: Drag snippets onto boards to compose complex prompts
 
-### System Requirements
+### **For Developers & Advanced Users**
 
+If you want to run from source or contribute:
+
+```bash
+# Clone the repository
+git clone https://github.com/Fablestarexpanse/PromptWaffel.git
+cd PromptWaffel
+
+# Install dependencies (requires Node.js 16+)
+npm install
+
+# Launch the application
+npm start
+```
+
+**Prerequisites for Development:**
+- Node.js 16 or higher
+- npm or yarn package manager
+- Git (for cloning the repository)
+
+### **Troubleshooting & Common Issues**
+
+#### **Windows SmartScreen Warning**
+
+If you see "Windows protected your PC" when launching:
+
+1. **Click "More info"** in the warning dialog
+2. **Click "Run anyway"** to proceed
+3. **Alternative**: Use `npm run launch` from PowerShell (bypasses SmartScreen completely)
+
+#### **"npm not found" Error**
+
+If you get this error, you need to install Node.js:
+
+1. **Download Node.js**: Visit https://nodejs.org/
+2. **Install**: Run the installer and follow the setup wizard
+3. **Restart**: Close and reopen PowerShell/Command Prompt
+4. **Verify**: Type `node --version` to confirm installation
+
+#### **Permission Errors**
+
+If you get permission errors:
+
+1. **Run as Administrator**: Right-click PowerShell → "Run as Administrator"
+2. **Check folder permissions**: Make sure you have write access to the PromptWaffel folder
+3. **Antivirus**: Temporarily disable antivirus if it's blocking the application
+
+#### **Application Won't Start**
+
+1. **Check Node.js**: Ensure Node.js 16+ is installed (`node --version`)
+2. **Reinstall dependencies**: Run `npm install` in the PromptWaffel folder
+3. **Clear cache**: Delete `node_modules` folder and run `npm install` again
+4. **Check logs**: Look for error messages in the terminal/console
+
+### **Beta Program Notes**
+
+- **This is beta software**: Expect occasional bugs and report them via GitHub Issues
+- **Regular updates**: Check for updates using Ctrl+Shift+U or the update button
+- **Data safety**: All your data is stored locally and backed up automatically
+- **Feedback welcome**: Share your experience and suggestions via GitHub Issues
+
+### **System Requirements**
+
+#### **Minimum Requirements**
 - **Operating System**: Windows 10+, macOS 10.14+, or Linux
-- **Memory**: 4GB RAM minimum (8GB recommended)
+- **Memory**: 4GB RAM
 - **Storage**: 100MB free space
-- **Internet**: Required for update checking (optional for core functionality)
+- **Internet**: Required for initial download and update checking
 
-### Troubleshooting
+#### **Recommended Requirements**
+- **Memory**: 8GB RAM or more
+- **Storage**: 500MB free space (for larger prompt libraries)
+- **Display**: 1920x1080 or higher resolution
+- **Internet**: Stable connection for updates and version checking
 
-#### **Windows SmartScreen Issues**
+#### **For Development**
+- **Node.js**: Version 16 or higher
+- **npm**: Version 7 or higher
+- **Git**: For cloning the repository
 
-If you encounter "Windows protected your PC" warnings:
+### **Getting Started Guide**
 
-- **Use npm**: `npm run launch` bypasses SmartScreen completely
-- **PowerShell**: Right-click → "Run with PowerShell" for better compatibility
-- **Trust the app**: Click "More info" → "Run anyway" if you trust the source
+#### **Your First 5 Minutes with PromptWaffel**
 
-#### **Common Issues**
+1. **Complete the Tutorial** (2-3 minutes)
+   - Follow the interactive tutorial that appears on first launch
+   - Learn the basics of creating snippets and boards
+   - Understand the drag-and-drop interface
 
-- **"npm not found"**: Install Node.js from https://nodejs.org/
-- **"package.json not found"**: Make sure you're in the PromptWaffel directory
-- **Permission errors**: Run PowerShell as Administrator if needed
+2. **Create Your First Snippet** (1 minute)
+   - Click the "+" button in the sidebar
+   - Add some text (e.g., "masterpiece, best quality")
+   - Add tags (e.g., "quality, positive")
+   - Click "Create"
+
+3. **Organize with Folders** (2 minutes)
+   - Right-click in the sidebar → "Create Folder"
+   - Name it (e.g., "Character Descriptions")
+   - Drag your snippet into the folder
+
+4. **Build Your First Prompt** (2 minutes)
+   - Drag snippets from the sidebar onto the board
+   - Arrange them in the order you want
+   - Watch the compiled prompt update in real-time
+   - Copy the result for use in your AI tools
+
+#### **Pro Tips for New Users**
+
+- **Use tags**: Tag your snippets for easy searching later
+- **Create folders**: Organize snippets by category (characters, styles, environments)
+- **Color code**: Assign colors to cards for visual organization
+- **Lock cards**: Right-click cards to lock them in position
+- **Add images**: Use reference images for visual context
+- **Live preview**: Set up folder monitoring for real-time AI output viewing
+
+## 🎯 **Beta Program Information**
+
+### **What to Expect**
+
+PromptWaffel is currently in **Beta** - this means:
+
+✅ **What Works Great:**
+- Core functionality is stable and production-ready
+- All major features are implemented and tested
+- Data is safe and backed up locally
+- Regular updates with bug fixes and improvements
+
+⚠️ **Beta Considerations:**
+- Occasional minor bugs may occur
+- UI refinements are ongoing
+- Some advanced features are still being developed
+- Performance optimizations are in progress
+
+### **How to Report Issues**
+
+Found a bug or have a suggestion?
+
+1. **Check existing issues**: Search [GitHub Issues](https://github.com/Fablestarexpanse/PromptWaffel/issues) first
+2. **Create new issue**: Use the "New Issue" button on GitHub
+3. **Include details**: 
+   - Your operating system and version
+   - Steps to reproduce the problem
+   - Screenshots if helpful
+   - Error messages if any
+
+### **Stay Updated**
+
+- **Automatic updates**: The app checks for updates on startup
+- **Manual check**: Press `Ctrl+Shift+U` or use the update button
+- **Release notes**: Read what's new in each update
+- **GitHub**: Follow the repository for latest news
+
+---
 
 ## Features
 
