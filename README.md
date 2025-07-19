@@ -429,14 +429,6 @@ Found a bug or have a suggestion?
 7. Arrange and color-code for clarity
 8. Copy the compiled result for use in AI tools
 
-## Use Cases
-
-- **AI Art Generation**: Compose complex prompts for Stable Diffusion, DALL-E, Midjourney with live image preview
-- **Creative Writing**: Build character descriptions, world-building elements
-- **Content Creation**: Organize and reuse marketing copy, social media content
-- **Research**: Collect and organize information snippets with tagging
-- **Template Management**: Create reusable templates for various projects
-
 ## Privacy & Security
 
 - **Offline First**: All data stored locally, no cloud dependency
@@ -446,46 +438,9 @@ Found a bug or have a suggestion?
 
 ## Development
 
-### Prerequisites
-
-- Node.js 16+
-- npm or yarn
-
-### Setup
-
-```bash
-git clone https://github.com/Fablestarexpanse/PromptWaffel.git
-cd PromptWaffel
-npm install
-npm start
-```
-
-### Building
-
-```bash
-# Build for all platforms
-npm run build
-
-# Build for specific platform
-npm run build:win    # Windows
-npm run build:mac    # macOS
-npm run build:linux  # Linux
-```
-
-### Testing
-
-```bash
-# Run unit tests
-npm test
-
-# Run integration tests
-npm run test:integration
-```
-
 ## License
 
-This project is licensed under the ISC License.
-
+This project is licensed under the GNU General Public License (GPL v3)
 ## Contributing
 
 Thank you for your interest in contributing to PromptWaffle Prompt Manager! As this project is currently in its early stages and undergoing rapid development and refactoring, we are temporarily not accepting pull requests.
@@ -509,42 +464,3 @@ If you find PromptWaffel useful, consider supporting its development through Ko-
 - ⭐ **Star the repository** on GitHub
 - 🐛 **Report bugs** and suggest features
 - 📢 **Share** PromptWaffel with other creators
-
-## Roadmap
-
-Planned features for upcoming releases of PromptWaffle:
-
-### Visual Feedback and Workflow
-
-- [x] Allow users to set a custom image folder (e.g., ComfyUI or other AI output) to auto-display the most recent image inside the prompt writer for real-time visual reference.
-
-### Prompt Intelligence
-
-- [ ] Track which LoRAs are used per prompt and display them inline.
-- [ ] Add LoRA selection and insertion tools directly to the prompt builder.
-- [ ] Add image metadata extraction for AI-generated images (e.g., LoRA, CFG, seed, model).
-- [ ] Implement prompt metadata extraction from image files.
-
-### Snippet and Board System
-
-- [ ] Expand nesting options for snippets and board elements.
-- [ ] Enable drag-and-drop reordering of nested components.
-- [ ] Improve UI clarity when working with deeply nested structures.
-
-### Export and Integration
-
-- [ ] Add more export options (e.g., Midjourney, ComfyUI, Flux, clipboard JSON).
-- [ ] Define export presets for different AI platforms.
-
-### User Experience and UI
-
-- [ ] Clean up the overall UI for better readability and structure.
-- [ ] Refine layout and theming for a more focused editing experience.
-
----
-
-This roadmap will evolve over time. Feedback and feature suggestions are welcome.
-
----
-
-_PromptWaffel - Making AI prompt creation more organized, visual, and efficient._
