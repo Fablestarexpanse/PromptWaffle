@@ -1,7 +1,7 @@
 # PromptWaffel
 
 **Break it. Remix it. Generate better.**
-
+![Preview]https://imgur.com/a/55Gc63u
 PromptWaffel is a desktop application for managing, organizing, and composing AI prompts. Built with Electron, it provides an intuitive visual interface for creating complex prompts from reusable components with drag-and-drop functionality.
 
 ## 🚀 Quick Start - Beta Program
