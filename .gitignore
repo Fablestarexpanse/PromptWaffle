@@ -1,0 +1,412 @@
+# ===========================================
+# DEPENDENCIES & PACKAGE MANAGERS
+# ===========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.npm
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+.yarn-integrity
+jspm_packages/
+bower_components
+# Additional package managers
+.pnpm-store/
+.npmrc
+.yarnrc
+.yarnrc.yml
+
+# ===========================================
+# BUILD & DISTRIBUTION
+# ===========================================
+dist/
+build/
+out/
+dist_electron/
+*.asar
+*.dmg
+*.exe
+*.deb
+*.rpm
+*.AppImage
+*.snap
+*.zip
+*.tar.gz
+*.tgz
+
+# ===========================================
+# CACHE & TEMPORARY FILES
+# ===========================================
+.cache/
+.parcel-cache
+.fusebox/
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+.grunt
+.lock-wscript
+*.tsbuildinfo
+.eslintcache
+.stylelintcache
+.tern-port
+
+# ===========================================
+# ENVIRONMENT & CONFIGURATION
+# ===========================================
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+.env.staging
+.env.staging.local
+.env.*.local
+*.local
+local.*
+config.local.*
+settings.local.*
+preferences.local.*
+# Additional config files
+config.json
+settings.json
+preferences.json
+app.config.local.*
+electron.config.local.*
+
+# ===========================================
+# LOGS & DEBUGGING
+# ===========================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.pid
+*.seed
+*.pid.lock
+.debug/
+debug.log
+debug-*.log
+error.log
+error-*.log
+access.log
+access-*.log
+# Additional log patterns
+*.log.*
+log/
+*.out
+*.err
+*.trace
+*.dump
+# Electron specific logs
+electron.log
+main.log
+renderer.log
+
+# ===========================================
+# TESTING & COVERAGE
+# ===========================================
+coverage/
+*.lcov
+.nyc_output
+test-results/
+playwright-report/
+test-results.xml
+coverage.xml
+junit.xml
+tests/
+**/tests/
+**/*.test.js
+**/*.spec.js
+**/*.test.ts
+**/*.spec.ts
+**/*.test.jsx
+**/*.spec.jsx
+**/*.test.tsx
+**/*.spec.tsx
+.nyc_output/
+coverage/
+*.lcov
+# Additional test artifacts
+test-output/
+test-reports/
+*.test.js.map
+*.spec.js.map
+*.test.ts.map
+*.spec.ts.map
+# E2E test artifacts
+cypress/videos/
+cypress/screenshots/
+cypress/downloads/
+e2e-results/
+
+# ===========================================
+# CRASH REPORTS & DEBUGGING
+# ===========================================
+crash-reports/
+*.crash
+*.dmp
+*.hprof
+*.hprof.*
+*.dump
+*.core
+*.stackdump
+
+# ===========================================
+# EDITORS & IDEs
+# ===========================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-workspace
+*.sublime-project
+.cursor/
+.cursorrules
+.atom/
+.brackets.json
+*.code-workspace
+
+# ===========================================
+# OPERATING SYSTEM
+# ===========================================
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.fseventsd
+.AppleDouble
+.LSOverride
+Icon?
+.DocumentRevisions-V100
+
+# Windows
+*.lnk
+*.tmp
+*.temp
+*.bak
+*.backup
+*.orig
+*.rej
+desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ===========================================
+# USER DATA & LOCAL FILES
+# ===========================================
+user-data/
+app-data/
+temp/
+launcher-settings.json
+user-preferences.json
+local-settings.json
+*.user
+*.user.*
+user.*
+local.*
+# Additional user data
+user-settings/
+app-settings/
+local-config/
+personal/
+private/
+# Electron user data
+%APPDATA%/PromptWaffel/
+%LOCALAPPDATA%/PromptWaffel/
+~/Library/Application Support/PromptWaffel/
+~/.config/PromptWaffel/
+
+# ===========================================
+# DEVELOPMENT ARTIFACTS
+# ===========================================
+*.map
+*.min.js
+*.min.css
+sourcemaps/
+.map
+*.bundle.js
+*.bundle.css
+*.chunk.js
+*.chunk.css
+# Additional build artifacts
+*.bundle.*
+*.chunk.*
+*.hot-update.*
+*.hot-update.js
+*.hot-update.json
+# Webpack specific
+webpack-stats.json
+webpack-bundle-analyzer-report.html
+# Parcel specific
+.parcel-cache/
+.parcel-cache
+# Rollup specific
+rollup-stats.json
+# Vite specific
+.vite/
+
+# ===========================================
+# SECURITY & SECRETS
+# ===========================================
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.cert
+*.pwd
+*.password
+secrets/
+.secrets
+.secret
+*.secret
+*.key
+*.token
+*.auth
+auth.json
+credentials.json
+secrets.json
+*.env.secret
+*.env.prod
+*.env.staging
+# Additional security files
+*.jks
+*.keystore
+*.truststore
+*.p8
+*.mobileprovision
+*.cer
+*.der
+*.csr
+*.crt
+*.pem
+*.p12
+*.pfx
+*.key
+*.pub
+*.private
+*.secret
+*.token
+*.auth
+*.cred
+*.credential
+*.password
+*.pwd
+*.pass
+*.passwd
+# API keys and tokens
+api-keys.json
+tokens.json
+*.api-key
+*.api-key.json
+*.token.json
+# OAuth and authentication
+.oauth
+.oauth.json
+oauth.json
+auth-tokens.json
+
+# ===========================================
+# DATABASE & STORAGE
+# ===========================================
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-wal
+*.db-shm
+storage/
+data/
+*.data
+*.dat
+# IndexedDB
+*.idb
+*.idb-journal
+# LocalStorage backups
+localStorage.json
+localStorage.backup.json
+
+# ===========================================
+# ELECTRON SPECIFIC
+# ===========================================
+# Electron build artifacts
+dist_electron/
+out/
+release/
+build/
+# Electron specific files
+electron-builder.yml.local
+electron-builder.json.local
+# Keep these for Electron builds but ignore build artifacts
+!package-lock.json
+!yarn.lock
+!pnpm-lock.yaml
+
+# ===========================================
+# IMPORTANT FILES TO KEEP
+# ===========================================
+# Keep important config examples
+!.env.example
+!config.example.*
+!settings.example.*
+!preferences.example.*
+
+# Keep user content folders
+!snippets/
+!boards/
+
+# Keep documentation
+!README.md
+!CHANGELOG.md
+!LICENSE
+!NOTICE
+!PRODUCTION_READINESS.md
+
+# Keep build scripts and configs
+!package.json
+!electron-builder.json
+!electron-builder.yml
+!.eslintrc.*
+!.prettierrc.*
+!tsconfig.json
+!webpack.config.*
+!rollup.config.*
+!vite.config.*
+
+# Keep source maps for debugging (optional - remove if you don't want them)
+!*.map
+
+# Keep test files (optional - remove if you don't want them tracked)
+!**/*.test.js
+!**/*.spec.js
+!**/*.test.ts
+!**/*.spec.ts

@@ -1,0 +1,11 @@
+{
+  "id": "default_photorealistic",
+  "text": "(photorealistic:1.2), highly detailed, studio lighting, cinematic composition",
+  "tags": ["photo", "lighting"],
+  "title": "(photorealistic:1.2), highly detailed, studio lighting",
+  "description": "High-quality photorealistic rendering with professional lighting",
+  "category": "Start Here",
+  "version": "1.0",
+  "created": 1752875459616,
+  "modified": 1752875459616
+}

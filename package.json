@@ -1,0 +1,85 @@
+{
+  "name": "promptwaffel",
+  "version": "1.2.2",
+  "description": "A desktop application for creating and managing AI prompt snippets and boards",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "launch": "electron launcher.js",
+    "dev": "electron . --dev",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux",
+    "build:portable": "electron-builder --win portable",
+    "build:installer": "electron-builder --win nsis",
+    "build:all": "electron-builder -mwl",
+    "test": "echo \"No tests configured\" && exit 0",
+    "lint": "eslint . --ext .js",
+    "lint:fix": "eslint . --ext .js --fix",
+    "format": "prettier --write \"**/*.{js,json,md,html,css}\"",
+    "format:check": "prettier --check \"**/*.{js,json,md,html,css}\"",
+    "lint:format": "npm run lint && npm run format"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fablestarexpanse/PromptWaffel.git"
+  },
+  "keywords": [
+    "electron",
+    "prompt",
+    "ai",
+    "snippets",
+    "desktop"
+  ],
+  "author": "PromptWaffel Team",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Fablestarexpanse/PromptWaffel/issues"
+  },
+  "homepage": "https://github.com/Fablestarexpanse/PromptWaffel#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.31.0",
+    "electron": "^31.7.7",
+    "electron-builder": "^26.0.12",
+    "eslint": "^9.31.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.3",
+    "prettier": "^3.6.2"
+  },
+  "build": {
+    "appId": "com.promptwaffle.app",
+    "productName": "PromptWaffle",
+    "files": [
+      "src/**/*",
+      "main.js",
+      "preload.js",
+      "launcher.js",
+      "package.json",
+      "boards/**/*",
+      "snippets/**/*"
+    ],
+    "directories": {
+      "output": "dist",
+      "buildResources": "src/assets"
+    },
+    "win": {
+      "target": "portable",
+      "signAndEditExecutable": false
+    },
+    "icon": "src/assets/800x800 logo prompt waffel.png",
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.productivity"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  },
+  "dependencies": {
+    "notyf": "^3.10.0"
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "version": "1.0.0",
+  "timestamp": 1752876843228,
+  "boards": [
+    {
+      "id": "board-default",
+      "name": "Default Board",
+      "tags": [],
+      "cards": [
+        {
+          "id": "card-1752875487283",
+          "snippetPath": "Start Here/default_cyberpunk.json",
+          "x": 29,
+          "y": 48.125,
+          "width": 409,
+          "height": 154,
+          "locked": false,
+          "color": "#E74C3C"
+        },
+        {
+          "id": "card-1752875488970",
+          "snippetPath": "Start Here/default_photorealistic.json",
+          "x": 487,
+          "y": 67.125,
+          "width": 417,
+          "height": 140,
+          "locked": false,
+          "color": "#3498DB"
+        },
+        {
+          "id": "card-1752875490349",
+          "snippetPath": "Start Here/default_space.json",
+          "x": 932,
+          "y": 56.125,
+          "width": 384,
+          "height": 145,
+          "locked": false,
+          "color": "#2ECC71"
+        }
+      ],
+      "groups": [],
+      "images": [],
+      "createdAt": "2025-07-18T00:01:10.279Z",
+      "modifiedAt": "2025-07-18T00:01:10.279Z",
+      "filePath": "Start Here\\default_board.json"
+    }
+  ],
+  "settings": {
+    "sortConfig": {
+      "field": "name",
+      "direction": "asc"
+    },
+    "showCompiledColors": true,
+    "showCardColors": true,
+    "autosaveEnabled": true,
+    "autosaveInterval": 30000,
+    "monitoredFolder": null,
+    "boardBackgroundColor": "#2F3136"
+  },
+  "uiState": {
+    "expandedFolders": ["Start Here"],
+    "currentBoardId": "board-default",
+    "searchTerm": "",
+    "compiledPromptExpanded": false
+  },
+  "tutorial": {
+    "tutorialShown": true,
+    "currentTutorialStep": 0
+  },
+  "performance": {
+    "enableImageLazyLoading": true,
+    "enableDOMPooling": true,
+    "enableSearchDebouncing": true,
+    "cacheSize": 50
+  }
+}
