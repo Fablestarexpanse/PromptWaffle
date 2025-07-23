@@ -2,6 +2,22 @@
 
 All notable changes to PromptWaffle will be documented in this file.
 
+## [1.2.5] - 2024-12-23
+
+### Added
+
+- **Auto-Updater Test Release**: Testing the complete auto-updater workflow
+  - Repository name updated from PromptWaffel to PromptWaffle
+  - Auto-updater system fully integrated and tested
+  - GitHub Actions workflow configured for automated releases
+  - Seamless update experience for users
+
+### Changed
+
+- **Repository Migration**: Successfully migrated to new repository name
+- **Auto-Updater Integration**: Complete electron-updater implementation
+- **Release Process**: Automated release workflow with GitHub Actions
+
 ## [1.2.2] - 2024-12-18
 
 ### Added

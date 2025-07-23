@@ -196,6 +196,7 @@ PromptWaffle now includes a comprehensive auto-updater system that allows users 
 2. **Update Detection**: When a new version is available, users are notified
 3. **Download Progress**: Users can download updates with real-time progress tracking
 4. **Seamless Installation**: Updates are automatically installed and the app restarts
+5. **Test Feature**: Added in v1.2.5 to verify auto-updater functionality
 
 ### For Developers
 
