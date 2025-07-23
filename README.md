@@ -67,128 +67,7 @@ npm run launch
 3. **Organize**: Create folders to organize your snippets by category
 4. **Build Prompts**: Drag snippets onto boards to compose complex prompts
 
-### **For Advanced Users & Contributors**
 
-If you want to contribute or customize:
-
-```bash
-# Clone the repository
-git clone https://github.com/Fablestarexpanse/PromptWaffel.git
-cd PromptWaffel
-
-# Install dependencies
-npm install
-
-# Run linting and formatting
-npm run lint:format
-
-# Launch in development mode
-npm run dev
-
-# Build for distribution (creates executables)
-npm run build
-```
-
-### **Troubleshooting & Common Issues**
-
-#### **Windows SmartScreen Warning**
-
-If you see "Windows protected your PC" when launching:
-
-1. **Click "More info"** in the warning dialog
-2. **Click "Run anyway"** to proceed
-3. **Alternative**: Use `npm run launch` from PowerShell (bypasses SmartScreen completely)
-
-#### **"npm not found" Error**
-
-If you get this error, you need to install Node.js:
-
-1. **Download Node.js**: Visit https://nodejs.org/
-2. **Install**: Download the LTS version (18.x or higher) and run the installer
-3. **Restart**: Close and reopen PowerShell/Command Prompt
-4. **Verify**: Type `node --version` and `npm --version` to confirm installation
-5. **Alternative**: If you're on macOS, you can also use Homebrew: `brew install node`
-
-#### **Permission Errors**
-
-If you get permission errors:
-
-1. **Run as Administrator**: Right-click PowerShell → "Run as Administrator"
-2. **Check folder permissions**: Make sure you have write access to the PromptWaffel folder
-3. **Antivirus**: Temporarily disable antivirus if it's blocking the application
-
-#### **Application Won't Start**
-
-1. **Check Node.js**: Ensure Node.js 18+ is installed (`node --version`)
-2. **Check npm**: Ensure npm is installed (`npm --version`)
-3. **Reinstall dependencies**: Run `npm install` in the PromptWaffel folder
-4. **Clear cache**: Delete `node_modules` folder and run `npm install` again
-5. **Check logs**: Look for error messages in the terminal/console
-6. **Try development mode**: Run `npm run dev` for more detailed error information
-
-### **Beta Program Notes**
-
-- **This is beta software**: Expect occasional bugs and report them via GitHub Issues
-- **Source-based**: This is a development version that requires Node.js to run
-- **Regular updates**: Pull latest changes with `git pull` and run `npm install` if needed
-- **Data safety**: All your data is stored locally in the `boards/` and `snippets/` folders
-- **Feedback welcome**: Share your experience and suggestions via GitHub Issues
-- **Development friendly**: Easy to modify and contribute to the codebase
-
-### **System Requirements**
-
-#### **Minimum Requirements**
-- **Operating System**: Windows 10+, macOS 10.14+, or Linux
-- **Memory**: 4GB RAM
-- **Storage**: 100MB free space
-- **Internet**: Required for initial download and update checking
-
-#### **Recommended Requirements**
-- **Memory**: 8GB RAM or more
-- **Storage**: 500MB free space (for larger prompt libraries)
-- **Display**: 1920x1080 or higher resolution
-- **Internet**: Stable connection for updates and version checking
-
-#### **For Development**
-- **Node.js**: Version 18 or higher (LTS recommended)
-- **npm**: Version 7 or higher
-- **Git**: For cloning the repository
-- **Electron**: Will be installed automatically via npm
-
-### **Getting Started Guide**
-
-#### **Your First 5 Minutes with PromptWaffel**
-
-1. **Complete the Tutorial** (2-3 minutes)
-   - Follow the interactive tutorial that appears on first launch
-   - Learn the basics of creating snippets and boards
-   - Understand the drag-and-drop interface
-
-2. **Create Your First Snippet** (1 minute)
-   - Click the "+" button in the sidebar
-   - Add some text (e.g., "masterpiece, best quality")
-   - Add tags (e.g., "quality, positive")
-   - Click "Create"
-
-3. **Organize with Folders** (2 minutes)
-   - Right-click in the sidebar → "Create Folder"
-   - Name it (e.g., "Character Descriptions")
-   - Drag your snippet into the folder
-
-4. **Build Your First Prompt** (2 minutes)
-   - Drag snippets from the sidebar onto the board
-   - Arrange them in the order you want
-   - Watch the compiled prompt update in real-time
-   - Copy the result for use in your AI tools
-
-#### **Pro Tips for New Users**
-
-- **Use tags**: Tag your snippets for easy searching later
-- **Create folders**: Organize snippets by category (characters, styles, environments)
-- **Color code**: Assign colors to cards for visual organization
-- **Lock cards**: Right-click cards to lock them in position
-- **Add images**: Use reference images for visual context
-- **Live preview**: Set up folder monitoring for real-time AI output viewing
 
 ## 🎯 **Beta Program Information**
 
@@ -444,47 +323,29 @@ Found a bug or have a suggestion?
 - **Open Source**: Transparent codebase for security review
 - **Local Control**: You own and control all your data
 
-## Development
 
-### Prerequisites
-
-- Node.js 16+
-- npm or yarn
-
-### Setup
-
-```bash
-git clone https://github.com/Fablestarexpanse/PromptWaffel.git
-cd PromptWaffel
-npm install
-npm start
-```
-
-### Building
-
-```bash
-# Build for all platforms
-npm run build
-
-# Build for specific platform
-npm run build:win    # Windows
-npm run build:mac    # macOS
-npm run build:linux  # Linux
-```
-
-### Testing
-
-```bash
-# Run unit tests
-npm test
-
-# Run integration tests
-npm run test:integration
-```
 
 ## License
 
-This project is licensed under the ISC License.
+This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**.
+
+### What this means:
+
+- **Open Source**: The source code is freely available and can be modified
+- **Copyleft**: Any derivative works must also be licensed under AGPL-3.0
+- **Network Use**: If you run a modified version on a server, you must provide the source code to users
+- **Commercial Use**: You can use this software commercially, but must comply with the license terms
+
+### Key Requirements:
+
+1. **Source Code**: Any modifications must be made available to users
+2. **License Notice**: Include the original license and copyright notices
+3. **Network Access**: If providing network access to the software, users must be able to download the source
+4. **Attribution**: Credit the original authors
+
+For the full license text, see the [LICENSE](LICENSE) file in this repository.
+
+**Note**: This is a strong copyleft license that ensures the software and its derivatives remain open source.
 
 ## Contributing
 

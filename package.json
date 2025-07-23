@@ -1,6 +1,6 @@
 {
   "name": "promptwaffel",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "A desktop application for creating and managing AI prompt snippets and boards",
   "main": "main.js",
   "scripts": {
@@ -16,6 +16,7 @@
     "build:portable": "electron-builder --win portable",
     "build:installer": "electron-builder --win nsis",
     "build:all": "electron-builder -mwl",
+    "release": "node scripts/release.js",
     "test": "echo \"No tests configured\" && exit 0",
     "lint": "eslint . --ext .js",
     "lint:fix": "eslint . --ext .js --fix",
@@ -35,7 +36,7 @@
     "desktop"
   ],
   "author": "PromptWaffel Team",
-  "license": "ISC",
+  "license": "AGPL-3.0",
   "type": "commonjs",
   "bugs": {
     "url": "https://github.com/Fablestarexpanse/PromptWaffel/issues"
@@ -53,6 +54,12 @@
   "build": {
     "appId": "com.promptwaffle.app",
     "productName": "PromptWaffle",
+    "publish": {
+      "provider": "github",
+      "owner": "Fablestarexpanse",
+      "repo": "PromptWaffel",
+      "private": false
+    },
     "files": [
       "src/**/*",
       "main.js",
@@ -80,6 +87,8 @@
     }
   },
   "dependencies": {
+    "electron-log": "^5.4.1",
+    "electron-updater": "^6.6.2",
     "notyf": "^3.10.0"
   }
 }
