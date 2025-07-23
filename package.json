@@ -1,6 +1,6 @@
 {
   "name": "promptwaffle",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "A desktop application for creating and managing AI prompt snippets and boards",
   "main": "main.js",
   "scripts": {
