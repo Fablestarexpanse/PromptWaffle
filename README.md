@@ -1,14 +1,20 @@
-# PromptWaffel
+# PromptWaffle
 
 **Break it. Remix it. Generate better.**
 
-PromptWaffel is a desktop application for managing, organizing, and composing AI prompts. Built with Electron, it provides an intuitive visual interface for creating complex prompts from reusable components with drag-and-drop functionality.
+PromptWaffle is a desktop application for managing, organizing, and composing AI prompts. Built with Electron, it provides an intuitive visual interface for creating complex prompts from reusable components with drag-and-drop functionality.
+
+## 📸 Screenshots
+
+![PromptWaffle Main Interface](screenshots/main-interface.png)
+
+*The main interface showing snippet cards, image thumbnails, and compiled prompt output with color-coded organization.*
 
 ## 🚀 Quick Start - Beta Program
 
 ### **Getting Started (Source-Based Installation)**
 
-Welcome to the PromptWaffel Beta Program! This is a source-based application that requires Node.js to run. Don't worry - we'll guide you through the setup process step by step.
+Welcome to the PromptWaffle Beta Program! This is a source-based application that requires Node.js to run. Don't worry - we'll guide you through the setup process step by step.
 
 #### **Step 1: Install Prerequisites**
 
@@ -23,22 +29,22 @@ Welcome to the PromptWaffel Beta Program! This is a source-based application tha
    ```
    Both should show version numbers if installed correctly.
 
-#### **Step 2: Download & Setup PromptWaffel**
+#### **Step 2: Download & Setup PromptWaffle**
 
 **Option A: Clone from GitHub (Recommended)**
 ```bash
 # Clone the repository
-git clone https://github.com/Fablestarexpanse/PromptWaffel.git
+git clone https://github.com/Fablestarexpanse/PromptWaffle.git
 
 # Navigate to the project folder
-cd PromptWaffel
+cd PromptWaffle
 
 # Install dependencies
 npm install
 ```
 
 **Option B: Download ZIP**
-1. **Visit**: [GitHub Repository](https://github.com/Fablestarexpanse/PromptWaffel)
+1. **Visit**: [GitHub Repository](https://github.com/Fablestarexpanse/PromptWaffle)
 2. **Download**: Click the green "Code" button → "Download ZIP"
 3. **Extract**: Extract the ZIP file to a folder of your choice
 4. **Open terminal**: Navigate to the extracted folder
@@ -73,7 +79,7 @@ npm run launch
 
 ### **What to Expect**
 
-PromptWaffel is currently in **Beta** - this means:
+PromptWaffle is currently in **Beta** - this means:
 
 ✅ **What Works Great:**
 - Core functionality is stable and production-ready
@@ -91,7 +97,7 @@ PromptWaffel is currently in **Beta** - this means:
 
 Found a bug or have a suggestion?
 
-1. **Check existing issues**: Search [GitHub Issues](https://github.com/Fablestarexpanse/PromptWaffel/issues) first
+1. **Check existing issues**: Search [GitHub Issues](https://github.com/Fablestarexpanse/PromptWaffle/issues) first
 2. **Create new issue**: Use the "New Issue" button on GitHub
 3. **Include details**: 
    - Your operating system and version
@@ -176,7 +182,50 @@ Found a bug or have a suggestion?
 - **Update Notifications**: Beautiful modal with changelog and download links
 - **Manual Check**: Button in sidebar and keyboard shortcut (Ctrl+Shift+U)
 - **Reminder System**: Option to postpone update notifications
-- **Direct Downloads**: Links to GitHub release pages
+- **Automatic Updates**: Download and install updates directly from within the app
+- **Progress Tracking**: Real-time download progress with visual feedback
+- **Seamless Installation**: Automatic restart and installation of updates
+
+## Auto-Updater System
+
+PromptWaffle now includes a comprehensive auto-updater system that allows users to download and install updates directly from within the application.
+
+### How It Works
+
+1. **Automatic Checks**: The app checks for updates on startup (once per day)
+2. **Update Detection**: When a new version is available, users are notified
+3. **Download Progress**: Users can download updates with real-time progress tracking
+4. **Seamless Installation**: Updates are automatically installed and the app restarts
+
+### For Developers
+
+To release a new version:
+
+1. **Update Version**: Run `npm run release <version>` (e.g., `npm run release 1.2.3`)
+2. **Automatic Build**: GitHub Actions will automatically build and publish the release
+3. **User Updates**: Users will receive update notifications and can install automatically
+
+The release script will:
+- Update the version in `package.json`
+- Commit the changes
+- Create and push a version tag
+- Trigger the GitHub Actions workflow
+
+### Manual Release Process
+
+If you prefer to release manually:
+
+```bash
+# Update version in package.json
+# Commit changes
+git add package.json
+git commit -m "Bump version to 1.2.3"
+
+# Create and push tag
+git tag v1.2.3
+git push origin main
+git push origin v1.2.3
+```
 
 ## Release Notes
 
@@ -361,7 +410,7 @@ We appreciate your understanding and look forward to potentially accepting code 
 
 ## Support
 
-If you find PromptWaffel useful, consider supporting its development through Ko-fi. Your support helps keep the project active and enables new features!
+If you find PromptWaffle useful, consider supporting its development through Ko-fi. Your support helps keep the project active and enables new features!
 
 [![ko-fi](https://storage.ko-fi.com/cdn/kofi2.png?v=3)](https://ko-fi.com/promptwaffle)
 
@@ -369,7 +418,7 @@ If you find PromptWaffel useful, consider supporting its development through Ko-
 
 - ⭐ **Star the repository** on GitHub
 - 🐛 **Report bugs** and suggest features
-- 📢 **Share** PromptWaffel with other creators
+- 📢 **Share** PromptWaffle with other creators
 
 ## Roadmap
 
@@ -408,4 +457,4 @@ This roadmap will evolve over time. Feedback and feature suggestions are welcome
 
 ---
 
-_PromptWaffel - Making AI prompt creation more organized, visual, and efficient._
+_PromptWaffle - Making AI prompt creation more organized, visual, and efficient._

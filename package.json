@@ -1,5 +1,5 @@
 {
-  "name": "promptwaffel",
+  "name": "promptwaffle",
   "version": "1.2.3",
   "description": "A desktop application for creating and managing AI prompt snippets and boards",
   "main": "main.js",
@@ -26,7 +26,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Fablestarexpanse/PromptWaffel.git"
+    "url": "git+https://github.com/Fablestarexpanse/PromptWaffle.git"
   },
   "keywords": [
     "electron",
@@ -35,13 +35,13 @@
     "snippets",
     "desktop"
   ],
-  "author": "PromptWaffel Team",
+  "author": "PromptWaffle Team",
   "license": "AGPL-3.0",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/Fablestarexpanse/PromptWaffel/issues"
+    "url": "https://github.com/Fablestarexpanse/PromptWaffle/issues"
   },
-  "homepage": "https://github.com/Fablestarexpanse/PromptWaffel#readme",
+  "homepage": "https://github.com/Fablestarexpanse/PromptWaffle#readme",
   "devDependencies": {
     "@eslint/js": "^9.31.0",
     "electron": "^31.7.7",
@@ -57,7 +57,7 @@
     "publish": {
       "provider": "github",
       "owner": "Fablestarexpanse",
-      "repo": "PromptWaffel",
+      "repo": "PromptWaffle",
       "private": false
     },
     "files": [

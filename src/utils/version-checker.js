@@ -1,9 +1,9 @@
 import { showToast } from './index.js';
 // Configuration
 const GITHUB_API_BASE = 'https://api.github.com';
-const REPO_OWNER = 'PromptWaffle'; // Update this to your actual GitHub username/org
+const REPO_OWNER = 'Fablestarexpanse'; // Update this to your actual GitHub username/org
 const REPO_NAME = 'PromptWaffle'; // Update this to your actual repository name
-const CURRENT_VERSION = '1.2.2'; // This should match package.json version
+const CURRENT_VERSION = '1.2.3'; // This should match package.json version
 class VersionChecker {
   constructor() {
     this.latestRelease = null;
@@ -42,7 +42,7 @@ class VersionChecker {
   async fetchLatestRelease() {
     try {
       // For testing purposes, return a mock update if the repository doesn't exist
-      if (REPO_OWNER === 'PromptWaffle' && REPO_NAME === 'PromptWaffle') {
+      if (REPO_OWNER === 'Fablestarexpanse' && REPO_NAME === 'PromptWaffle') {
         return {
           version: '1.2.3',
           name: 'Test Update - Version 1.2.3',
@@ -65,7 +65,7 @@ class VersionChecker {
 ### 📝 Notes
 This update demonstrates the new version checking system with proper GitHub integration.`,
           html_url:
-            'https://github.com/PromptWaffle/PromptWaffle/releases/latest',
+            'https://github.com/Fablestarexpanse/PromptWaffle/releases/latest',
           published_at: new Date().toISOString(),
           prerelease: false
         };
@@ -93,7 +93,24 @@ This update demonstrates the new version checking system with proper GitHub inte
       return { isChecking: true };
     }
     this.isChecking = true;
+    
     try {
+      // Try auto-updater first
+      if (window.autoUpdaterAPI) {
+        const result = await window.autoUpdaterAPI.checkForUpdates();
+        if (result.success) {
+          // Auto-updater will handle the rest via events
+          return {
+            success: true,
+            usingAutoUpdater: true,
+            currentVersion: CURRENT_VERSION
+          };
+        } else {
+          console.warn('Auto-updater failed, falling back to GitHub API:', result.error);
+        }
+      }
+      
+      // Fallback to existing GitHub API method
       const latestRelease = await this.fetchLatestRelease();
       if (!latestRelease) {
         return {

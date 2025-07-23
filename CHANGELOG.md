@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to PromptWaffel will be documented in this file.
+All notable changes to PromptWaffle will be documented in this file.
 
 ## [1.2.2] - 2024-12-18
 

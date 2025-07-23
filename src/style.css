@@ -3257,3 +3257,32 @@ select:focus {
     max-width: 120px;
   }
 }
+
+/* Auto-updater progress bar styles */
+.progress-container {
+  margin: 20px 0;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #40444b;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #5865f2, #7289da);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+  width: 0%;
+}
+
+#autoUpdateProgressText {
+  text-align: center;
+  color: #dcddde;
+  font-size: 0.9rem;
+  margin: 0;
+}

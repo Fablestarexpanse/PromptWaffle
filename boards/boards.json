@@ -17,8 +17,8 @@
       {
         "id": "card-1752875488970",
         "snippetPath": "Start Here/default_photorealistic.json",
-        "x": 487,
-        "y": 67.125,
+        "x": 460,
+        "y": 62.125,
         "width": 417,
         "height": 140,
         "locked": false,
@@ -27,8 +27,8 @@
       {
         "id": "card-1752875490349",
         "snippetPath": "Start Here/default_space.json",
-        "x": 932,
-        "y": 56.125,
+        "x": 890,
+        "y": 59.125,
         "width": 384,
         "height": 145,
         "locked": false,
@@ -36,7 +36,44 @@
       }
     ],
     "groups": [],
-    "images": [],
+    "images": [
+      {
+        "id": "img-1752939795743-ze02u0i1z",
+        "filename": "Chroma_base_00031_.png",
+        "path": "F:\\StabilityMatrix\\Data\\Images\\Text2Img\\2025-07-12\\Chroma_base_00031_.png",
+        "addedAt": "2025-07-19T15:43:15.743Z"
+      },
+      {
+        "id": "img-1752939795743-8ouxn4b3h",
+        "filename": "Chroma_base_00029_.png",
+        "path": "F:\\StabilityMatrix\\Data\\Images\\Text2Img\\2025-07-12\\Chroma_base_00029_.png",
+        "addedAt": "2025-07-19T15:43:15.743Z"
+      },
+      {
+        "id": "img-1752939795743-eq1wqaaq5",
+        "filename": "Chroma_base_00028_.png",
+        "path": "F:\\StabilityMatrix\\Data\\Images\\Text2Img\\2025-07-12\\Chroma_base_00028_.png",
+        "addedAt": "2025-07-19T15:43:15.743Z"
+      },
+      {
+        "id": "img-1752939795743-mnisnuyiv",
+        "filename": "Chroma_base_00021_.png",
+        "path": "F:\\StabilityMatrix\\Data\\Images\\Text2Img\\2025-07-12\\Chroma_base_00021_.png",
+        "addedAt": "2025-07-19T15:43:15.743Z"
+      },
+      {
+        "id": "img-1752939795743-2hjbnasir",
+        "filename": "Chroma_base_00016_.png",
+        "path": "F:\\StabilityMatrix\\Data\\Images\\Text2Img\\2025-07-12\\Chroma_base_00016_.png",
+        "addedAt": "2025-07-19T15:43:15.743Z"
+      },
+      {
+        "id": "img-1752939795743-11r1bpmro",
+        "filename": "Chroma_base_00012_.png",
+        "path": "F:\\StabilityMatrix\\Data\\Images\\Text2Img\\2025-07-12\\Chroma_base_00012_.png",
+        "addedAt": "2025-07-19T15:43:15.743Z"
+      }
+    ],
     "createdAt": "2025-07-18T00:01:10.279Z",
     "modifiedAt": "2025-07-18T00:01:10.279Z",
     "filePath": "Start Here\\default_board.json"

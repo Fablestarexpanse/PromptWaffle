@@ -240,10 +240,10 @@ local-config/
 personal/
 private/
 # Electron user data
-%APPDATA%/PromptWaffel/
-%LOCALAPPDATA%/PromptWaffel/
-~/Library/Application Support/PromptWaffel/
-~/.config/PromptWaffel/
+%APPDATA%/PromptWaffle/
+%LOCALAPPDATA%/PromptWaffle/
+~/Library/Application Support/PromptWaffle/
+~/.config/PromptWaffle/
 
 # ===========================================
 # DEVELOPMENT ARTIFACTS

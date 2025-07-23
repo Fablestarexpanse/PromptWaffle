@@ -109,6 +109,14 @@ async function init() {
     tutorial.loadTutorialState();
     // Initialize version checking system
     updateUI.init();
+    
+    // Initialize auto-updater UI
+    try {
+      const { autoUpdaterUI } = await import('./utils/auto-updater-ui.js');
+      // Auto-updater UI is automatically initialized when imported
+    } catch (error) {
+      console.warn('Auto-updater UI not available:', error);
+    }
     // Set current version in UI
     const versionElement = document.getElementById('currentVersion');
     if (versionElement) {
