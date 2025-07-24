@@ -1,0 +1,36 @@
+{
+  "id": "board-1753315898800",
+  "name": "test board",
+  "tags": [
+    "test board"
+  ],
+  "cards": [
+    {
+      "id": "card-1753322762528",
+      "snippetPath": "Start Here/default_cyberpunk.json",
+      "x": 761,
+      "y": 590.125,
+      "width": 456,
+      "height": 199,
+      "locked": false,
+      "color": "#E74C3C",
+      "customText": "(cyberpunk engineer), glowing tattoos,"
+    },
+    {
+      "id": "card_1753322768016_02nxxhq6t",
+      "snippetPath": "snippets/Cut Snippets/snippet_1753322768015.json",
+      "x": 781,
+      "y": 610.125,
+      "width": 456,
+      "height": 199,
+      "color": "#FF5722",
+      "locked": false,
+      "customText": "neon visor, dark synthetic jacket"
+    }
+  ],
+  "groups": [],
+  "images": [],
+  "createdAt": "2025-07-24T00:11:38.800Z",
+  "modifiedAt": "2025-07-24T00:11:38.800Z",
+  "filePath": "test_board_1753315898801.json"
+}

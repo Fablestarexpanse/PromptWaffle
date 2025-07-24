@@ -568,6 +568,14 @@ export async function setCurrentBoard(boardId) {
     } catch (sidebarError) {
       console.error('Error updating sidebar:', sidebarError);
     }
+    
+    // Update metadata panel for new board
+    try {
+      const { metadataPanel } = await import('../utils/metadata-panel.js');
+      metadataPanel.onBoardChange(boardId);
+    } catch (metadataError) {
+      console.error('Error updating metadata panel:', metadataError);
+    }
   } catch (error) {
     console.error('Error setting current board:', error);
   }

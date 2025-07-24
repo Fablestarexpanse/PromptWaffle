@@ -445,6 +445,15 @@ export function setupEventListeners() {
       newBoardBtn: () => bootstrap.openNewBoardModal(),
       copyCompiledBtn: bootstrap.copyCompiledPrompt,
       saveCompiledBtn: bootstrap.saveCompiledSnippet,
+      exportToObsidianBtn: async () => {
+        try {
+          const { exportToObsidian } = await import('../utils/utils.js');
+          await exportToObsidian();
+        } catch (error) {
+          console.error('Error exporting to Obsidian:', error);
+          showToast('Export failed. Please try again.', 'error');
+        }
+      },
       checkForUpdatesBtn: async () => {
         const btn = document.getElementById('checkForUpdatesBtn');
         if (btn) {

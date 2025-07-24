@@ -263,3 +263,180 @@ export function applyStyles(element, styles) {
     }
   });
 }
+
+// Obsidian Export Functionality
+export async function exportToObsidian() {
+  try {
+    const exportData = gatherExportData();
+    const formattedContent = formatForObsidian(exportData);
+    
+    // Create export folder and save file
+    const { filePath, exportFolder } = await saveExportToFile(exportData, formattedContent);
+    
+    // Also copy to clipboard for convenience
+    await navigator.clipboard.writeText(formattedContent);
+    
+    // Show success message
+    const { showToast } = await import('./toast.js');
+    showToast(`Exported to file: ${filePath}`, 'success');
+    
+    console.log('Obsidian export:', formattedContent);
+    console.log('Saved to file:', filePath);
+  } catch (error) {
+    console.error('Export failed:', error);
+    const { showToast } = await import('./toast.js');
+    showToast('Export failed. Please try again.', 'error');
+  }
+}
+
+async function saveExportToFile(exportData, formattedContent) {
+  // Ensure export folder exists
+  const exportFolder = 'exports';
+  await ensureDirectoryExists(exportFolder);
+  
+  // Create the markdown file with board name
+  const boardName = exportData.boardName.replace(/[^a-zA-Z0-9\s-]/g, '').trim();
+  const safeBoardName = boardName || 'Untitled';
+  const filename = `${safeBoardName}.md`;
+  const filePath = `${exportFolder}/${filename}`;
+  
+  // Save the file
+  await safeElectronAPICall('writeFile', filePath, formattedContent);
+  
+  return { filePath, exportFolder };
+}
+
+
+
+async function ensureDirectoryExists(dirPath) {
+  try {
+    // Check if directory exists
+    await safeElectronAPICall('readdir', dirPath);
+  } catch (error) {
+    // Directory doesn't exist, create it
+    try {
+      await safeElectronAPICall('createFolder', dirPath);
+      console.log(`Created export directory: ${dirPath}`);
+    } catch (mkdirError) {
+      console.error(`Failed to create directory ${dirPath}:`, mkdirError);
+      throw mkdirError;
+    }
+  }
+}
+
+function gatherExportData() {
+  // Get current board info
+  const currentBoard = getCurrentBoard();
+  const compiledPrompt = getCompiledPrompt();
+  const metadata = getMetadata();
+
+  return {
+    boardName: currentBoard?.name || 'Untitled Board',
+    boardTags: currentBoard?.tags || [],
+    compiledPrompt,
+    metadata,
+    exportDate: new Date().toISOString()
+  };
+}
+
+function getCurrentBoard() {
+  // Get current board from AppState
+  if (window.AppState) {
+    const activeBoardId = window.AppState.getActiveBoardId();
+    const boards = window.AppState.getBoards();
+    return boards.find(board => board.id === activeBoardId);
+  }
+  return null;
+}
+
+function getCompiledPrompt() {
+  const compiledPromptElement = document.getElementById('compiledPrompt');
+  return compiledPromptElement ? compiledPromptElement.textContent.trim() : '';
+}
+
+function getMetadata() {
+  const metadataFields = [
+    'checkpointInput',
+    'cfgInput', 
+    'seedInput',
+    'stepsInput',
+    'samplerInput',
+    'schedulerInput',
+    'clipskipInput',
+    'sizeInput',
+    'negativePromptInput'
+  ];
+
+  const metadata = {};
+  metadataFields.forEach(fieldId => {
+    const element = document.getElementById(fieldId);
+    if (element) {
+      const value = element.value.trim();
+      if (value) {
+        // Convert field ID to readable name
+        const fieldName = getFieldDisplayName(fieldId);
+        metadata[fieldName] = value;
+      }
+    }
+  });
+
+  return metadata;
+}
+
+function getFieldDisplayName(fieldId) {
+  const nameMap = {
+    'checkpointInput': 'Checkpoint',
+    'cfgInput': 'CFG Scale',
+    'seedInput': 'Seed',
+    'stepsInput': 'Steps',
+    'samplerInput': 'Sampler',
+    'schedulerInput': 'Scheduler',
+    'clipskipInput': 'Clip Skip',
+    'sizeInput': 'Size',
+    'negativePromptInput': 'Negative Prompt'
+  };
+  return nameMap[fieldId] || fieldId;
+}
+
+
+
+function formatForObsidian(data) {
+  const { boardName, boardTags, compiledPrompt, metadata, exportDate } = data;
+  
+  let content = `---
+title: "${boardName}"
+created: "${new Date(exportDate).toISOString()}"
+tags: ${boardTags && boardTags.length > 0 ? `[${boardTags.map(tag => `"${tag}"`).join(', ')}]` : '[]'}
+---
+
+# 🎨 ${boardName}
+
+> [!info] Export Info
+> **Created:** ${new Date(exportDate).toLocaleString()}
+> **Source:** PromptWaffle
+> **Type:** AI Image Generation Prompt
+
+${boardTags && boardTags.length > 0 ? `**Tags:** ${boardTags.map(tag => `#${tag}`).join(' ')}\n\n` : ''}
+
+## 📝 Compiled Prompt
+
+> [!quote] Generated Prompt
+> ${compiledPrompt || '*No prompt compiled*'}
+
+${Object.keys(metadata).length > 0 ? `
+## ⚙️ Generation Parameters
+
+> [!note] Settings
+> | Parameter | Value |
+> |-----------|-------|
+${Object.entries(metadata).map(([key, value]) => `> | **${key}** | \`${value}\` |`).join('\n')}
+` : ''}
+
+
+
+---
+
+`;
+  
+  return content;
+}

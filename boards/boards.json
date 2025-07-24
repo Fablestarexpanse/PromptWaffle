@@ -7,18 +7,18 @@
       {
         "id": "card-1752875487283",
         "snippetPath": "Start Here/default_cyberpunk.json",
-        "x": 29,
-        "y": 48.125,
-        "width": 409,
-        "height": 154,
+        "x": 25,
+        "y": 16.125,
+        "width": 406,
+        "height": 115,
         "locked": false,
         "color": "#E74C3C"
       },
       {
         "id": "card-1752875488970",
         "snippetPath": "Start Here/default_photorealistic.json",
-        "x": 460,
-        "y": 62.125,
+        "x": 440,
+        "y": 19.125,
         "width": 417,
         "height": 140,
         "locked": false,
@@ -27,8 +27,8 @@
       {
         "id": "card-1752875490349",
         "snippetPath": "Start Here/default_space.json",
-        "x": 890,
-        "y": 59.125,
+        "x": 872,
+        "y": 17.125,
         "width": 384,
         "height": 145,
         "locked": false,
@@ -77,5 +77,18 @@
     "createdAt": "2025-07-18T00:01:10.279Z",
     "modifiedAt": "2025-07-18T00:01:10.279Z",
     "filePath": "Start Here\\default_board.json"
+  },
+  {
+    "id": "board-1753315898800",
+    "name": "test board",
+    "tags": [
+      "test board"
+    ],
+    "cards": [],
+    "groups": [],
+    "images": [],
+    "createdAt": "2025-07-24T00:11:38.800Z",
+    "modifiedAt": "2025-07-24T00:11:38.800Z",
+    "filePath": "test_board_1753315898801.json"
   }
 ]

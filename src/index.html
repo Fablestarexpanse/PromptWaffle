@@ -13,7 +13,24 @@
     <script src="../node_modules/notyf/notyf.min.js"></script>
   </head>
   <body>
-    <div class="app-layout">
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+      <div class="loading-content">
+        <div class="loading-logo">
+          <img src="assets/800x800 logo prompt waffel.png" alt="PromptWaffle Logo" />
+        </div>
+        <h2 class="loading-title">PromptWaffle</h2>
+        <p class="loading-subtitle">Break it. Remix it. Generate better.</p>
+        <div class="loading-progress">
+          <div class="loading-bar">
+            <div class="loading-fill"></div>
+          </div>
+          <div class="loading-text">Initializing...</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="app-layout" id="mainApp" style="display: none;">
       <aside class="sidebar">
         <div class="sidebar-top">
           <div class="sidebar-logo">
@@ -294,9 +311,119 @@
           style="padding: 16px 24px 0 24px"
         ></div>
         <div class="board-container">
-          <div id="promptBoard" class="prompt-board">
-            <div class="board-placeholder">
-              Drag snippets here to build your prompt
+          <div class="board-layout">
+            <div id="promptBoard" class="prompt-board">
+              <div class="board-placeholder">
+                Drag snippets here to build your prompt
+              </div>
+            </div>
+            <div class="metadata-panel">
+              <button id="toggleMetadataBtn" class="metadata-toggle-btn" title="Toggle metadata panel">
+                <i data-feather="chevron-left"></i>
+              </button>
+              <div class="metadata-header">
+                <h3>Image Metadata</h3>
+                <div class="metadata-header-controls">
+                  <button id="lockMetadataBtn" class="metadata-lock-btn" title="Lock metadata fields (prevent editing)">
+                    <i data-feather="unlock"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="metadata-content">
+                <div class="metadata-field">
+                  <label for="checkpointInput">Checkpoint:</label>
+                  <input type="text" id="checkpointInput" placeholder="e.g., realisticVisionV51" />
+                </div>
+                <div class="metadata-field">
+                  <label for="cfgInput">CFG Scale:</label>
+                  <input type="number" id="cfgInput" placeholder="7" min="1" max="30" step="0.5" />
+                </div>
+                <div class="metadata-field">
+                  <label for="seedInput">Seed:</label>
+                  <input type="number" id="seedInput" placeholder="123456789" />
+                </div>
+                <div class="metadata-field">
+                  <label for="stepsInput">Steps:</label>
+                  <input type="number" id="stepsInput" placeholder="20" min="1" max="150" />
+                </div>
+                <div class="metadata-field">
+                  <label for="samplerInput">Sampler:</label>
+                  <select id="samplerInput">
+                    <option value="">Select sampler...</option>
+                    <option value="Euler a">Euler a</option>
+                    <option value="Euler">Euler</option>
+                    <option value="LMS">LMS</option>
+                    <option value="Heun">Heun</option>
+                    <option value="DPM2">DPM2</option>
+                    <option value="DPM2 a">DPM2 a</option>
+                    <option value="DPM++ 2S a">DPM++ 2S a</option>
+                    <option value="DPM++ 2M">DPM++ 2M</option>
+                    <option value="DPM++ SDE">DPM++ SDE</option>
+                    <option value="DPM fast">DPM fast</option>
+                    <option value="DPM adaptive">DPM adaptive</option>
+                    <option value="LMS Karras">LMS Karras</option>
+                    <option value="DPM2 Karras">DPM2 Karras</option>
+                    <option value="DPM2 a Karras">DPM2 a Karras</option>
+                    <option value="DPM++ 2S a Karras">DPM++ 2S a Karras</option>
+                    <option value="DPM++ 2M Karras">DPM++ 2M Karras</option>
+                    <option value="DPM++ SDE Karras">DPM++ SDE Karras</option>
+                    <option value="DDIM">DDIM</option>
+                    <option value="PLMS">PLMS</option>
+                  </select>
+                </div>
+                <div class="metadata-field">
+                  <label for="schedulerInput">Scheduler:</label>
+                  <select id="schedulerInput">
+                    <option value="">Select scheduler...</option>
+                    <option value="simple">Simple</option>
+                    <option value="sgm_uniform">SGM Uniform</option>
+                    <option value="karras">Karras</option>
+                    <option value="exponential">Exponential</option>
+                    <option value="ddim_uniform">DDIM Uniform</option>
+                    <option value="beta">Beta</option>
+                    <option value="normal">Normal</option>
+                    <option value="linear_quadratic">Linear Quadratic</option>
+                    <option value="kl_optimal">KL Optimal</option>
+                    <option value="UniPC">UniPC</option>
+                    <option value="Linear">Linear</option>
+                    <option value="Cosine">Cosine</option>
+                    <option value="Cosine with Restarts">Cosine with Restarts</option>
+                    <option value="Polynomial">Polynomial</option>
+                    <option value="Constant">Constant</option>
+                    <option value="SGDR">SGDR</option>
+                    <option value="Inverse">Inverse</option>
+                    <option value="Inverse Sqrt">Inverse Sqrt</option>
+                    <option value="Cosine Annealing">Cosine Annealing</option>
+                    <option value="Cosine Annealing Warm Restarts">Cosine Annealing Warm Restarts</option>
+                  </select>
+                </div>
+                <div class="metadata-field">
+                  <label for="clipskipInput">Clip Skip:</label>
+                  <input type="number" id="clipskipInput" placeholder="1" min="1" max="12" />
+                </div>
+                <div class="metadata-field">
+                  <label for="sizeInput">Size:</label>
+                  <input type="text" id="sizeInput" placeholder="512x768" />
+                </div>
+                <div class="metadata-field">
+                  <label for="negativePromptInput">Negative Prompt:</label>
+                  <textarea id="negativePromptInput" placeholder="Enter negative prompt..." rows="3"></textarea>
+                </div>
+                <div class="metadata-actions">
+                  <button id="pasteMetadataBtn" class="metadata-btn primary">
+                    <i data-feather="clipboard"></i>
+                    Paste
+                  </button>
+                  <button id="clearMetadataBtn" class="metadata-btn secondary">
+                    <i data-feather="trash-2"></i>
+                    Clear
+                  </button>
+                  <button id="copyMetadataBtn" class="metadata-btn secondary">
+                    <i data-feather="copy"></i>
+                    Copy
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -330,6 +457,13 @@
               title="Save compiled prompt as a new snippet"
             >
               Save as Snippet
+            </button>
+            <button
+              id="exportToObsidianBtn"
+              title="Export to Markdown file for Obsidian"
+            >
+              <i data-feather="file-text"></i>
+              Export to Markdown
             </button>
           </div>
         </div>
@@ -648,6 +782,7 @@
           </div>
         </div>
       </div>
+    </div>
     </div>
 
     <script src="https://unpkg.com/exifreader@4.21.0/dist/exif-reader.js"></script>

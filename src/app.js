@@ -5,8 +5,15 @@ import { setupEventListeners } from './events/eventListeners.js';
 import { tutorial } from './tutorial.js';
 import { versionChecker } from './utils/version-checker.js';
 import { updateUI } from './utils/update-ui.js';
+import { LoadingScreen } from './utils/loading-screen.js';
 async function init() {
+  // Initialize loading screen
+  const loadingScreen = new LoadingScreen();
+  
   try {
+    // Start loading simulation
+    loadingScreen.simulateLoading();
+    
     // 1. Load application state
     const savedState = await bootstrap.loadApplicationState();
     if (savedState) {
@@ -117,6 +124,16 @@ async function init() {
     } catch (error) {
       console.warn('Auto-updater UI not available:', error);
     }
+    
+    // Initialize metadata panel after board system is ready
+    setTimeout(async () => {
+      try {
+        const { metadataPanel } = await import('./utils/metadata-panel.js');
+        // Metadata panel is automatically initialized when imported
+      } catch (error) {
+        console.warn('Metadata panel not available:', error);
+      }
+    }, 500); // Wait for board system to be fully initialized
     // Set current version in UI
     const versionElement = document.getElementById('currentVersion');
     if (versionElement) {
@@ -149,8 +166,16 @@ async function init() {
         console.error('❌ Error during version check:', error);
       }
     }, 3000); // Check for updates 3 seconds after startup
+    
+    // Ensure loading screen is hidden after everything is initialized
+    setTimeout(() => {
+      loadingScreen.hide();
+    }, 1000);
+    
   } catch (error) {
     console.error('Fatal error during application initialization:', error);
+    // Hide loading screen even on error
+    loadingScreen.hide();
     try {
       bootstrap.showCenteredWarning(
         'A critical error occurred. Please restart the application.'
