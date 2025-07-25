@@ -1,22 +1,12 @@
 {
   "version": "1.0.0",
-  "timestamp": 1753322780234,
+  "timestamp": 1753480511367,
   "boards": [
     {
       "id": "board-default",
       "name": "Default Board",
       "tags": [],
       "cards": [
-        {
-          "id": "card-1752875487283",
-          "snippetPath": "Start Here/default_cyberpunk.json",
-          "x": 25,
-          "y": 16.125,
-          "width": 406,
-          "height": 115,
-          "locked": false,
-          "color": "#E74C3C"
-        },
         {
           "id": "card-1752875488970",
           "snippetPath": "Start Here/default_photorealistic.json",
@@ -111,7 +101,7 @@
     "expandedFolders": [
       "Start Here"
     ],
-    "currentBoardId": "board-1753315898800",
+    "currentBoardId": "board-default",
     "searchTerm": "",
     "compiledPromptExpanded": false
   },

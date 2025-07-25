@@ -451,12 +451,17 @@ export async function showCardContextMenu(e, cardId, snippetPath) {
     const editIcon = document.createElement('i');
     editIcon.setAttribute('data-feather', 'edit-3');
     editSnippetItem.insertBefore(editIcon, editSnippetItem.firstChild);
-    editSnippetItem.onclick = () => {
+    editSnippetItem.onclick = async () => {
       try {
         contextMenu.remove();
-        showToast('Edit snippet feature coming soon!', 'info');
+        // Open the edit snippet modal
+        const { openEditSnippetModal } = await import(
+          '../../bootstrap/sidebar.js'
+        );
+        openEditSnippetModal(snippet, snippetPath);
       } catch (error) {
         console.error('Error in edit snippet menu item:', error);
+        showToast('Error opening edit modal', 'error');
       }
     };
     // Change Color menu item

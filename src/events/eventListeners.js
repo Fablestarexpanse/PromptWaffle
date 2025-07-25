@@ -674,12 +674,13 @@ export function setupEventListeners() {
           AppState.setSnippets(snippets);
           modal.style.display = 'none';
           showToast('Snippet updated', 'success');
-          // Just re-render the sidebar
-          const foldersContainer = document.getElementById('foldersContainer');
-          if (foldersContainer && window.sidebarTree) {
-            const { renderSidebar } = await import('../bootstrap/sidebar.js');
-            renderSidebar(window.sidebarTree, foldersContainer);
-          }
+          // Re-render both sidebar and board to reflect changes
+          // Use schedulePartialSidebarUpdate to preserve folder expansion state
+          const { schedulePartialSidebarUpdate } = await import('../bootstrap/sidebar.js');
+          schedulePartialSidebarUpdate();
+          // Re-render the board to show updated snippet text
+          const { renderBoard } = await import('../bootstrap/boards.js');
+          await renderBoard();
         } catch (err) {
           showToast('Error saving snippet', 'error');
           console.error('Error saving edited snippet:', err);
