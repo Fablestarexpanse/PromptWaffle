@@ -259,6 +259,31 @@ export function showSnippetContextMenu(e, snippet, path) {
         console.error('Error in edit snippet menu item:', error);
       }
     };
+    
+    // Add PromptKit edit option if this is a PromptKit snippet
+    if (snippet.promptkit) {
+      const promptKitItem = document.createElement('div');
+      promptKitItem.className = 'context-menu-item';
+      promptKitItem.textContent = 'Edit with PromptKit';
+      // Add icon safely
+      const promptKitIcon = document.createElement('i');
+      promptKitIcon.setAttribute('data-feather', 'layers');
+      promptKitItem.insertBefore(promptKitIcon, promptKitItem.firstChild);
+      promptKitItem.onclick = async () => {
+        try {
+          contextMenu.remove();
+          // Open the PromptKit modal with this snippet loaded
+          const { promptKitUI } = await import('../../utils/promptkit-ui.js');
+          await promptKitUI.openModal();
+          promptKitUI.loadFromSnippet(snippet);
+        } catch (error) {
+          console.error('Error in PromptKit edit menu item:', error);
+          const { showToast } = await import('../../utils/index.js');
+          showToast('Error opening PromptKit', 'error');
+        }
+      };
+      contextMenu.appendChild(promptKitItem);
+    }
     // Duplicate Snippet menu item
     const duplicateItem = document.createElement('div');
     duplicateItem.className = 'context-menu-item';
@@ -464,6 +489,30 @@ export async function showCardContextMenu(e, cardId, snippetPath) {
         showToast('Error opening edit modal', 'error');
       }
     };
+    
+    // Add PromptKit edit option if this is a PromptKit snippet
+    if (snippet.promptkit) {
+      const promptKitItem = document.createElement('div');
+      promptKitItem.className = 'context-menu-item';
+      promptKitItem.textContent = 'Edit with PromptKit';
+      // Add icon safely
+      const promptKitIcon = document.createElement('i');
+      promptKitIcon.setAttribute('data-feather', 'layers');
+      promptKitItem.insertBefore(promptKitIcon, promptKitItem.firstChild);
+      promptKitItem.onclick = async () => {
+        try {
+          contextMenu.remove();
+          // Open the PromptKit modal with this snippet loaded
+          const { promptKitUI } = await import('../../utils/promptkit-ui.js');
+          await promptKitUI.openModal();
+          promptKitUI.loadFromSnippet(snippet);
+        } catch (error) {
+          console.error('Error in PromptKit edit menu item:', error);
+          showToast('Error opening PromptKit', 'error');
+        }
+      };
+      contextMenu.appendChild(promptKitItem);
+    }
     // Change Color menu item
     const changeColorItem = document.createElement('div');
     changeColorItem.className = 'context-menu-item';

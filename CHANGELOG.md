@@ -2,6 +2,42 @@
 
 All notable changes to PromptWaffle will be documented in this file.
 
+## [1.3.0] - 2024-12-30
+
+### Added
+
+- **Wildcard Studio**: Revolutionary dynamic prompt building system
+  - Profile-based prompt templates with customizable positive prompts
+  - Folder-based wildcard system with .txt files for easy customization
+  - Dice button interface for randomizing wildcard selections
+  - Section-based prompt organization (Top, Middle, Bottom)
+  - Real-time prompt assembly with automatic deduplication
+  - Profile creation tool integrated into the interface
+  - Auto-refresh system that detects new wildcard files and folders
+  - Seamless integration with existing snippet system
+
+### Changed
+
+- **Loading Screen**: Updated with new waffle-themed loading image
+- **Tutorial System**: Enhanced with Wildcard Studio introduction and improved explanations
+- **UI Improvements**: Better alignment and spacing throughout the application
+- **Metadata Panel**: Repositioned collapse button for better accessibility
+
+### Fixed
+
+- Fixed alignment issues in Wildcard Studio modal
+- Improved input field overflow handling in save options
+- Enhanced wildcard category layout and spacing
+- Fixed horizontal line artifacts in profile creation form
+- Improved section selector styling and positioning
+
+### Technical
+
+- **File Structure**: New `wildcards/` and `profiles/` folders for user customization
+- **Profile System**: JSON and TXT file support for profile definitions
+- **Wildcard System**: Category-based organization with individual .txt files
+- **Auto-Detection**: Real-time scanning for new wildcard categories and files
+
 ## [1.2.5] - 2024-12-23
 
 ### Added

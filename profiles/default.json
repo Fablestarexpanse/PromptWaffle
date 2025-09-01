@@ -1,0 +1,8 @@
+{
+  "id": "default",
+  "name": "Default Profile",
+  "description": "Basic prompt structure for general use",
+  "positive": ["high quality", "detailed", "professional"],
+  "negative": ["low quality", "blurry", "poor composition"]
+}
+

@@ -1,0 +1,8 @@
+{
+  "id": "artistic",
+  "name": "Artistic",
+  "description": "For artistic and creative images",
+  "positive": ["artistic", "creative", "masterpiece", "beautiful composition", "artistic style"],
+  "negative": ["photorealistic", "realistic", "photography"]
+}
+

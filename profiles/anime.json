@@ -1,0 +1,8 @@
+{
+  "id": "anime",
+  "name": "Anime Style",
+  "description": "For anime and manga style images",
+  "positive": ["anime style", "manga", "detailed anime", "high quality anime", "anime art"],
+  "negative": ["photorealistic", "realistic", "photography", "3d render"]
+}
+

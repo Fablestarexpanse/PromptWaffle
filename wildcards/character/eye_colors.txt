@@ -1,0 +1,50 @@
+blue
+light blue
+ice blue
+sky blue
+steel blue
+midnight blue
+navy blue
+teal
+turquoise
+aqua
+sea green
+mint green
+lime green
+emerald green
+forest green
+olive green
+moss green
+hazel
+golden hazel
+amber
+honey
+light brown
+golden brown
+medium brown
+dark brown
+chestnut
+chocolate brown
+coffee brown
+espresso brown
+walnut brown
+copper brown
+gray
+light gray
+slate gray
+steel gray
+gunmetal gray
+silver
+gold
+violet
+lavender
+amethyst
+lilac
+indigo
+ruby red
+topaz
+citrine
+black (very dark brown)
+heterochromia (odd eyes)
+sectoral heterochromia
+central heterochromia (gold ring)

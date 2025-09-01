@@ -440,6 +440,16 @@ export function setupEventListeners() {
     const eventHandlers = {
       newFolderBtn: () => bootstrap.openFolderModal(),
       newSnippetBtn: () => bootstrap.openSnippetModal(),
+      promptKitBtn: async () => {
+        try {
+          const { promptKitUI } = await import('../utils/promptkit-ui.js');
+          await promptKitUI.openModal();
+        } catch (error) {
+          console.error('Error opening PromptKit modal:', error);
+          const { showToast } = await import('../utils/index.js');
+          showToast('Error opening PromptKit', 'error');
+        }
+      },
       sortBtn: bootstrap.toggleSortMenu,
       collapseAllBtn: bootstrap.collapseAllFolders,
       newBoardBtn: () => bootstrap.openNewBoardModal(),

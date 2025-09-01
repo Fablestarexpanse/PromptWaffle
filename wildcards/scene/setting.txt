@@ -1,0 +1,10 @@
+urban cityscape
+forest
+beach
+mountains
+desert
+studio
+indoor
+outdoor
+fantasy realm
+sci-fi environment

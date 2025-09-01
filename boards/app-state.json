@@ -1,72 +1,14 @@
 {
   "version": "1.0.0",
-  "timestamp": 1753480511367,
+  "timestamp": 1756699806486,
   "boards": [
     {
       "id": "board-default",
       "name": "Default Board",
       "tags": [],
-      "cards": [
-        {
-          "id": "card-1752875488970",
-          "snippetPath": "Start Here/default_photorealistic.json",
-          "x": 440,
-          "y": 19.125,
-          "width": 417,
-          "height": 140,
-          "locked": false,
-          "color": "#3498DB"
-        },
-        {
-          "id": "card-1752875490349",
-          "snippetPath": "Start Here/default_space.json",
-          "x": 872,
-          "y": 17.125,
-          "width": 384,
-          "height": 145,
-          "locked": false,
-          "color": "#2ECC71"
-        }
-      ],
+      "cards": [],
       "groups": [],
-      "images": [
-        {
-          "id": "img-1752939795743-ze02u0i1z",
-          "filename": "Chroma_base_00031_.png",
-          "path": "F:\\StabilityMatrix\\Data\\Images\\Text2Img\\2025-07-12\\Chroma_base_00031_.png",
-          "addedAt": "2025-07-19T15:43:15.743Z"
-        },
-        {
-          "id": "img-1752939795743-8ouxn4b3h",
-          "filename": "Chroma_base_00029_.png",
-          "path": "F:\\StabilityMatrix\\Data\\Images\\Text2Img\\2025-07-12\\Chroma_base_00029_.png",
-          "addedAt": "2025-07-19T15:43:15.743Z"
-        },
-        {
-          "id": "img-1752939795743-eq1wqaaq5",
-          "filename": "Chroma_base_00028_.png",
-          "path": "F:\\StabilityMatrix\\Data\\Images\\Text2Img\\2025-07-12\\Chroma_base_00028_.png",
-          "addedAt": "2025-07-19T15:43:15.743Z"
-        },
-        {
-          "id": "img-1752939795743-mnisnuyiv",
-          "filename": "Chroma_base_00021_.png",
-          "path": "F:\\StabilityMatrix\\Data\\Images\\Text2Img\\2025-07-12\\Chroma_base_00021_.png",
-          "addedAt": "2025-07-19T15:43:15.743Z"
-        },
-        {
-          "id": "img-1752939795743-2hjbnasir",
-          "filename": "Chroma_base_00016_.png",
-          "path": "F:\\StabilityMatrix\\Data\\Images\\Text2Img\\2025-07-12\\Chroma_base_00016_.png",
-          "addedAt": "2025-07-19T15:43:15.743Z"
-        },
-        {
-          "id": "img-1752939795743-11r1bpmro",
-          "filename": "Chroma_base_00012_.png",
-          "path": "F:\\StabilityMatrix\\Data\\Images\\Text2Img\\2025-07-12\\Chroma_base_00012_.png",
-          "addedAt": "2025-07-19T15:43:15.743Z"
-        }
-      ],
+      "images": [],
       "createdAt": "2025-07-18T00:01:10.279Z",
       "modifiedAt": "2025-07-18T00:01:10.279Z",
       "filePath": "Start Here\\default_board.json"
@@ -82,7 +24,20 @@
       "images": [],
       "createdAt": "2025-07-24T00:11:38.800Z",
       "modifiedAt": "2025-07-24T00:11:38.800Z",
-      "filePath": "test_board_1753315898801.json"
+      "filePath": "Start Here\\test_board_1753315898801.json"
+    },
+    {
+      "id": "board-1756699254902",
+      "name": "test 2",
+      "tags": [
+        "test2"
+      ],
+      "cards": [],
+      "groups": [],
+      "images": [],
+      "createdAt": "2025-09-01T04:00:54.902Z",
+      "modifiedAt": "2025-09-01T04:00:54.902Z",
+      "filePath": "Start Here\\test_2_1756699254902.json"
     }
   ],
   "settings": {
@@ -91,7 +46,7 @@
       "direction": "asc"
     },
     "showCompiledColors": true,
-    "showCardColors": true,
+    "showCardColors": false,
     "autosaveEnabled": true,
     "autosaveInterval": 30000,
     "monitoredFolder": null,
@@ -99,7 +54,7 @@
   },
   "uiState": {
     "expandedFolders": [
-      "Start Here"
+      "Macro"
     ],
     "currentBoardId": "board-default",
     "searchTerm": "",

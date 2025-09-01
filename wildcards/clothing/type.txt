@@ -1,0 +1,10 @@
+shirt
+pants
+dress
+jacket
+coat
+sweater
+hoodie
+suit
+uniform
+costume

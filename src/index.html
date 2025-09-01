@@ -17,7 +17,7 @@
     <div id="loadingScreen" class="loading-screen">
       <div class="loading-content">
         <div class="loading-logo">
-          <img src="assets/800x800 logo prompt waffel.png" alt="PromptWaffle Logo" />
+          <img src="assets/waffle-loading.png" alt="PromptWaffle Loading" />
         </div>
         <h2 class="loading-title">PromptWaffle</h2>
         <p class="loading-subtitle">Break it. Remix it. Generate better.</p>
@@ -39,7 +39,7 @@
               alt="PromptWaffle Logo"
             />
             <p class="tagline">Break it. Remix it. Generate better.</p>
-            <p class="version">v<span id="currentVersion">1.2.6</span></p>
+            <p class="version">v<span id="currentVersion">1.3.0</span></p>
             <button
               id="checkForUpdatesBtn"
               class="update-check-btn"
@@ -80,8 +80,18 @@
                 </button>
                 <span class="header-tool-label">Snippet</span>
               </div>
-              <div class="header-tool">
-                <div class="dropdown">
+                              <div class="header-tool">
+                  <button
+                    class="action-button"
+                    id="promptKitBtn"
+                    title="Wildcard Studio - Build prompts with wildcards"
+                  >
+                    <i data-feather="smile"></i>
+                  </button>
+                  <span class="header-tool-label">Wildcard Studio</span>
+                </div>
+                <div class="header-tool">
+                  <div class="dropdown">
                   <button class="action-button" id="sortBtn" title="Sort">
                     <i data-feather="menu"></i>
                   </button>
@@ -559,7 +569,106 @@
       </div>
     </div>
 
-    <!-- Edit Snippet Modal -->
+          <!-- PromptKit Modal -->
+      <div id="promptKitModal" class="promptkit-modal">
+        <div class="promptkit-modal-content">
+          <div class="promptkit-header">
+            <h2>Wildcard Studio - Build Prompts with Wildcards</h2>
+          </div>
+          
+          <div class="promptkit-left">
+            <!-- Profile Selection Section -->
+            <div class="promptkit-section promptkit-profiles">
+              <h3>Profile Selection</h3>
+              <select id="promptKitProfileSelect">
+                <option value="">Select a profile...</option>
+              </select>
+            </div>
+            
+            <!-- Wildcard Categories Section -->
+            <div class="promptkit-section">
+              <h3>Wildcard Categories</h3>
+              <div id="promptKitWildcardCategories" class="promptkit-wildcard-categories">
+                <!-- Wildcard categories will be populated here -->
+              </div>
+            </div>
+            
+            <!-- Profile Creation Section -->
+            <div class="promptkit-section promptkit-profile-creator">
+              <h3>Create New Profile</h3>
+              <div class="profile-creator-form">
+                <div class="form-group">
+                  <label for="newProfileName">Profile Name:</label>
+                  <input type="text" id="newProfileName" placeholder="Enter profile name...">
+                </div>
+                <div class="form-group">
+                  <label for="newProfileDescription">Description:</label>
+                  <input type="text" id="newProfileDescription" placeholder="Brief description...">
+                </div>
+                <div class="form-group">
+                  <label for="newProfilePositive">Positive Prompts:</label>
+                  <textarea id="newProfilePositive" placeholder="Enter positive prompts (comma separated)..."></textarea>
+                </div>
+                <div class="profile-creator-actions">
+                  <button id="createProfileBtn" class="promptkit-btn promptkit-btn-primary">Create Profile</button>
+                  <button id="clearProfileFormBtn" class="promptkit-btn promptkit-btn-secondary">Clear Form</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="promptkit-right">
+            <!-- Generated Prompt Section -->
+            <div class="promptkit-section promptkit-output">
+              <h3>Generated Prompt</h3>
+              <div class="promptkit-prompt-sections">
+                <div class="promptkit-section-group">
+                  <label>Top Section (Profile Terms)</label>
+                  <textarea id="promptKitTopSection" placeholder="Profile terms will appear here..." readonly></textarea>
+                </div>
+                <div class="promptkit-section-group">
+                  <label>Middle Section (Wildcards)</label>
+                  <textarea id="promptKitMiddleSection" placeholder="Wildcard selections will appear here..." readonly></textarea>
+                </div>
+                <div class="promptkit-section-group">
+                  <label>Bottom Section (Additional)</label>
+                  <textarea id="promptKitBottomSection" placeholder="Additional terms can be added here..." readonly></textarea>
+                </div>
+                <div class="promptkit-section-group">
+                  <label>Final Combined Prompt</label>
+                  <textarea id="promptKitPositiveOutput" placeholder="Your final prompt will appear here..." readonly></textarea>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Save Options Section -->
+            <div class="promptkit-section promptkit-save-options">
+              <h3>Save Options</h3>
+              <label for="promptKitSnippetName">Snippet Name:</label>
+              <input type="text" id="promptKitSnippetName" placeholder="Enter snippet name...">
+              
+              <label for="promptKitSnippetTags">Tags:</label>
+              <input type="text" id="promptKitSnippetTags" placeholder="comma, separated, tags">
+              
+              <label for="promptKitSnippetFolder">Folder:</label>
+              <select id="promptKitSnippetFolder">
+                <option value="">Root folder</option>
+              </select>
+            </div>
+          </div>
+          
+          <!-- Action Buttons -->
+          <div class="promptkit-actions">
+            <button id="promptKitClearBtn" class="promptkit-btn promptkit-btn-danger">Clear All</button>
+            <button id="promptKitCancelBtn" class="promptkit-btn promptkit-btn-secondary">Cancel</button>
+            <button id="promptKitSaveBtn" class="promptkit-btn promptkit-btn-primary">Save Snippet</button>
+          </div>
+        </div>
+      </div>
+
+
+
+      <!-- Edit Snippet Modal -->
     <div id="editSnippetModal" class="modal" style="display: none">
       <div class="modal-content">
         <h3>Edit Snippet</h3>

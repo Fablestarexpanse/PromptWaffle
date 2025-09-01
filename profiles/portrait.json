@@ -1,0 +1,8 @@
+{
+  "id": "portrait",
+  "name": "Portrait",
+  "description": "For portrait photography and character close-ups",
+  "positive": ["portrait", "close up", "detailed face", "professional portrait", "studio lighting"],
+  "negative": ["landscape", "wide shot", "blurry face", "poor lighting"]
+}
+

@@ -86,6 +86,7 @@ export function parseSnippetJsonFile(content) {
     // Ensure all required fields exist with defaults
     return {
       text: snippet.text,
+      negativeText: snippet.negativeText || '',
       tags: Array.isArray(snippet.tags) ? snippet.tags : [],
       created: snippet.created || snippet.createdAt || Date.now(),
       modified: snippet.modified || snippet.modifiedAt || Date.now(),
@@ -93,7 +94,8 @@ export function parseSnippetJsonFile(content) {
       id: snippet.id || `snippet_${Date.now()}`,
       description: snippet.description || '',
       category: snippet.category || '',
-      version: snippet.version || '1.0'
+      version: snippet.version || '1.0',
+      promptkit: snippet.promptkit || null
     };
   } catch (error) {
     console.error('Error parsing JSON snippet file:', error);

@@ -1,0 +1,8 @@
+{
+  "id": "photorealistic",
+  "name": "Photorealistic",
+  "description": "For realistic image generation",
+  "positive": ["photorealistic", "8k", "ultra detailed", "professional photography", "realistic lighting"],
+  "negative": ["cartoon", "anime", "painting", "drawing", "illustration"]
+}
+

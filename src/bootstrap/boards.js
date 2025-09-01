@@ -922,19 +922,20 @@ export async function toggleCardLock(cardId) {
   }
 }
 export async function renderBoard() {
-  const boardContainer = document.getElementById('promptBoard');
-  if (!boardContainer) return;
-  const activeBoard = getActiveBoard();
-  // Clear existing cards but not the placeholder
-  boardContainer.querySelectorAll('.board-card').forEach(card => card.remove());
-  // Show/hide placeholder
-  const placeholder = boardContainer.querySelector('.board-placeholder');
-  if (placeholder) {
-    placeholder.style.display =
-      !activeBoard || !activeBoard.cards.length ? 'block' : 'none';
-  }
-  // Render cards
-  if (activeBoard && activeBoard.cards) {
+  try {
+    const boardContainer = document.getElementById('promptBoard');
+    if (!boardContainer) return;
+    const activeBoard = getActiveBoard();
+    // Clear existing cards but not the placeholder
+    boardContainer.querySelectorAll('.board-card').forEach(card => card.remove());
+    // Show/hide placeholder
+    const placeholder = boardContainer.querySelector('.board-placeholder');
+    if (placeholder) {
+      placeholder.style.display =
+        !activeBoard || !activeBoard.cards.length ? 'block' : 'none';
+    }
+    // Render cards
+    if (activeBoard && activeBoard.cards) {
     // Only render cards that have valid snippets, but don't remove them from the board
     // This prevents temporary cache misses from removing cards permanently
     const snippets = AppState.getSnippets();
@@ -954,6 +955,13 @@ export async function renderBoard() {
     });
     renderableCards.forEach(card => {
       const snippet = snippets[card.snippetPath];
+      
+      // Skip cards with missing snippets
+      if (!snippet) {
+        console.warn(`Snippet not found for card ${card.id} at path: ${card.snippetPath}`);
+        return;
+      }
+      
       // Create card element
       const cardDiv = document.createElement('div');
       cardDiv.id = card.id;
@@ -975,7 +983,7 @@ export async function renderBoard() {
       const header = document.createElement('div');
       header.className = 'card-header';
       header.title = 'Drag to move card';
-      if (snippet.tags.length > 0) {
+      if (snippet.tags && Array.isArray(snippet.tags) && snippet.tags.length > 0) {
         // Create individual tag elements
         snippet.tags.forEach((tag, index) => {
           const tagSpan = document.createElement('span');
@@ -1014,7 +1022,7 @@ export async function renderBoard() {
       content.className = 'card-content';
       content.title = 'Right-click to edit snippet or select text to split';
       const displayText =
-        card.customText || snippet.text || 'No text available';
+        card.customText || (snippet.text || 'No text available');
       // Create a text node to ensure proper text selection
       content.textContent = displayText;
       content.style.userSelect = 'text';
@@ -1116,7 +1124,7 @@ export async function renderBoard() {
         // Create drag image for card
         try {
           const dragImageData = createDragImage(
-            snippet.text || 'Card',
+            (snippet && snippet.text) || 'Card',
             'snippet'
           );
           if (dragImageData && dragImageData.element) {
@@ -1194,6 +1202,10 @@ export async function renderBoard() {
   }
   updateCompiledPrompt();
   await renderBoardImages();
+  } catch (error) {
+    console.error('Error rendering board:', error);
+    showToast('Error rendering board', 'error');
+  }
 }
 /**
  * Handle drag over events on the board
