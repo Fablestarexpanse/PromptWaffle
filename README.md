@@ -142,6 +142,18 @@ Found a bug or have a suggestion?
 - **Real-time Preview**: See your compiled prompt update as you modify the board
 - **Save Compiled Prompts**: Export finished prompts as new reusable snippets
 
+### Wildcard Studio
+
+- **Dynamic Prompt Building**: Create complex prompts using wildcards and profiles
+- **Profile System**: Pre-built prompt templates with customizable positive prompts
+- **Wildcard Categories**: Organized folders with .txt files containing prompt variations
+- **Dice Interface**: Click dice buttons to randomly select wildcard items
+- **Section Organization**: Organize prompts into Top, Middle, and Bottom sections
+- **Real-time Assembly**: Automatic prompt assembly with deduplication
+- **Profile Creation**: Built-in tool to create custom profiles
+- **Auto-refresh**: Automatically detects new wildcard files and folders
+- **Seamless Integration**: Works alongside the existing snippet and board system
+
 ### Image Management
 
 - **Reference Images**: Add reference images to boards for visual context
@@ -230,7 +242,43 @@ git push origin v1.2.3
 
 ## Release Notes
 
-### Version 1.2.2 (Current)
+### Version 1.3.0 (Current)
+
+#### New Features
+
+- **Wildcard Studio**: Revolutionary dynamic prompt building system
+  - Profile-based prompt templates with customizable positive prompts
+  - Folder-based wildcard system with .txt files for easy customization
+  - Dice button interface for randomizing wildcard selections
+  - Section-based prompt organization (Top, Middle, Bottom)
+  - Real-time prompt assembly with automatic deduplication
+  - Profile creation tool integrated into the interface
+  - Auto-refresh system that detects new wildcard files and folders
+  - Seamless integration with existing snippet system
+
+#### Improvements
+
+- **Loading Screen**: Updated with new waffle-themed loading image
+- **Tutorial System**: Enhanced with Wildcard Studio introduction and improved explanations
+- **UI Improvements**: Better alignment and spacing throughout the application
+- **Metadata Panel**: Repositioned collapse button for better accessibility
+
+#### Bug Fixes
+
+- Fixed alignment issues in Wildcard Studio modal
+- Improved input field overflow handling in save options
+- Enhanced wildcard category layout and spacing
+- Fixed horizontal line artifacts in profile creation form
+- Improved section selector styling and positioning
+
+#### Technical
+
+- **File Structure**: New `wildcards/` and `profiles/` folders for user customization
+- **Profile System**: JSON and TXT file support for profile definitions
+- **Wildcard System**: Category-based organization with individual .txt files
+- **Auto-Detection**: Real-time scanning for new wildcard categories and files
+
+### Version 1.2.2
 
 #### New Features
 
@@ -341,22 +389,24 @@ git push origin v1.2.3
 ## Getting Started
 
 1. **Create Your First Snippet**: Click the "+" button in the sidebar or right-click on the board
-2. **Organize with Folders**: Create folders to organize snippets by category (characters, styles, etc.)
-3. **Build a Prompt**: Drag snippets onto the board to compose your prompt
-4. **Add Visual Context**: Use "Add Image" for reference images or "Set Folder" for live preview
-5. **Customize Layout**: Resize, color-code, and arrange cards as needed
-6. **Export Results**: Copy the compiled prompt or save it as a new snippet
+2. **Try Wildcard Studio**: Click the "Wildcard Studio" button to create dynamic prompts with wildcards
+3. **Organize with Folders**: Create folders to organize snippets by category (characters, styles, etc.)
+4. **Build a Prompt**: Drag snippets onto the board to compose your prompt
+5. **Add Visual Context**: Use "Add Image" for reference images or "Set Folder" for live preview
+6. **Customize Layout**: Resize, color-code, and arrange cards as needed
+7. **Export Results**: Copy the compiled prompt or save it as a new snippet
 
 ### Workflow Example
 
-1. Create character description snippets
-2. Create style and technique snippets
-3. Create environment and lighting snippets
-4. Drag combinations onto a board
-5. Add reference images for visual context
-6. Set up live preview to monitor AI generation output
-7. Arrange and color-code for clarity
-8. Copy the compiled result for use in AI tools
+1. **Use Wildcard Studio**: Select a profile and roll wildcards for dynamic prompt generation
+2. Create character description snippets
+3. Create style and technique snippets
+4. Create environment and lighting snippets
+5. Drag combinations onto a board
+6. Add reference images for visual context
+7. Set up live preview to monitor AI generation output
+8. Arrange and color-code for clarity
+9. Copy the compiled result for use in AI tools
 
 ## Use Cases
 
