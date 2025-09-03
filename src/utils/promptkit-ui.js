@@ -166,7 +166,7 @@ class PromptKitUI {
   createWildcardCategoryElement(category) {
     const categoryDiv = document.createElement('div');
     categoryDiv.className = 'promptkit-wildcard-category';
-    categoryDiv.setAttribute('data-category', category.id); // Add data attribute for easy targeting
+    categoryDiv.setAttribute('data-category', category.id); // Add data attribute for randomization
     
     const header = document.createElement('div');
     header.className = 'promptkit-wildcard-category-header';
@@ -670,49 +670,6 @@ class PromptKitUI {
   }
 
   /**
-   * Randomize all wildcards in a category
-   */
-  async randomizeCategory(category) {
-    try {
-      const wildcards = category.wildcards;
-      if (wildcards.length === 0) {
-        showToast('No wildcards to randomize in this category', 'info');
-        return;
-      }
-
-      // Randomly select one wildcard from the category
-      const randomWildcard = wildcards[Math.floor(Math.random() * wildcards.length)];
-      const randomItem = randomWildcard.items[Math.floor(Math.random() * randomWildcard.items.length)];
-      const wildcardId = `${category.id}_${randomWildcard.id}`;
-
-      const previousItem = this.wildcardSelections[wildcardId];
-
-      if (previousItem) {
-        showToast(`Replaced: ${previousItem} → ${randomItem}`, 'success');
-      } else {
-        showToast(`Added: ${randomItem}`, 'success');
-      }
-
-      this.wildcardSelections[wildcardId] = randomItem;
-      this.updatePrompt();
-
-      // Add visual feedback to the category header
-      const categoryHeader = document.querySelector(`[data-category="${category.id}"]`);
-      if (categoryHeader) {
-        categoryHeader.style.transform = 'scale(1.02)';
-        setTimeout(() => {
-          categoryHeader.style.transform = 'scale(1)';
-        }, 200);
-      }
-
-      showToast(`Randomized ${randomWildcard.name} to "${randomItem}"`, 'success');
-    } catch (error) {
-      console.error('Error randomizing category:', error);
-      showToast('Error randomizing category', 'error');
-    }
-  }
-
-  /**
    * Create a new profile
    */
   async createNewProfile() {
@@ -817,6 +774,61 @@ class PromptKitUI {
     } catch (error) {
       console.error('Error creating profile from snippet:', error);
       showToast('Error populating profile form', 'error');
+    }
+  }
+
+  /**
+   * Randomize all wildcards in a category
+   */
+  async randomizeCategory(category) {
+    try {
+      const wildcards = category.wildcards;
+      if (wildcards.length === 0) {
+        showToast('No wildcards to randomize in this category', 'info');
+        return;
+      }
+
+      let randomizedCount = 0;
+      let replacedCount = 0;
+
+      // Randomize ALL wildcards in the category
+      for (const wildcard of wildcards) {
+        const randomItem = wildcard.items[Math.floor(Math.random() * wildcard.items.length)];
+        const wildcardId = `${category.id}_${wildcard.id}`;
+        const previousItem = this.wildcardSelections[wildcardId];
+
+        if (previousItem) {
+          replacedCount++;
+        } else {
+          randomizedCount++;
+        }
+
+        this.wildcardSelections[wildcardId] = randomItem;
+      }
+
+      // Update the prompt with all new selections
+      this.updatePrompt();
+
+      // Add visual feedback to the category header
+      const categoryHeader = document.querySelector(`[data-category="${category.id}"]`);
+      if (categoryHeader) {
+        categoryHeader.style.transform = 'scale(1.02)';
+        setTimeout(() => {
+          categoryHeader.style.transform = 'scale(1)';
+        }, 200);
+      }
+
+      // Show comprehensive feedback
+      if (replacedCount > 0 && randomizedCount > 0) {
+        showToast(`Randomized ${randomizedCount} new wildcards and replaced ${replacedCount} existing ones in ${category.name}`, 'success');
+      } else if (replacedCount > 0) {
+        showToast(`Replaced ${replacedCount} wildcards in ${category.name}`, 'success');
+      } else {
+        showToast(`Randomized ${randomizedCount} wildcards in ${category.name}`, 'success');
+      }
+    } catch (error) {
+      console.error('Error randomizing category:', error);
+      showToast('Error randomizing category', 'error');
     }
   }
 }
