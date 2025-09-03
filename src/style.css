@@ -4454,13 +4454,14 @@ select:focus {
   background: #333;
   border: 1px solid #555;
   border-radius: 6px;
-  padding: 8px;
+  padding: 6px 8px;
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
   transition: all 0.2s;
   cursor: pointer;
-  min-height: 45px;
+  min-height: 36px;
   position: relative;
   width: 100%;
   box-sizing: border-box;
@@ -4479,7 +4480,8 @@ select:focus {
   flex-direction: column;
   gap: 2px;
   overflow: hidden;
-  width: 100%;
+  flex: 1;
+  min-width: 0;
 }
 
 .wildcard-name {
@@ -4601,10 +4603,9 @@ select:focus {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-top: 4px;
-  justify-content: center;
-  width: 100%;
+  justify-content: flex-end;
   flex-wrap: nowrap;
+  flex-shrink: 0;
 }
 
 /* Adjust individual button margins since they're now in a flex container */
