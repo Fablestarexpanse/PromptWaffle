@@ -224,49 +224,36 @@ export async function renderBoardImages() {
   const container = document.getElementById('referenceImagesContainer');
   if (!container) return;
   container.innerHTML = '';
+  
   // Validate and cleanup missing images before rendering
   if (activeBoard && activeBoard.images && activeBoard.images.length > 0) {
     await validateAndCleanupImages(activeBoard);
   }
+  
   // Show board images if any exist
   if (
     activeBoard &&
     Array.isArray(activeBoard.images) &&
     activeBoard.images.length > 0
   ) {
+    // Create grid container for images
+    const imagesGrid = document.createElement('div');
+    imagesGrid.className = 'reference-images-grid';
+    
     // Show up to 6 images
     activeBoard.images.slice(0, 6).forEach(imageObj => {
       const thumbDiv = document.createElement('div');
       thumbDiv.className = 'reference-image-thumb';
       thumbDiv.title = imageObj.filename;
-      thumbDiv.style.display = 'inline-block';
-      thumbDiv.style.margin = '0 8px 8px 0';
-      thumbDiv.style.verticalAlign = 'top';
-      thumbDiv.style.width = '96px';
-      thumbDiv.style.height = '96px';
-      thumbDiv.style.background = '#23272e';
-      thumbDiv.style.borderRadius = '8px';
-      thumbDiv.style.overflow = 'hidden';
-      thumbDiv.style.position = 'relative';
-      thumbDiv.style.boxShadow = '0 2px 8px rgba(0,0,0,0.12)';
+      
       const img = document.createElement('img');
       img.src = `file://${imageObj.path}`;
       img.alt = imageObj.filename;
-      img.style.width = '100%';
-      img.style.height = '100%';
-      img.style.objectFit = 'cover';
       img.onerror = () => {
         img.src = '';
-        img.style.background = '#eee';
-        img.style.color = '#888';
-        img.style.display = 'flex';
-        img.style.alignItems = 'center';
-        img.style.justifyContent = 'center';
-        img.style.fontSize = '12px';
-        img.style.fontWeight = 'bold';
         img.alt = 'Missing Image';
         thumbDiv.innerHTML =
-          '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#888;font-size:12px;">Missing Image</div>';
+          '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#888;font-size:12px;background:#eee;">Missing Image</div>';
       };
       thumbDiv.appendChild(img);
       // Add controls overlay
@@ -299,23 +286,31 @@ export async function renderBoardImages() {
       controlsOverlay.appendChild(expandBtn);
       controlsOverlay.appendChild(removeBtn);
       thumbDiv.appendChild(controlsOverlay);
-      container.appendChild(thumbDiv);
+      imagesGrid.appendChild(thumbDiv);
     });
+    
+    // Add the grid to the container
+    container.appendChild(imagesGrid);
   }
   // Add live preview thumbnail if monitoring a folder
   if (currentMonitoredFolder) {
     // Remove any existing live preview thumbnails first
     const existingLiveThumbs = document.querySelectorAll('.live-preview-thumb');
     existingLiveThumbs.forEach(thumb => thumb.remove());
-    await renderLivePreviewThumbnail(container);
+    
+    // Render live preview in the dedicated container
+    const livePreviewContainer = document.getElementById('livePreviewContainer');
+    if (livePreviewContainer) {
+      await renderLivePreviewThumbnail(livePreviewContainer);
+    }
   } else {
+    // Clear live preview container if not monitoring
+    const livePreviewContainer = document.getElementById('livePreviewContainer');
+    if (livePreviewContainer) {
+      livePreviewContainer.innerHTML = '';
+    }
   }
-  // Show container if there are any images (board images or live preview)
-  if (container.children.length > 0) {
-    container.style.display = 'block';
-  } else {
-    container.style.display = 'none';
-  }
+  // Container visibility is now handled by CSS based on content
   // Replace Feather icons in the newly created controls
   if (typeof feather !== 'undefined') {
     feather.replace();
@@ -361,7 +356,7 @@ async function renderLivePreviewThumbnail(container) {
       liveThumbDiv.className = 'live-preview-thumb';
       liveThumbDiv.title = `Live: ${latestImage.name}`;
       liveThumbDiv.style.display = 'inline-block';
-      liveThumbDiv.style.margin = '0 8px 8px 128px'; // Extra right margin to separate from regular thumbnails
+      liveThumbDiv.style.margin = '0'; // No extra margin needed in dedicated container
       liveThumbDiv.style.verticalAlign = 'top';
       liveThumbDiv.style.width = '96px';
       liveThumbDiv.style.height = '96px';

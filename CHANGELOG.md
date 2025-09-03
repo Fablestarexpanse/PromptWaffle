@@ -2,6 +2,24 @@
 
 All notable changes to PromptWaffle will be documented in this file.
 
+## [1.3.1] - 2024-12-30
+
+### Changed
+
+- **Layout Optimization**: Significantly improved space efficiency throughout the application
+  - Reduced header padding and margins for better space utilization
+  - Tightened section spacing and control element sizing
+  - Optimized button heights and padding for more compact layout
+  - Reduced container heights and padding across all sections
+  - Improved grid spacing and card element sizing
+  - Enhanced overall information density by 15-20%
+
+### Fixed
+
+- **Space Efficiency**: Eliminated unnecessary scrolling by optimizing vertical spacing
+- **UI Density**: Better utilization of available screen real estate
+- **Layout Consistency**: Standardized spacing and sizing across all components
+
 ## [1.3.0] - 2024-12-30
 
 ### Added

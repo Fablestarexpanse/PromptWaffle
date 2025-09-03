@@ -284,6 +284,29 @@ export function showSnippetContextMenu(e, snippet, path) {
       };
       contextMenu.appendChild(promptKitItem);
     }
+
+    // Create Wildcard Studio Profile menu item
+    const createProfileItem = document.createElement('div');
+    createProfileItem.className = 'context-menu-item';
+    createProfileItem.textContent = 'Create Wildcard Studio Profile';
+    // Add icon safely
+    const profileIcon = document.createElement('i');
+    profileIcon.setAttribute('data-feather', 'smile');
+    createProfileItem.insertBefore(profileIcon, createProfileItem.firstChild);
+    createProfileItem.onclick = async () => {
+      try {
+        contextMenu.remove();
+        // Open the PromptKit modal and create a new profile from this snippet
+        const { promptKitUI } = await import('../../utils/promptkit-ui.js');
+        await promptKitUI.openModal();
+        promptKitUI.createProfileFromSnippet(snippet);
+      } catch (error) {
+        console.error('Error in create profile menu item:', error);
+        const { showToast } = await import('../../utils/index.js');
+        showToast('Error opening Wildcard Studio', 'error');
+      }
+    };
+    contextMenu.appendChild(createProfileItem);
     // Duplicate Snippet menu item
     const duplicateItem = document.createElement('div');
     duplicateItem.className = 'context-menu-item';

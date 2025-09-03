@@ -226,6 +226,28 @@ export function renderBoardSelector() {
   });
   selectorContainer.insertBefore(selector, selectorContainer.firstChild);
 }
+
+export function populateBoardSelectDropdown() {
+  const boardSelect = document.getElementById('boardSelect');
+  if (!boardSelect) return;
+  
+  // Clear existing options except the first placeholder
+  while (boardSelect.children.length > 1) {
+    boardSelect.removeChild(boardSelect.lastChild);
+  }
+  
+  const boards = AppState.getBoards();
+  const activeBoardId = AppState.getActiveBoardId();
+  
+  boards.forEach(board => {
+    if (board && board.id !== activeBoardId) { // Don't show current board
+      const option = document.createElement('option');
+      option.value = board.id;
+      option.textContent = board.name;
+      boardSelect.appendChild(option);
+    }
+  });
+}
 export function updateBoardTagsDisplay() {
   const tagsContainer = document.getElementById('boardTagsDisplay');
   if (!tagsContainer) return;
@@ -1202,6 +1224,9 @@ export async function renderBoard() {
   }
   updateCompiledPrompt();
   await renderBoardImages();
+  
+  // Populate the board select dropdown
+  populateBoardSelectDropdown();
   } catch (error) {
     console.error('Error rendering board:', error);
     showToast('Error rendering board', 'error');

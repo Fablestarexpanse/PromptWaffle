@@ -242,7 +242,7 @@ git push origin v1.2.3
 
 ## Release Notes
 
-### Version 1.3.0 (Current)
+### Version 1.3.1 (Current)
 
 #### New Features
 

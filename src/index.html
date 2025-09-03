@@ -39,7 +39,7 @@
               alt="PromptWaffle Logo"
             />
             <p class="tagline">Break it. Remix it. Generate better.</p>
-            <p class="version">v<span id="currentVersion">1.3.0</span></p>
+            <p class="version">v<span id="currentVersion">1.3.1</span></p>
             <button
               id="checkForUpdatesBtn"
               class="update-check-btn"
@@ -231,6 +231,18 @@
                   </div>
                 </div>
                 <div class="control-group">
+                  <select
+                    id="boardSelect"
+                    class="board-select"
+                    title="Select an existing board"
+                  >
+                    <option value="">Select Board...</option>
+                  </select>
+                  <div class="control-description">
+                    Switch to an existing board
+                  </div>
+                </div>
+                <div class="control-group">
                   <button
                     id="clearBoardBtn"
                     class="control-btn secondary"
@@ -277,6 +289,15 @@
                   </div>
                 </div>
               </div>
+              
+              <!-- Live Preview Area -->
+              <div id="livePreviewContainer" class="live-preview-container"></div>
+            </div>
+            
+            <!-- Reference Images Section -->
+            <div class="board-section reference-images-section">
+              <div class="section-label">Reference Images</div>
+              <div id="referenceImagesContainer" class="reference-images-container"></div>
             </div>
 
             <!-- Appearance Section -->
@@ -313,13 +334,10 @@
             </div>
 
             <!-- Board Tags -->
-            <div id="boardTagsDisplay" class="board-tags-display"></div>
+            <div id="boardTagsDisplay" class="board-tags-display">            </div>
           </div>
         </div>
-        <div
-          id="referenceImagesContainer"
-          style="padding: 16px 24px 0 24px"
-        ></div>
+        
         <div class="board-container">
           <div class="board-layout">
             <div id="promptBoard" class="prompt-board">
@@ -736,11 +754,11 @@
     <!-- Color Picker Modal -->
     <div id="colorPickerModal" class="color-picker-modal">
       <div class="color-picker-content">
-        <h3>Choose Background Color</h3>
+        <h3>Choose Board Background Color</h3>
 
         <!-- Preset Colors Section -->
         <div class="preset-colors-section">
-          <h4>Text-Friendly Presets</h4>
+          <h4>Eye-Friendly Background Colors</h4>
           <div class="preset-colors-grid">
             <div class="preset-color" data-color="#2F3136" title="Default">
               <div
@@ -749,40 +767,54 @@
               ></div>
               <span>Default</span>
             </div>
-            <div class="preset-color" data-color="#ffffff" title="White">
+            <div class="preset-color" data-color="#FFFDF8" title="Paper White">
               <div
                 class="preset-color-swatch"
-                style="background: #ffffff; border: 1px solid #ddd"
+                style="background: #FFFDF8; border: 1px solid #ddd"
               ></div>
-              <span>White</span>
+              <span>Paper White</span>
             </div>
-            <div class="preset-color" data-color="#000000" title="Black">
+            <div class="preset-color" data-color="#F7F7F7" title="Soft Gray">
               <div
                 class="preset-color-swatch"
-                style="background: #000000"
+                style="background: #F7F7F7; border: 1px solid #ddd"
               ></div>
-              <span>Black</span>
+              <span>Soft Gray</span>
             </div>
-            <div class="preset-color" data-color="#f0fff0" title="Mint Cream">
+            <div class="preset-color" data-color="#F4F1EC" title="Warm Gray">
               <div
                 class="preset-color-swatch"
-                style="background: #f0fff0"
+                style="background: #F4F1EC; border: 1px solid #ddd"
               ></div>
-              <span>Mint Cream</span>
+              <span>Warm Gray</span>
             </div>
-            <div class="preset-color" data-color="#f5f5f5" title="Off White">
+            <div class="preset-color" data-color="#FFF8E7" title="Ivory">
               <div
                 class="preset-color-swatch"
-                style="background: #f5f5f5"
+                style="background: #FFF8E7; border: 1px solid #ddd"
               ></div>
-              <span>Off White</span>
+              <span>Ivory</span>
             </div>
-            <div class="preset-color" data-color="#f0f8ff" title="Alice Blue">
+            <div class="preset-color" data-color="#F2F4F7" title="Cool Gray">
               <div
                 class="preset-color-swatch"
-                style="background: #f0f8ff"
+                style="background: #F2F4F7; border: 1px solid #ddd"
               ></div>
-              <span>Alice Blue</span>
+              <span>Cool Gray</span>
+            </div>
+            <div class="preset-color" data-color="#F5FBF7" title="Mint Mist">
+              <div
+                class="preset-color-swatch"
+                style="background: #F5FBF7; border: 1px solid #ddd"
+              ></div>
+              <span>Mint Mist</span>
+            </div>
+            <div class="preset-color" data-color="#F6FAFF" title="Blue Fog">
+              <div
+                class="preset-color-swatch"
+                style="background: #F6FAFF; border: 1px solid #ddd"
+              ></div>
+              <span>Blue Fog</span>
             </div>
           </div>
         </div>

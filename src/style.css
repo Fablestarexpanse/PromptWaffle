@@ -608,22 +608,22 @@ body {
 }
 
 .sidebar-buttons {
-  padding: 1rem 1.25rem;
+  padding: 0.75rem 1rem;
   border-top: 1px solid #202225;
   background: #36393f;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.4rem;
 }
 
 .sidebar-buttons button {
-  padding: 0.5rem 0.75rem;
+  padding: 0.4rem 0.6rem;
   background: #4f545c;
   color: #ffffff;
   border: 1px solid #5d6269;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 500;
   transition: all 0.2s ease;
 }
@@ -645,16 +645,28 @@ body {
 }
 
 .board-header {
-  background: #36393f;
-  border-bottom: 1px solid #202225;
-  padding: 1.5rem;
+  background: linear-gradient(135deg, #2f3136 0%, #36393f 100%);
+  border-bottom: 2px solid #40444b;
+  padding: 0.75rem 1.25rem;
   position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.board-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #007acc, #00b894, #f39c12);
+  opacity: 0.7;
 }
 
 .header-container {
   display: flex;
   align-items: flex-start;
-  gap: 3rem;
+  gap: 1rem;
   flex-wrap: wrap;
   justify-content: flex-start;
 }
@@ -662,50 +674,83 @@ body {
 .board-section {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.4rem;
   min-width: 140px;
   flex: 0 0 auto;
+  padding: 0.6rem 0.8rem;
+  background: rgba(47, 49, 54, 0.6);
+  border-radius: 8px;
+  border: 1px solid rgba(79, 84, 92, 0.3);
+  margin-right: 0.75rem;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.board-section:hover {
+  background: rgba(47, 49, 54, 0.8);
+  border-color: rgba(79, 84, 92, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Make Reference Images section take up more space */
+.reference-images-section {
+  flex: 1;
+  min-width: 200px;
 }
 
 .section-label {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #72767d;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #99aab5;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.2rem;
+  padding-bottom: 0.2rem;
+  border-bottom: 1px solid rgba(79, 84, 92, 0.4);
   text-align: left;
 }
 
 .section-controls {
   display: flex;
-  gap: 1rem;
-  align-items: flex-start;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
 }
 
 .control-group {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 0.25rem;
-  min-width: 120px;
+  align-items: center;
+  gap: 0.2rem;
+  min-width: auto;
   flex: 0 0 auto;
+  justify-content: flex-start;
+  padding: 0.2rem;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.control-group:hover {
+  background: rgba(79, 84, 92, 0.1);
 }
 
 .control-description {
-  font-size: 0.7rem;
+  font-size: 0.6rem;
   color: #72767d;
-  text-align: left;
-  line-height: 1.2;
-  max-width: 140px;
+  text-align: center;
+  line-height: 1.1;
+  max-width: 110px;
   font-weight: 400;
+  white-space: normal;
 }
 
 .control-btn {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
+  padding: 0.4rem 0.6rem;
   background: #36393f;
   border: 1px solid #4f545c;
   border-radius: 6px;
@@ -717,6 +762,12 @@ body {
   white-space: nowrap;
   min-width: 100px;
   justify-content: flex-start;
+  height: 32px;
+  box-sizing: border-box;
+  margin: 0;
+  line-height: 1;
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
 }
 
 .control-btn:hover {
@@ -764,6 +815,69 @@ body {
   font-weight: 500;
 }
 
+/* Board Select Dropdown Styling */
+.board-select {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.6rem;
+  background: #36393f;
+  border: 1px solid #4f545c;
+  border-radius: 6px;
+  color: #dcddde;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  min-width: 100px;
+  justify-content: flex-start;
+  font-family: inherit;
+  height: 32px;
+  box-sizing: border-box;
+  margin: 0;
+  line-height: 1;
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
+}
+
+.board-select:hover {
+  background: #4f545c;
+  border-color: #5d6269;
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.board-select:focus {
+  outline: none;
+  border-color: #007acc;
+  background: #4f545c;
+  color: #ffffff;
+  box-shadow: 0 0 0 2px rgba(0, 122, 204, 0.2);
+}
+
+.board-select option {
+  background: #2a2a2a;
+  color: #dcddde;
+  padding: 8px;
+}
+
+/* Ensure board select dropdown matches control button styling exactly */
+.board-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23dcddde' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+  padding-right: 32px;
+  vertical-align: top;
+  position: relative;
+  top: 0;
+}
+
 .board-tags-display {
   display: flex;
   flex-wrap: wrap;
@@ -806,16 +920,23 @@ body {
 
 .board-container {
   flex: 1;
-  padding: 1rem 1.5rem 1rem 1rem;
+  padding: 0.75rem 1.25rem 0.75rem 0.75rem;
   overflow: visible;
   position: relative;
 }
 
 .board-layout {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
   height: 100%;
   overflow: visible;
+}
+
+/* Ensure the prompt board takes full height */
+.prompt-board {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .prompt-board {
@@ -831,7 +952,55 @@ body {
   border-radius: 8px;
   position: relative;
   overflow: auto;
-  min-height: 400px;
+  min-height: 350px;
+  padding: 0.75rem;
+}
+
+/* Reference Images Container */
+.reference-images-container {
+  padding: 0.6rem;
+  background: rgba(47, 49, 54, 0.2);
+  border-radius: 8px;
+  border: 1px solid rgba(79, 84, 92, 0.2);
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+}
+
+.reference-images-container:empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.reference-images-container:empty::before {
+  content: 'No reference images added yet. Click "Images" above to add images.';
+  color: #72767d;
+  font-style: italic;
+  font-size: 0.8rem;
+  text-align: center;
+  max-width: 250px;
+  line-height: 1.3;
+}
+
+.reference-images-container:not(:empty)::before {
+  content: 'Reference Images';
+  color: #99aab5;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
+}
+
+.reference-images-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 .board-placeholder {
@@ -840,7 +1009,7 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   color: #72767d;
-  font-size: 1.1rem;
+  font-size: 1rem;
   text-align: center;
   pointer-events: none;
 }
@@ -869,10 +1038,10 @@ body {
 }
 
 .board-card .card-header {
-  padding: 8px 12px;
+  padding: 6px 10px;
   font-weight: 600;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: rgba(255, 255, 255, 0.9);
   display: flex;
   flex-wrap: wrap;
@@ -909,10 +1078,10 @@ body {
 }
 
 .board-card .card-content {
-  padding: 8px 12px;
+  padding: 6px 10px;
   flex-grow: 1;
   overflow: auto;
-  font-size: 14px;
+  font-size: 13px;
   word-wrap: break-word;
   line-height: 1.4;
 }
@@ -920,11 +1089,11 @@ body {
 .board-card .card-actions {
   display: flex;
   justify-content: flex-end;
-  padding: 8px 12px;
+  padding: 6px 10px;
   gap: 4px;
   overflow: hidden; /* Prevent icons from overflowing */
   flex-shrink: 0; /* Prevent actions from shrinking */
-  min-height: 32px; /* Ensure minimum height for buttons */
+  min-height: 28px; /* Ensure minimum height for buttons */
   box-sizing: border-box; /* Include padding in width calculations */
 }
 
@@ -961,7 +1130,7 @@ body {
 }
 
 .compiled-prompt {
-  padding: 1rem 2rem;
+  padding: 0.75rem 1.5rem;
   border-top: 1px solid #202225;
   background: #2f3136;
   position: relative;
@@ -972,7 +1141,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
   position: relative;
 }
 
@@ -1917,7 +2086,7 @@ select:focus {
 
 .preset-colors-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 8px;
   margin-bottom: 16px;
 }
@@ -2365,6 +2534,97 @@ select:focus {
   height: 14px;
 }
 
+/* Enhanced Reference Image Thumbnails */
+.reference-image-thumb {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  background: #23272e;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(79, 84, 92, 0.3);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.reference-image-thumb:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border-color: rgba(79, 84, 92, 0.6);
+}
+
+.reference-image-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.reference-image-thumb:hover img {
+  transform: scale(1.05);
+}
+
+/* Controls Overlay */
+.controls-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  box-sizing: border-box;
+}
+
+.reference-image-thumb:hover .controls-overlay {
+  opacity: 1;
+}
+
+.controls-overlay button {
+  position: absolute;
+  background: rgba(79, 84, 92, 0.8);
+  border: none;
+  color: white;
+  border-radius: 4px;
+  padding: 0.3rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+}
+
+.controls-overlay button:hover {
+  background: rgba(79, 84, 92, 1);
+}
+
+.controls-overlay button svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Position expand button at top-left */
+.controls-overlay button:first-child {
+  top: 0.3rem;
+  left: 0.3rem;
+}
+
+/* Position remove button at bottom-left */
+.controls-overlay button:last-child {
+  bottom: 0.3rem;
+  left: 0.3rem;
+}
+
+.controls-overlay .remove-btn:hover {
+  background: rgba(220, 53, 69, 0.8) !important;
+}
+
 /* Add Image Button Styling */
 #addImageBtn {
   background: #5865f2;
@@ -2737,6 +2997,33 @@ select:focus {
   width: 12px;
   height: 12px;
   stroke-width: 2.5;
+}
+
+/* Live Preview Container */
+.live-preview-container {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(47, 49, 54, 0.2);
+  border-radius: 8px;
+  border: 1px solid rgba(79, 84, 92, 0.2);
+  min-height: 110px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.live-preview-container:empty {
+  display: none;
+}
+
+.live-preview-container:not(:empty)::before {
+  content: 'Live Preview';
+  color: #99aab5;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.5rem;
 }
 
 /* Live Preview Thumbnail Controls */
@@ -3780,7 +4067,7 @@ select:focus {
   overflow-y: auto;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 380px 1fr;
   grid-template-rows: auto 1fr auto;
   gap: 20px;
   grid-template-areas:
@@ -4392,4 +4679,27 @@ select:focus {
   .dice-button i {
     font-size: 14px;
   }
+}
+
+/* Profile Selection Section - Constrain width for better layout */
+.promptkit-profiles {
+  max-width: 350px;
+  min-width: 300px;
+}
+
+.promptkit-profiles select {
+  width: 100%;
+  padding: 10px 12px;
+  background: #2a2a2a;
+  border: 1px solid #555;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 14px;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.promptkit-profiles select:focus {
+  outline: none;
+  border-color: #007acc;
 }

@@ -453,6 +453,16 @@ export function setupEventListeners() {
       sortBtn: bootstrap.toggleSortMenu,
       collapseAllBtn: bootstrap.collapseAllFolders,
       newBoardBtn: () => bootstrap.openNewBoardModal(),
+      boardSelect: () => {
+        // Handle board selection from dropdown
+        const boardSelect = document.getElementById('boardSelect');
+        if (boardSelect && boardSelect.value) {
+          const { switchToBoard } = bootstrap;
+          switchToBoard(boardSelect.value);
+          // Reset selection to placeholder
+          boardSelect.value = '';
+        }
+      },
       copyCompiledBtn: bootstrap.copyCompiledPrompt,
       saveCompiledBtn: bootstrap.saveCompiledSnippet,
       exportToObsidianBtn: async () => {

@@ -258,6 +258,140 @@ export function createSnippetElement({
         console.error('Error showing context menu:', error);
       }
     });
+
+    // Add click event for quick actions including Wildcard Studio Profile creation
+    snippetElement.addEventListener('click', async e => {
+      try {
+        // Hide tooltip during click
+        if (tooltip) {
+          tooltip.remove();
+          tooltip = null;
+        }
+
+        // Create quick action menu
+        const quickMenu = document.createElement('div');
+        quickMenu.className = 'quick-action-menu';
+        quickMenu.style.cssText = `
+          position: fixed;
+          background: #2c3e50;
+          border: 1px solid #34495e;
+          border-radius: 8px;
+          padding: 8px 0;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+          z-index: 10001;
+          min-width: 200px;
+          font-size: 14px;
+        `;
+
+        // Position menu near the snippet
+        const rect = snippetElement.getBoundingClientRect();
+        quickMenu.style.left = `${rect.left}px`;
+        quickMenu.style.top = `${rect.bottom + 5}px`;
+
+        // Create Wildcard Studio Profile option
+        const createProfileOption = document.createElement('div');
+        createProfileOption.className = 'quick-action-item';
+        createProfileOption.style.cssText = `
+          padding: 8px 16px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          color: white;
+          transition: background-color 0.2s;
+        `;
+        createProfileOption.innerHTML = '<i data-feather="smile" style="margin-right: 8px; width: 16px; height: 16px;"></i>Create Wildcard Studio Profile';
+        createProfileOption.onmouseenter = () => {
+          createProfileOption.style.backgroundColor = '#34495e';
+        };
+        createProfileOption.onmouseleave = () => {
+          createProfileOption.style.backgroundColor = 'transparent';
+        };
+        createProfileOption.onclick = async () => {
+          try {
+            quickMenu.remove();
+            // Open the PromptKit modal and create a new profile from this snippet
+            const { promptKitUI } = await import('../../utils/promptkit-ui.js');
+            await promptKitUI.openModal();
+            promptKitUI.createProfileFromSnippet(snippet);
+          } catch (error) {
+            console.error('Error creating profile from snippet:', error);
+            const { showToast } = await import('../../utils/index.js');
+            showToast('Error opening Wildcard Studio', 'error');
+          }
+        };
+
+        // Create Edit Snippet option
+        const editOption = document.createElement('div');
+        editOption.className = 'quick-action-item';
+        editOption.style.cssText = `
+          padding: 8px 16px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          color: white;
+          transition: background-color 0.2s;
+        `;
+        editOption.innerHTML = '<i data-feather="edit-3" style="margin-right: 8px; width: 16px; height: 16px;"></i>Edit Snippet';
+        editOption.onmouseenter = () => {
+          editOption.style.backgroundColor = '#34495e';
+        };
+        editOption.onmouseleave = () => {
+          editOption.style.backgroundColor = 'transparent';
+        };
+        editOption.onclick = async () => {
+          try {
+            quickMenu.remove();
+            // Open the edit snippet modal
+            const { openEditSnippetModal } = await import(
+              '../../bootstrap/sidebar.js'
+            );
+            openEditSnippetModal(snippet, path);
+          } catch (error) {
+            console.error('Error opening edit modal:', error);
+          }
+        };
+
+        // Add options to menu
+        quickMenu.appendChild(createProfileOption);
+        quickMenu.appendChild(editOption);
+
+        // Add menu to document
+        document.body.appendChild(quickMenu);
+
+        // Replace feather icons
+        try {
+          if (typeof feather !== 'undefined') {
+            feather.replace();
+          }
+        } catch (iconError) {
+          console.warn('Error replacing feather icons:', iconError);
+        }
+
+        // Close menu when clicking elsewhere
+        const closeMenu = event => {
+          try {
+            if (event && quickMenu && !quickMenu.contains(event.target) && !snippetElement.contains(event.target)) {
+              quickMenu.remove();
+              document.removeEventListener('click', closeMenu);
+            }
+          } catch (error) {
+            console.error('Error in quick menu close handler:', error);
+          }
+        };
+
+        // Add slight delay to prevent immediate closing
+        setTimeout(() => {
+          try {
+            document.addEventListener('click', closeMenu);
+          } catch (error) {
+            console.error('Error adding quick menu close listener:', error);
+          }
+        }, 10);
+
+      } catch (error) {
+        console.error('Error showing quick action menu:', error);
+      }
+    });
     return snippetElement;
   } catch (error) {
     console.error('Error creating snippet element:', error);

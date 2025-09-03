@@ -706,6 +706,53 @@ class PromptKitUI {
     if (this.newProfileDescription) this.newProfileDescription.value = '';
     if (this.newProfilePositive) this.newProfilePositive.value = '';
   }
+
+  /**
+   * Create a profile from snippet content
+   */
+  createProfileFromSnippet(snippet) {
+    try {
+      if (!snippet || !snippet.text) {
+        showToast('No snippet content to create profile from', 'error');
+        return;
+      }
+
+      // Populate the profile creation form with snippet content
+      if (this.newProfileName) {
+        // Generate a profile name from the snippet text
+        const snippetText = snippet.text.trim();
+        const words = snippetText.split(/\s+/).slice(0, 3); // Take first 3 words
+        const profileName = words.join(' ').substring(0, 30); // Limit to 30 chars
+        this.newProfileName.value = profileName;
+      }
+
+      if (this.newProfileDescription) {
+        this.newProfileDescription.value = `Profile created from snippet: ${snippet.text.substring(0, 100)}${snippet.text.length > 100 ? '...' : ''}`;
+      }
+
+      if (this.newProfilePositive) {
+        // Use the snippet text as the positive prompts
+        this.newProfilePositive.value = snippet.text.trim();
+      }
+
+      // Switch to profile creation section if it exists
+      const profileSection = document.querySelector('.promptkit-profile-creator');
+      if (profileSection) {
+        profileSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      // Focus on the profile name field
+      if (this.newProfileName) {
+        this.newProfileName.focus();
+        this.newProfileName.select();
+      }
+
+      showToast('Profile form populated from snippet!', 'success');
+    } catch (error) {
+      console.error('Error creating profile from snippet:', error);
+      showToast('Error populating profile form', 'error');
+    }
+  }
 }
 
 // Create and export a singleton instance
