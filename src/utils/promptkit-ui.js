@@ -292,10 +292,16 @@ class PromptKitUI {
       this.rollWildcard(category, wildcard);
     });
     
+    // Create a horizontal controls row for the three elements
+    const controlsRow = document.createElement('div');
+    controlsRow.className = 'wildcard-controls-row';
+    
+    controlsRow.appendChild(lockButton);
+    controlsRow.appendChild(sectionSelector);
+    controlsRow.appendChild(diceButton);
+    
     wildcardDiv.appendChild(wildcardInfo);
-    wildcardDiv.appendChild(lockButton);
-    wildcardDiv.appendChild(sectionSelector);
-    wildcardDiv.appendChild(diceButton);
+    wildcardDiv.appendChild(controlsRow);
     
     // Initialize Feather icon after adding to DOM
     replaceFeatherIcons(wildcardDiv);

@@ -4598,6 +4598,24 @@ select:focus {
   font-size: 16px;
 }
 
+/* Wildcard Controls Row */
+.wildcard-controls-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  justify-content: flex-end;
+}
+
+/* Adjust individual button margins since they're now in a flex container */
+.wildcard-lock-btn {
+  margin-left: 0;
+}
+
+.wildcard-section-selector {
+  margin: 0;
+}
+
 /* Category Collapse/Expand Animation */
 .promptkit-wildcard-grid {
   max-height: 0;
