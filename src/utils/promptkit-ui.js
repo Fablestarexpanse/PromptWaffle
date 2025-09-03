@@ -293,8 +293,8 @@ class PromptKitUI {
     });
     
     wildcardDiv.appendChild(wildcardInfo);
-    wildcardDiv.appendChild(sectionSelector);
     wildcardDiv.appendChild(lockButton);
+    wildcardDiv.appendChild(sectionSelector);
     wildcardDiv.appendChild(diceButton);
     
     // Initialize Feather icon after adding to DOM
