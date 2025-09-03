@@ -166,18 +166,38 @@ class PromptKitUI {
   createWildcardCategoryElement(category) {
     const categoryDiv = document.createElement('div');
     categoryDiv.className = 'promptkit-wildcard-category';
+    categoryDiv.setAttribute('data-category', category.id); // Add data attribute for easy targeting
     
     const header = document.createElement('div');
     header.className = 'promptkit-wildcard-category-header';
-    header.textContent = category.name;
+    
+    // Create header content container
+    const headerContent = document.createElement('div');
+    headerContent.className = 'header-content';
+    headerContent.textContent = category.name;
     if (category.description) {
-      header.title = category.description;
+      headerContent.title = category.description;
     }
+    
+    // Create randomize category button
+    const randomizeCategoryBtn = document.createElement('button');
+    randomizeCategoryBtn.className = 'category-randomize-btn';
+    randomizeCategoryBtn.innerHTML = '<i data-feather="shuffle"></i>';
+    randomizeCategoryBtn.title = `Randomize all wildcards in ${category.name}`;
+    
+    // Add click handler for category randomize button
+    randomizeCategoryBtn.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent category header click
+      this.randomizeCategory(category);
+    });
     
     // Add click handler for collapse/expand
     header.addEventListener('click', () => {
       categoryDiv.classList.toggle('expanded');
     });
+    
+    header.appendChild(headerContent);
+    header.appendChild(randomizeCategoryBtn);
     
     const wildcardsGrid = document.createElement('div');
     wildcardsGrid.className = 'promptkit-wildcard-grid';
@@ -196,6 +216,9 @@ class PromptKitUI {
         categoryDiv.classList.add('expanded');
       }, 100);
     }
+    
+    // Initialize Feather icon after adding to DOM
+    replaceFeatherIcons(header);
     
     return categoryDiv;
   }
@@ -644,6 +667,49 @@ class PromptKitUI {
     };
     
     addFolders(sidebarTree);
+  }
+
+  /**
+   * Randomize all wildcards in a category
+   */
+  async randomizeCategory(category) {
+    try {
+      const wildcards = category.wildcards;
+      if (wildcards.length === 0) {
+        showToast('No wildcards to randomize in this category', 'info');
+        return;
+      }
+
+      // Randomly select one wildcard from the category
+      const randomWildcard = wildcards[Math.floor(Math.random() * wildcards.length)];
+      const randomItem = randomWildcard.items[Math.floor(Math.random() * randomWildcard.items.length)];
+      const wildcardId = `${category.id}_${randomWildcard.id}`;
+
+      const previousItem = this.wildcardSelections[wildcardId];
+
+      if (previousItem) {
+        showToast(`Replaced: ${previousItem} → ${randomItem}`, 'success');
+      } else {
+        showToast(`Added: ${randomItem}`, 'success');
+      }
+
+      this.wildcardSelections[wildcardId] = randomItem;
+      this.updatePrompt();
+
+      // Add visual feedback to the category header
+      const categoryHeader = document.querySelector(`[data-category="${category.id}"]`);
+      if (categoryHeader) {
+        categoryHeader.style.transform = 'scale(1.02)';
+        setTimeout(() => {
+          categoryHeader.style.transform = 'scale(1)';
+        }, 200);
+      }
+
+      showToast(`Randomized ${randomWildcard.name} to "${randomItem}"`, 'success');
+    } catch (error) {
+      console.error('Error randomizing category:', error);
+      showToast('Error randomizing category', 'error');
+    }
   }
 
   /**

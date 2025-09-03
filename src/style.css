@@ -4393,6 +4393,41 @@ select:focus {
   background: #444;
 }
 
+.promptkit-wildcard-category-header .header-content {
+  flex: 1;
+  cursor: pointer;
+}
+
+.promptkit-wildcard-category-header .category-randomize-btn {
+  background: #ff6b35;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.promptkit-wildcard-category-header .category-randomize-btn:hover {
+  background: #e55a2b;
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.4);
+}
+
+.promptkit-wildcard-category-header .category-randomize-btn:active {
+  transform: scale(0.95);
+}
+
+.promptkit-wildcard-category-header .category-randomize-btn i {
+  font-size: 14px;
+}
+
 .promptkit-wildcard-category-header::after {
   content: '▼';
   font-size: 12px;
