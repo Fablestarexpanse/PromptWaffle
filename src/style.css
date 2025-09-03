@@ -4454,18 +4454,17 @@ select:focus {
   background: #333;
   border: 1px solid #555;
   border-radius: 8px;
-  padding: 16px;
+  padding: 12px;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  flex-direction: column;
+  gap: 8px;
   transition: all 0.2s;
   cursor: pointer;
-  min-height: 70px;
+  min-height: 60px;
   position: relative;
   width: 100%;
   box-sizing: border-box;
-  flex-wrap: wrap;
+  max-width: 100%;
 }
 
 .promptkit-wildcard-item:hover {
@@ -4476,12 +4475,11 @@ select:focus {
 }
 
 .wildcard-info {
-  flex: 1;
-  min-width: 120px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   overflow: hidden;
+  width: 100%;
 }
 
 .wildcard-name {
@@ -4506,13 +4504,13 @@ select:focus {
   color: #fff;
   border: 1px solid #555;
   border-radius: 6px;
-  padding: 8px 12px;
+  padding: 6px 8px;
   font-size: 12px;
   cursor: pointer;
   transition: all 0.2s;
   flex-shrink: 0;
-  min-width: 80px;
-  height: 36px;
+  width: 70px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4533,8 +4531,8 @@ select:focus {
   color: #fff;
   border: none;
   border-radius: 6px;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4564,15 +4562,15 @@ select:focus {
   color: #fff;
   border: none;
   border-radius: 6px;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s;
   flex-shrink: 0;
-  margin-left: 8px;
+  margin-left: 0;
 }
 
 .wildcard-lock-btn:hover {
@@ -4604,14 +4602,12 @@ select:focus {
   align-items: center;
   gap: 8px;
   margin-top: 8px;
-  justify-content: flex-end;
+  justify-content: center;
+  width: 100%;
+  flex-wrap: nowrap;
 }
 
 /* Adjust individual button margins since they're now in a flex container */
-.wildcard-lock-btn {
-  margin-left: 0;
-}
-
 .wildcard-section-selector {
   margin: 0;
 }
