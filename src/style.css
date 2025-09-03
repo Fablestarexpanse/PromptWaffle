@@ -4558,6 +4558,46 @@ select:focus {
   font-size: 16px;
 }
 
+/* Wildcard Lock Button */
+.wildcard-lock-btn {
+  background: #6c757d;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  margin-right: 8px;
+}
+
+.wildcard-lock-btn:hover {
+  background: #5a6268;
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(108, 117, 125, 0.4);
+}
+
+.wildcard-lock-btn:active {
+  transform: scale(0.95);
+}
+
+.wildcard-lock-btn.locked {
+  background: #dc3545;
+}
+
+.wildcard-lock-btn.locked:hover {
+  background: #c82333;
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.4);
+}
+
+.wildcard-lock-btn i {
+  font-size: 16px;
+}
+
 /* Category Collapse/Expand Animation */
 .promptkit-wildcard-grid {
   max-height: 0;

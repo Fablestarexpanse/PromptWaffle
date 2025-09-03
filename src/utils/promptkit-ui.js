@@ -262,6 +262,25 @@ class PromptKitUI {
       this.updatePrompt();
     });
     
+    // Create lock/unlock toggle button
+    const lockButton = document.createElement('button');
+    lockButton.className = 'wildcard-lock-btn';
+    lockButton.innerHTML = '<i data-feather="unlock"></i>';
+    lockButton.title = `Lock/Unlock ${wildcard.name} from randomization`;
+    
+    // Initialize lock state (default: unlocked)
+    if (!this.wildcardLocks) this.wildcardLocks = {};
+    if (!this.wildcardLocks[wildcardId]) this.wildcardLocks[wildcardId] = false;
+    
+    // Update lock button appearance
+    this.updateLockButtonAppearance(lockButton, this.wildcardLocks[wildcardId]);
+    
+    // Add click handler for lock button
+    lockButton.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent category header click
+      this.toggleWildcardLock(category, wildcard, lockButton);
+    });
+    
     const diceButton = document.createElement('button');
     diceButton.className = 'dice-button';
     diceButton.innerHTML = '<i data-feather="refresh-cw"></i>';
@@ -275,6 +294,7 @@ class PromptKitUI {
     
     wildcardDiv.appendChild(wildcardInfo);
     wildcardDiv.appendChild(sectionSelector);
+    wildcardDiv.appendChild(lockButton);
     wildcardDiv.appendChild(diceButton);
     
     // Initialize Feather icon after adding to DOM
@@ -288,9 +308,16 @@ class PromptKitUI {
    */
   rollWildcard(category, wildcard) {
     try {
+      const wildcardId = `${category.id}_${wildcard.id}`; // Use combination of category and wildcard ID
+      
+      // Check if wildcard is locked
+      if (this.wildcardLocks && this.wildcardLocks[wildcardId]) {
+        showToast(`${wildcard.name} is locked and cannot be randomized`, 'warning');
+        return;
+      }
+      
       // Get a random item from the wildcard
       const randomItem = wildcard.items[Math.floor(Math.random() * wildcard.items.length)];
-      const wildcardId = `${category.id}_${wildcard.id}`; // Use combination of category and wildcard ID
       const previousItem = this.wildcardSelections[wildcardId];
       
       if (previousItem) {
@@ -670,6 +697,40 @@ class PromptKitUI {
   }
 
   /**
+   * Update lock button appearance based on lock state
+   */
+  updateLockButtonAppearance(lockButton, isLocked) {
+    if (isLocked) {
+      lockButton.innerHTML = '<i data-feather="lock"></i>';
+      lockButton.classList.add('locked');
+      lockButton.title = 'Unlock wildcard (currently locked)';
+    } else {
+      lockButton.innerHTML = '<i data-feather="unlock"></i>';
+      lockButton.classList.remove('locked');
+      lockButton.title = 'Lock wildcard (currently unlocked)';
+    }
+    // Reinitialize Feather icon
+    replaceFeatherIcons(lockButton);
+  }
+
+  /**
+   * Toggle wildcard lock state
+   */
+  toggleWildcardLock(category, wildcard, lockButton) {
+    const wildcardId = `${category.id}_${wildcard.id}`;
+    this.wildcardLocks[wildcardId] = !this.wildcardLocks[wildcardId];
+    
+    const isLocked = this.wildcardLocks[wildcardId];
+    this.updateLockButtonAppearance(lockButton, isLocked);
+    
+    if (isLocked) {
+      showToast(`${wildcard.name} locked - won't be randomized`, 'info');
+    } else {
+      showToast(`${wildcard.name} unlocked - can be randomized`, 'info');
+    }
+  }
+
+  /**
    * Create a new profile
    */
   async createNewProfile() {
@@ -791,10 +852,16 @@ class PromptKitUI {
       let randomizedCount = 0;
       let replacedCount = 0;
 
-      // Randomize ALL wildcards in the category
+      // Randomize ALL wildcards in the category (respecting locks)
       for (const wildcard of wildcards) {
-        const randomItem = wildcard.items[Math.floor(Math.random() * wildcard.items.length)];
         const wildcardId = `${category.id}_${wildcard.id}`;
+        
+        // Skip locked wildcards
+        if (this.wildcardLocks && this.wildcardLocks[wildcardId]) {
+          continue;
+        }
+        
+        const randomItem = wildcard.items[Math.floor(Math.random() * wildcard.items.length)];
         const previousItem = this.wildcardSelections[wildcardId];
 
         if (previousItem) {
