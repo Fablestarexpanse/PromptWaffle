@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "timestamp": 1756873463733,
+  "timestamp": 1756948481747,
   "boards": [
     {
       "id": "board-default",
@@ -39,44 +39,7 @@
         }
       ],
       "groups": [],
-      "images": [
-        {
-          "id": "img-1756871189988-w48iah5ol",
-          "filename": "1729-(masterpiece, best quality, ultra detail-bridgetoonsComix_v30-1104079447.jpg",
-          "path": "F:\\StabilityMatrix\\Data\\Images\\Text2Img\\local\\raw\\2025-09-02\\1729-(masterpiece, best quality, ultra detail-bridgetoonsComix_v30-1104079447.jpg",
-          "addedAt": "2025-09-03T03:46:29.988Z"
-        },
-        {
-          "id": "img-1756871189988-6tw6a8pxc",
-          "filename": "1759-(masterpiece, best quality, ultra detail-visionaryILLUSTRIOUS_visionaryIllustriou-1598770234.jpg",
-          "path": "F:\\StabilityMatrix\\Data\\Images\\Text2Img\\local\\raw\\2025-09-02\\1759-(masterpiece, best quality, ultra detail-visionaryILLUSTRIOUS_visionaryIllustriou-1598770234.jpg",
-          "addedAt": "2025-09-03T03:46:29.988Z"
-        },
-        {
-          "id": "img-1756871189988-dztzt6j8c",
-          "filename": "1759-(masterpiece, best quality, ultra detail-visionaryILLUSTRIOUS_visionaryIllustriou-1598770237.jpg",
-          "path": "F:\\StabilityMatrix\\Data\\Images\\Text2Img\\local\\raw\\2025-09-02\\1759-(masterpiece, best quality, ultra detail-visionaryILLUSTRIOUS_visionaryIllustriou-1598770237.jpg",
-          "addedAt": "2025-09-03T03:46:29.988Z"
-        },
-        {
-          "id": "img-1756871189988-lr0hidusv",
-          "filename": "1807-(masterpiece, best quality, ultra detail-cuteNLStyle_v10-2093450474.jpg",
-          "path": "F:\\StabilityMatrix\\Data\\Images\\Text2Img\\local\\raw\\2025-09-02\\1807-(masterpiece, best quality, ultra detail-cuteNLStyle_v10-2093450474.jpg",
-          "addedAt": "2025-09-03T03:46:29.988Z"
-        },
-        {
-          "id": "img-1756871189988-0tko0ywhh",
-          "filename": "1813-(masterpiece, best quality, ultra detail-bridgetoonsMouseMix_v50-1483293385.jpg",
-          "path": "F:\\StabilityMatrix\\Data\\Images\\Text2Img\\local\\raw\\2025-09-02\\1813-(masterpiece, best quality, ultra detail-bridgetoonsMouseMix_v50-1483293385.jpg",
-          "addedAt": "2025-09-03T03:46:29.988Z"
-        },
-        {
-          "id": "img-1756871189988-3strpgol8",
-          "filename": "1813-(masterpiece, best quality, ultra detail-bridgetoonsMouseMix_v50-1483293387.jpg",
-          "path": "F:\\StabilityMatrix\\Data\\Images\\Text2Img\\local\\raw\\2025-09-02\\1813-(masterpiece, best quality, ultra detail-bridgetoonsMouseMix_v50-1483293387.jpg",
-          "addedAt": "2025-09-03T03:46:29.988Z"
-        }
-      ],
+      "images": [],
       "createdAt": "2025-07-18T00:01:10.279Z",
       "modifiedAt": "2025-07-18T00:01:10.279Z",
       "filePath": "Start Here\\default_board.json"

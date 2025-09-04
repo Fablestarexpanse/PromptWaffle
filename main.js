@@ -4,6 +4,9 @@ const path = require('path');
 const fs = require('fs').promises;
 const fsSync = require('fs');
 
+// Security utilities
+const { validateAndSanitizePath, validateFileSize, logSecurityEvent } = require('./src/utils/security.js');
+
 let mainWindow;
 let imageViewerWindow = null;
 
@@ -147,15 +150,19 @@ async function ensureSnippetsDir() {
 
 ipcMain.handle('fs-rm', async (event, filePath, options = {}) => {
   try {
-    // Sanitize path to prevent directory traversal
-    const sanitizedPath = path
-      .normalize(filePath)
-      .replace(/^(\.\.(\/|\\|$))+/, '');
+    // Security validation
+    const sanitizedPath = validateAndSanitizePath(filePath);
+    if (!sanitizedPath) {
+      logSecurityEvent('invalid_file_path', { filePath, operation: 'fs-rm' });
+      throw new Error('Invalid file path');
+    }
+
     const fullPath = path.join(__dirname, sanitizedPath);
 
     // Ensure path is within app directory
     const appDir = path.resolve(__dirname);
     if (!fullPath.startsWith(appDir)) {
+      logSecurityEvent('path_traversal_attempt', { filePath: sanitizedPath, operation: 'fs-rm' });
       throw new Error('Access denied: Path outside application directory');
     }
 
@@ -366,7 +373,14 @@ async function ensureBoardsDir() {
 // Handle app state and boards file operations
 ipcMain.handle('fs-readFile', async (event, filePath) => {
   try {
-    const fullPath = path.join(__dirname, filePath);
+    // Security validation
+    const sanitizedPath = validateAndSanitizePath(filePath);
+    if (!sanitizedPath) {
+      logSecurityEvent('invalid_file_path', { filePath, operation: 'fs-readFile' });
+      throw new Error('Invalid file path');
+    }
+
+    const fullPath = path.join(__dirname, sanitizedPath);
     const content = await fs.readFile(fullPath, 'utf8');
     return content;
   } catch (error) {
@@ -381,14 +395,27 @@ ipcMain.handle('fs-readFile', async (event, filePath) => {
 
 ipcMain.handle('fs-writeFile', async (event, filePath, content) => {
   try {
+    // Security validation
+    const sanitizedPath = validateAndSanitizePath(filePath);
+    if (!sanitizedPath) {
+      logSecurityEvent('invalid_file_path', { filePath, operation: 'fs-writeFile' });
+      throw new Error('Invalid file path');
+    }
+
+    // Validate content size
+    if (!validateFileSize(content)) {
+      logSecurityEvent('file_too_large', { filePath: sanitizedPath, contentSize: typeof content === 'string' ? content.length : content.byteLength });
+      throw new Error('File content too large');
+    }
+
     // Ensure appropriate directory exists
-    if (filePath.startsWith('snippets/')) {
+    if (sanitizedPath.startsWith('snippets/')) {
       await ensureSnippetsDir();
-    } else if (filePath.startsWith('boards/')) {
+    } else if (sanitizedPath.startsWith('boards/')) {
       await ensureBoardsDir();
     }
 
-    const fullPath = path.join(__dirname, filePath);
+    const fullPath = path.join(__dirname, sanitizedPath);
     const dir = path.dirname(fullPath);
     await fs.mkdir(dir, { recursive: true });
     await fs.writeFile(fullPath, content, 'utf8');
@@ -683,6 +710,30 @@ ipcMain.handle('move-image-viewer', async (event, deltaX, deltaY) => {
 // Open external URL handler
 ipcMain.handle('openExternal', async (event, url) => {
   try {
+    // Security validation - only allow http/https URLs
+    if (!url || typeof url !== 'string') {
+      logSecurityEvent('invalid_url', { url, operation: 'openExternal' });
+      throw new Error('Invalid URL');
+    }
+
+    // Check for dangerous protocols
+    if (url.startsWith('data:') || url.startsWith('javascript:') || url.startsWith('file:')) {
+      logSecurityEvent('dangerous_url_protocol', { url, operation: 'openExternal' });
+      throw new Error('Dangerous URL protocol not allowed');
+    }
+
+    // Basic URL validation
+    try {
+      const urlObj = new URL(url);
+      if (!['http:', 'https:'].includes(urlObj.protocol)) {
+        logSecurityEvent('unsupported_url_protocol', { url, protocol: urlObj.protocol });
+        throw new Error('Unsupported URL protocol');
+      }
+    } catch (urlError) {
+      logSecurityEvent('malformed_url', { url, error: urlError.message });
+      throw new Error('Malformed URL');
+    }
+
     await shell.openExternal(url);
     return true;
   } catch (error) {
