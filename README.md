@@ -6,9 +6,15 @@ PromptWaffle is a desktop application for managing, organizing, and composing AI
 
 ## 📸 Screenshots
 
+### Main Interface
 ![PromptWaffle Main Interface](screenshots/main-interface.png)
 
-*The main interface showing snippet cards, image thumbnails, and compiled prompt output with color-coded organization.*
+*The main interface showing snippet cards, image thumbnails, and compiled prompt output with color-coded organization. Features drag-and-drop composition, live image preview, and real-time prompt compilation.*
+
+### Wildcard Studio
+![Wildcard Studio Interface](screenshots/wildcard-studio.png)
+
+*The Wildcard Studio interface for dynamic prompt building. Create complex prompts using profiles and wildcard categories with dice-based randomization and real-time prompt assembly.*
 
 ## 🚀 Quick Start - Beta Program
 
