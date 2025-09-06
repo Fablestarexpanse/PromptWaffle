@@ -115,7 +115,6 @@ Found a bug or have a suggestion?
 
 - **Git updates**: Pull latest changes with `git pull origin main`
 - **Dependencies**: Run `npm install` after pulling to update dependencies
-- **Manual check**: Press `Ctrl+Shift+U` or use the update button in the app
 - **Release notes**: Read what's new in each update via GitHub releases
 - **GitHub**: Follow the repository for latest news and development updates
 
@@ -193,58 +192,7 @@ Found a bug or have a suggestion?
 - **Auto-save**: Changes are automatically saved to prevent data loss
 - **Cross-platform**: Works on Windows, macOS, and Linux
 
-### Update Management
 
-- **Automatic Version Checking**: Checks for updates on startup (once per day)
-- **GitHub Integration**: Fetches latest releases from GitHub repository
-- **Update Notifications**: Beautiful modal with changelog and download links
-- **Manual Check**: Button in sidebar and keyboard shortcut (Ctrl+Shift+U)
-- **Reminder System**: Option to postpone update notifications
-- **Automatic Updates**: Download and install updates directly from within the app
-- **Progress Tracking**: Real-time download progress with visual feedback
-- **Seamless Installation**: Automatic restart and installation of updates
-
-## Auto-Updater System
-
-PromptWaffle now includes a comprehensive auto-updater system that allows users to download and install updates directly from within the application.
-
-### How It Works
-
-1. **Automatic Checks**: The app checks for updates on startup (once per day)
-2. **Update Detection**: When a new version is available, users are notified
-3. **Download Progress**: Users can download updates with real-time progress tracking
-4. **Seamless Installation**: Updates are automatically installed and the app restarts
-5. **Test Feature**: Added in v1.2.5 to verify auto-updater functionality
-
-### For Developers
-
-To release a new version:
-
-1. **Update Version**: Run `npm run release <version>` (e.g., `npm run release 1.2.3`)
-2. **Automatic Build**: GitHub Actions will automatically build and publish the release
-3. **User Updates**: Users will receive update notifications and can install automatically
-
-The release script will:
-- Update the version in `package.json`
-- Commit the changes
-- Create and push a version tag
-- Trigger the GitHub Actions workflow
-
-### Manual Release Process
-
-If you prefer to release manually:
-
-```bash
-# Update version in package.json
-# Commit changes
-git add package.json
-git commit -m "Bump version to 1.2.3"
-
-# Create and push tag
-git tag v1.2.3
-git push origin main
-git push origin v1.2.3
-```
 
 ## Release Notes
 
@@ -288,12 +236,6 @@ git push origin v1.2.3
 
 #### New Features
 
-- **Version Checking System**: Automatic update notifications with GitHub integration
-  - Automatic startup checks for new versions
-  - Beautiful update modal with changelog display
-  - Manual update checking via button or keyboard shortcut (Ctrl+Shift+U)
-  - Reminder system to postpone update notifications
-  - Direct download links to GitHub releases
 - **Board Context Menu**: Right-click on the board area to access quick actions
   - Create New Snippet: Opens snippet creation modal and automatically adds the snippet to the current board
   - Create from Clipboard: Creates a snippet from clipboard content and adds it to the board
@@ -307,7 +249,6 @@ git push origin v1.2.3
 
 #### Improvements
 
-- **Version Management**: Centralized version tracking and update notifications
 - **Security Enhancements**: Proper Content Security Policy compliance for external API calls
 - **Sidebar Active Board Highlighting**: Clear visual indication of the currently active board
 - **Folder Sorting and Management**: Improved folder collapse/expand functionality with bulk operations
@@ -317,7 +258,6 @@ git push origin v1.2.3
 
 #### Bug Fixes
 
-- Fixed Content Security Policy blocking external API calls for version checking
 - Fixed snippet background color chooser opening board color picker instead
 - Fixed board background color picker not setting colors properly
 - Fixed right-click "delete snippet" in sidebar not working
