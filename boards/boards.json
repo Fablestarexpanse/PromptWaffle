@@ -3,9 +3,87 @@
     "id": "board-default",
     "name": "Default Board",
     "tags": [],
-    "cards": [],
+    "cards": [
+      {
+        "id": "card-1757205389411",
+        "snippetPath": "Start Here/default_cyberpunk.json",
+        "x": 24,
+        "y": 15,
+        "width": 653,
+        "height": 174,
+        "locked": false,
+        "color": "#E74C3C"
+      },
+      {
+        "id": "card-1757205390948",
+        "snippetPath": "Start Here/default_photorealistic.json",
+        "x": 1026,
+        "y": 207,
+        "width": 716,
+        "height": 152,
+        "locked": false,
+        "color": "#3498DB"
+      },
+      {
+        "id": "card-1757205392237",
+        "snippetPath": "Start Here/default_space.json",
+        "x": 37,
+        "y": 204,
+        "width": 976,
+        "height": 126,
+        "locked": false,
+        "color": "#2ECC71"
+      },
+      {
+        "id": "card-1757205412097",
+        "snippetPath": "characters/Test_char_1757204863323_806f2vm5d.json",
+        "x": 681,
+        "y": 2,
+        "width": 727,
+        "height": 195,
+        "locked": false,
+        "color": "#F39C12"
+      }
+    ],
     "groups": [],
-    "images": [],
+    "images": [
+      {
+        "id": "img-1757205380553-01y4y1ua1",
+        "filename": "1632-Female, woman, long black hair,twin brai-waiNSFWIllustrious_v140-2100825468.jpg",
+        "path": "F:\\StabilityMatrix\\Data\\Images\\Text2Img\\local\\raw\\2025-09-06\\1632-Female, woman, long black hair,twin brai-waiNSFWIllustrious_v140-2100825468.jpg",
+        "addedAt": "2025-09-07T00:36:20.553Z"
+      },
+      {
+        "id": "img-1757205380553-1ca88nkty",
+        "filename": "1629-Female, woman, long black hair,twin brai-waiNSFWIllustrious_v140-1757125482.jpg",
+        "path": "F:\\StabilityMatrix\\Data\\Images\\Text2Img\\local\\raw\\2025-09-06\\1629-Female, woman, long black hair,twin brai-waiNSFWIllustrious_v140-1757125482.jpg",
+        "addedAt": "2025-09-07T00:36:20.553Z"
+      },
+      {
+        "id": "img-1757205380553-5b2x55s2t",
+        "filename": "1622-Female, woman, long black hair,twin brai-waiNSFWIllustrious_v140-1782582357.jpg",
+        "path": "F:\\StabilityMatrix\\Data\\Images\\Text2Img\\local\\raw\\2025-09-06\\1622-Female, woman, long black hair,twin brai-waiNSFWIllustrious_v140-1782582357.jpg",
+        "addedAt": "2025-09-07T00:36:20.553Z"
+      },
+      {
+        "id": "img-1757205380553-odhu5sv6p",
+        "filename": "1621-Female, woman, long black hair,twin brai-waiNSFWIllustrious_v140-68809011.jpg",
+        "path": "F:\\StabilityMatrix\\Data\\Images\\Text2Img\\local\\raw\\2025-09-06\\1621-Female, woman, long black hair,twin brai-waiNSFWIllustrious_v140-68809011.jpg",
+        "addedAt": "2025-09-07T00:36:20.553Z"
+      },
+      {
+        "id": "img-1757205380553-opbkz6uof",
+        "filename": "1619-Female, woman, long black hair,twin brai-waiNSFWIllustrious_v140-418431658.jpg",
+        "path": "F:\\StabilityMatrix\\Data\\Images\\Text2Img\\local\\raw\\2025-09-06\\1619-Female, woman, long black hair,twin brai-waiNSFWIllustrious_v140-418431658.jpg",
+        "addedAt": "2025-09-07T00:36:20.553Z"
+      },
+      {
+        "id": "img-1757205380553-g4xknirr4",
+        "filename": "1618-Female, woman, long black hair,twin brai-waiNSFWIllustrious_v140-1805471053.jpg",
+        "path": "F:\\StabilityMatrix\\Data\\Images\\Text2Img\\local\\raw\\2025-09-06\\1618-Female, woman, long black hair,twin brai-waiNSFWIllustrious_v140-1805471053.jpg",
+        "addedAt": "2025-09-07T00:36:20.553Z"
+      }
+    ],
     "createdAt": "2025-09-06T21:36:49.108Z",
     "modifiedAt": "2025-09-06T21:36:49.109Z",
     "filePath": "Start Here\\default_board.json"

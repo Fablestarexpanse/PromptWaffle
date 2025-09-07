@@ -17,7 +17,7 @@ PromptWaffle is a desktop application for managing, organizing, and composing AI
 *The Wildcard Studio interface for dynamic prompt building. Create complex prompts using profiles and wildcard categories with dice-based randomization and real-time prompt assembly.*
 
 ### Character Builder
-![Character Builder Interface](screenshots/character-builder.svg)
+![Character Builder Interface](screenshots/character-builder.png)
 
 *The Character Builder interface for creating detailed character descriptions. Build comprehensive character profiles with reference images, customizable attributes, and automatic prompt generation.*
 
