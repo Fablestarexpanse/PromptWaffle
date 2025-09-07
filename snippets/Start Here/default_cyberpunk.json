@@ -1,6 +1,6 @@
 {
   "id": "default_cyberpunk",
-  "text": "(cyberpunk engineer), glowing tattoos, neon visor, dark synthetic jacket,test,test2,test3",
+  "text": "(cyberpunk engineer), glowing tattoos, neon visor, dark synthetic jacket",
   "tags": [
     "cyberpunk"
   ],
@@ -8,6 +8,6 @@
   "description": "Cyberpunk character with futuristic elements and glowing features",
   "category": "Start Here",
   "version": "1.0",
-  "created": 1752875459617,
-  "modified": 1753480493082
+  "created": 1757194609118,
+  "modified": 1757194609118
 }

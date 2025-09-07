@@ -1,0 +1,29 @@
+{
+  "name": "Test",
+  "text": "female, teen, black,twin braids, blue, red tshirt,blue jean shorts,red sneakers,silver necklace",
+  "tags": [
+    "character",
+    "Test"
+  ],
+  "type": "character",
+  "created": 1757204863323,
+  "modified": 1757204943070,
+  "characterData": {
+    "id": "char_1757204863323_806f2vm5d",
+    "name": "Test",
+    "gender": "female",
+    "age": "teen",
+    "hair": "black,twin braids",
+    "eyes": "blue",
+    "clothing": "red tshirt,blue jean shorts,red sneakers,silver necklace",
+    "style": "",
+    "personality": "",
+    "tags": "",
+    "created": 1757204863323,
+    "modified": 1757204942732,
+    "genitals": "",
+    "filePath": "snippets/characters/Test_char_1757204863323_806f2vm5d.json",
+    "imagePath1": "snippets/characters/images/char_1757204863323_806f2vm5d_1.jpg",
+    "imagePath2": "snippets/characters/images/char_1757204863323_806f2vm5d_2.jpg"
+  }
+}

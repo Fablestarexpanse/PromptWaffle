@@ -62,16 +62,41 @@ export function createSnippetElement({
       applyStyles(connector, treeStyles.treeConnector);
       treeIndicator.appendChild(connector);
     }
-    // Truncate text for compact display (fits nicely in 3 lines with 2 lines for text)
-    const maxLength = 80;
-    const displayText =
-      snippet.text && snippet.text.length > maxLength
-        ? `${snippet.text.substring(0, maxLength)}...`
-        : snippet.text || '';
+    // Check if this is a character snippet and add special styling
+    const isCharacterSnippet = snippet.type === 'character';
+    
     // Use textContent instead of innerHTML for better security
     const indicator = document.createElement('span');
     indicator.className = 'snippet-indicator';
-    indicator.textContent = '•';
+    
+    if (isCharacterSnippet) {
+      // Add character icon and styling
+      indicator.innerHTML = '<i data-feather="user" style="width: 12px; height: 12px;"></i>';
+      indicator.className += ' character-indicator';
+      snippetElement.className += ' character-snippet';
+    } else {
+      indicator.textContent = '•';
+    }
+    
+    // For character snippets, show only name and tags
+    let displayText, displayTags;
+    if (isCharacterSnippet) {
+      // Use character name or fallback to first part of text
+      displayText = snippet.name || (snippet.text ? snippet.text.split(',')[0] : 'Unnamed Character');
+      displayTags = Array.isArray(snippet.tags) 
+        ? snippet.tags.join(', ') 
+        : (snippet.tags || '');
+    } else {
+      // Regular snippet display
+      const maxLength = 80;
+      displayText =
+        snippet.text && snippet.text.length > maxLength
+          ? `${snippet.text.substring(0, maxLength)}...`
+          : snippet.text || '';
+      displayTags = Array.isArray(snippet.tags)
+        ? snippet.tags.map(tag => escapeHtml(tag)).join(', ')
+        : '';
+    }
     const content = document.createElement('div');
     content.className = 'snippet-content';
     const textElement = document.createElement('div');
@@ -79,15 +104,22 @@ export function createSnippetElement({
     textElement.textContent = displayText;
     const tagsElement = document.createElement('div');
     tagsElement.className = 'snippet-tags';
-    tagsElement.textContent = Array.isArray(snippet.tags)
-      ? snippet.tags.map(tag => escapeHtml(tag)).join(', ')
-      : '';
+    tagsElement.textContent = displayTags;
     content.appendChild(textElement);
     content.appendChild(tagsElement);
     snippetElement.appendChild(indicator);
     snippetElement.appendChild(content);
     // Insert tree indicator before content
     snippetElement.insertBefore(treeIndicator, snippetElement.firstChild);
+    
+    // Initialize feather icons for character snippets
+    if (isCharacterSnippet && typeof feather !== 'undefined') {
+      try {
+        feather.replace();
+      } catch (error) {
+        console.warn('Error initializing feather icons for character snippet:', error);
+      }
+    }
     // Apply styling for compact 3-line layout using Utils
     const snippetStyles = {
       position: 'relative',
@@ -142,8 +174,13 @@ export function createSnippetElement({
     let tooltip = null;
     snippetElement.addEventListener('mouseenter', e => {
       try {
-        // Only show tooltip if text is truncated
-        if (snippet.text && snippet.text.length > maxLength) {
+        // For character snippets, always show tooltip with full description
+        // For regular snippets, only show if text is truncated
+        const shouldShowTooltip = isCharacterSnippet 
+          ? (snippet.text && snippet.text.trim())
+          : (snippet.text && snippet.text.length > 80);
+          
+        if (shouldShowTooltip) {
           tooltip = document.createElement('div');
           tooltip.className = 'snippet-tooltip';
           const tooltipStyles = {
@@ -163,7 +200,8 @@ export function createSnippetElement({
             border: '1px solid #34495e'
           };
           applyStyles(tooltip, tooltipStyles);
-          tooltip.textContent = snippet.text;
+          // Show full character description for character snippets, or full text for regular snippets
+          tooltip.textContent = isCharacterSnippet ? snippet.text : snippet.text;
           document.body.appendChild(tooltip);
           // Position tooltip near cursor with bounds checking
           const tooltipRect = tooltip.getBoundingClientRect();

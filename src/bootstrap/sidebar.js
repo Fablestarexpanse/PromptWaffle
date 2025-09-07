@@ -8,6 +8,7 @@ import {
 import { addImagePreviewToSidebar } from './index.js';
 import { showToast } from '../utils/index.js';
 import { loadInitialData } from './load-initial-data.js';
+import { showDeleteConfirmation } from '../utils/confirmationModal.js';
 import { onBoardSwitch } from './ui.js';
 function sortEntries(entries) {
   if (!entries) return [];
@@ -498,85 +499,49 @@ function openBoardModalInFolder(path) {
   // TODO: Implement board modal in folder functionality
   console.log('Board modal in folder not yet implemented for path:', path);
 }
-function deleteFolder(path) {
-  // Show confirmation modal
-  const modal = document.getElementById('confirmModal');
-  const title = document.getElementById('confirmModalTitle');
-  const message = document.getElementById('confirmModalMessage');
-  const confirmBtn = document.getElementById('confirmBtn');
-  const cancelBtn = document.getElementById('cancelBtn');
-  const confirmInput = document.getElementById('confirmDeleteInput');
-  if (
-    !modal ||
-    !title ||
-    !message ||
-    !confirmBtn ||
-    !cancelBtn ||
-    !confirmInput
-  ) {
-    showToast('Confirmation modal not found', 'error');
+async function deleteFolder(path) {
+  const confirmed = await showDeleteConfirmation(path, 'folder');
+  
+  if (!confirmed) {
     return;
   }
-  title.textContent = 'Delete Folder?';
-  message.innerHTML = `<b>Are you sure?</b><br>This will <span style='color:#e74c3c;font-weight:bold;'>permanently delete</span> the folder <b>${path}</b> and <b>ALL subfolders and snippets inside it</b>.<br>This action <span style='color:#e74c3c;font-weight:bold;'>cannot be undone</span>.`;
-  modal.style.display = 'flex';
-  // Reset input and button state
-  confirmInput.value = '';
-  confirmBtn.disabled = true;
-  confirmInput.style.borderColor = '';
-  // Remove any previous event listeners
-  confirmBtn.onclick = null;
-  cancelBtn.onclick = null;
-  confirmInput.oninput = null;
-  confirmInput.oninput = () => {
-    if (confirmInput.value.trim().toLowerCase() === 'delete') {
-      confirmBtn.disabled = false;
-      confirmInput.style.borderColor = '#27ae60';
+
+  try {
+    // Delete the folder on disk
+    if (window.electronAPI && window.electronAPI.deleteFolderRecursive) {
+      await window.electronAPI.deleteFolderRecursive(`snippets/${path}`);
+    } else if (window.electronAPI && window.electronAPI.deleteFolder) {
+      // fallback if only deleteFolder is available
+      await window.electronAPI.deleteFolder(`snippets/${path}`);
     } else {
-      confirmBtn.disabled = true;
-      confirmInput.style.borderColor = '';
+      showToast('Filesystem API not available', 'error');
+      return;
     }
-  };
-  confirmBtn.onclick = async () => {
-    modal.style.display = 'none';
-    try {
-      // Delete the folder on disk
-      if (window.electronAPI && window.electronAPI.deleteFolderRecursive) {
-        await window.electronAPI.deleteFolderRecursive(`snippets/${path}`);
-      } else if (window.electronAPI && window.electronAPI.deleteFolder) {
-        // fallback if only deleteFolder is available
-        await window.electronAPI.deleteFolder(`snippets/${path}`);
-      } else {
-        showToast('Filesystem API not available', 'error');
-        return;
-      }
-      // Remove from sidebar tree in memory
-      function removeFolder(tree, path) {
-        for (let i = 0; i < tree.length; i++) {
-          if (tree[i].type === 'folder' && tree[i].path === path) {
-            return tree.splice(i, 1)[0];
-          } else if (tree[i].type === 'folder' && tree[i].children) {
-            const found = removeFolder(tree[i].children, path);
-            if (found) return found;
-          }
+    
+    // Remove from sidebar tree in memory
+    function removeFolder(tree, path) {
+      for (let i = 0; i < tree.length; i++) {
+        if (tree[i].type === 'folder' && tree[i].path === path) {
+          return tree.splice(i, 1)[0];
+        } else if (tree[i].type === 'folder' && tree[i].children) {
+          const found = removeFolder(tree[i].children, path);
+          if (found) return found;
         }
-        return null;
       }
-      removeFolder(window.sidebarTree, path);
-      // Refresh sidebar
-      const foldersContainer = document.getElementById('foldersContainer');
-      if (foldersContainer) {
-        renderSidebar(window.sidebarTree, foldersContainer);
-      }
-      showToast('Folder and all contents deleted', 'success');
-    } catch (error) {
-      showToast('Error deleting folder', 'error');
-      console.error('Error deleting folder:', error);
+      return null;
     }
-  };
-  cancelBtn.onclick = () => {
-    modal.style.display = 'none';
-  };
+    removeFolder(window.sidebarTree, path);
+    
+    // Refresh sidebar
+    const foldersContainer = document.getElementById('foldersContainer');
+    if (foldersContainer) {
+      renderSidebar(window.sidebarTree, foldersContainer);
+    }
+    showToast('Folder and all contents deleted', 'success');
+  } catch (error) {
+    showToast('Error deleting folder', 'error');
+    console.error('Error deleting folder:', error);
+  }
 }
 // Inline folder creation functions
 function showInlineFolderCreation() {
@@ -989,7 +954,11 @@ export function renderSidebar(tree, container, depth = 0, parentPath = '') {
       if (entry.children && entry.children.length > 0) {
         // Sort children: folders first, then boards, then snippets, all alphabetically
         const childrenSorted = [...entry.children].sort((a, b) => {
-          if (a.type === b.type) return a.name.localeCompare(b.name);
+          if (a.type === b.type) {
+            const nameA = a.name || '';
+            const nameB = b.name || '';
+            return nameA.localeCompare(nameB);
+          }
           if (a.type === 'folder') return -1;
           if (b.type === 'folder') return 1;
           if (a.type === 'board') return -1;

@@ -7,6 +7,7 @@ import {
 } from '../utils/index.js';
 import { showToast } from '../utils/index.js';
 import { saveBoards, triggerAutosave } from './state.js';
+import { showConfirmationModal } from '../utils/confirmationModal.js';
 import {
   schedulePartialSidebarUpdate,
   renderBoardImages,
@@ -654,15 +655,18 @@ export async function addCardToBoard(snippetPath, x, y) {
       console.error('No snippet path provided to addCardToBoard');
       return;
     }
+    console.log('addCardToBoard called with path:', snippetPath);
     const board = getActiveBoard();
     if (!board) {
       console.error('No active board found');
       return;
     }
     const snippets = AppState.getSnippets();
+    console.log('Available snippets in AppState:', Object.keys(snippets));
     const snippet = snippets[snippetPath];
     if (!snippet) {
       console.error('Snippet not found for path:', snippetPath);
+      console.log('Available snippet paths:', Object.keys(snippets));
       showToast('Snippet not found', 'error');
       return;
     }
@@ -778,7 +782,14 @@ export async function clearBoard() {
     }
     const cardCount = board.cards ? board.cards.length : 0;
     // Show confirmation dialog
-    const confirmed = await showClearBoardConfirmation(board.name, cardCount);
+    const confirmed = await showConfirmationModal(
+      'Clear Board',
+      `Are you sure you want to clear "${board.name}"? This will remove all ${cardCount} card(s) from the board. This action cannot be undone.`,
+      {
+        confirmText: 'Clear Board',
+        confirmClass: 'character-builder-btn-danger'
+      }
+    );
     if (!confirmed) {
       return;
     }
@@ -796,122 +807,6 @@ export async function clearBoard() {
     console.error('Error clearing board:', error);
     showToast('Error clearing board', 'error');
   }
-}
-function showClearBoardConfirmation(boardName, cardCount) {
-  return new Promise(resolve => {
-    // Create modal overlay
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.style.display = 'flex';
-    modal.style.position = 'fixed';
-    modal.style.top = '0';
-    modal.style.left = '0';
-    modal.style.width = '100%';
-    modal.style.height = '100%';
-    modal.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-    modal.style.zIndex = '10000';
-    modal.style.alignItems = 'center';
-    modal.style.justifyContent = 'center';
-    // Create modal content
-    const modalContent = document.createElement('div');
-    modalContent.className = 'modal-content';
-    modalContent.style.background = '#2f3136';
-    modalContent.style.border = '1px solid #40444b';
-    modalContent.style.borderRadius = '8px';
-    modalContent.style.padding = '24px';
-    modalContent.style.maxWidth = '400px';
-    modalContent.style.width = '90%';
-    modalContent.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.3)';
-    // Create title
-    const title = document.createElement('h3');
-    title.textContent = 'Clear Board';
-    title.style.margin = '0 0 16px 0';
-    title.style.color = '#ffffff';
-    title.style.fontSize = '18px';
-    title.style.fontWeight = '600';
-    // Create message
-    const message = document.createElement('p');
-    message.textContent = `Are you sure you want to clear "${boardName}"? This will remove all ${cardCount} card(s) from the board. This action cannot be undone.`;
-    message.style.margin = '0 0 24px 0';
-    message.style.color = '#dcddde';
-    message.style.lineHeight = '1.5';
-    message.style.fontSize = '14px';
-    // Create button container
-    const buttonContainer = document.createElement('div');
-    buttonContainer.style.display = 'flex';
-    buttonContainer.style.gap = '12px';
-    buttonContainer.style.justifyContent = 'flex-end';
-    // Create cancel button
-    const cancelBtn = document.createElement('button');
-    cancelBtn.textContent = 'Cancel';
-    cancelBtn.style.padding = '8px 16px';
-    cancelBtn.style.background = '#40444b';
-    cancelBtn.style.border = '1px solid #4f545c';
-    cancelBtn.style.borderRadius = '4px';
-    cancelBtn.style.color = '#dcddde';
-    cancelBtn.style.cursor = 'pointer';
-    cancelBtn.style.fontSize = '14px';
-    cancelBtn.onclick = () => {
-      document.body.removeChild(modal);
-      resolve(false);
-    };
-    // Create confirm button
-    const confirmBtn = document.createElement('button');
-    confirmBtn.textContent = 'Clear Board';
-    confirmBtn.style.padding = '8px 16px';
-    confirmBtn.style.background = '#da373c';
-    confirmBtn.style.border = '1px solid #da373c';
-    confirmBtn.style.borderRadius = '4px';
-    confirmBtn.style.color = '#ffffff';
-    confirmBtn.style.cursor = 'pointer';
-    confirmBtn.style.fontSize = '14px';
-          confirmBtn.style.fontWeight = '500';
-    confirmBtn.onclick = () => {
-      document.body.removeChild(modal);
-      resolve(true);
-    };
-    // Add hover effects
-    cancelBtn.onmouseenter = () => {
-      cancelBtn.style.background = '#4f545c';
-    };
-    cancelBtn.onmouseleave = () => {
-      cancelBtn.style.background = '#40444b';
-    };
-    confirmBtn.onmouseenter = () => {
-      confirmBtn.style.background = '#b91c1c';
-    };
-    confirmBtn.onmouseleave = () => {
-      confirmBtn.style.background = '#da373c';
-    };
-    // Assemble modal
-    buttonContainer.appendChild(cancelBtn);
-    buttonContainer.appendChild(confirmBtn);
-    modalContent.appendChild(title);
-    modalContent.appendChild(message);
-    modalContent.appendChild(buttonContainer);
-    modal.appendChild(modalContent);
-    // Add to DOM
-    document.body.appendChild(modal);
-    // Handle escape key
-    const handleEscape = e => {
-      if (e.key === 'Escape') {
-        document.body.removeChild(modal);
-        document.removeEventListener('keydown', handleEscape);
-        resolve(false);
-      }
-    };
-    document.addEventListener('keydown', handleEscape);
-    // Handle clicking outside modal
-    modal.onclick = e => {
-      if (e.target === modal) {
-        document.body.removeChild(modal);
-        document.removeEventListener('keydown', handleEscape);
-        resolve(false);
-      }
-    };
-    // Focus the cancel button for accessibility
-    setTimeout(() => cancelBtn.focus(), 100);
-  });
 }
 export async function toggleCardLock(cardId) {
   try {

@@ -7,26 +7,33 @@ import { versionChecker } from './utils/version-checker.js';
 import { updateUI } from './utils/update-ui.js';
 import { LoadingScreen } from './utils/loading-screen.js';
 async function init() {
+  console.log('[Renderer] Starting application initialization...');
   // Initialize loading screen
   const loadingScreen = new LoadingScreen();
   
   try {
+    console.log('[Renderer] Starting loading simulation...');
     // Start loading simulation
     loadingScreen.simulateLoading();
     
     // 1. Load application state
+    console.log('[Renderer] Loading application state...');
     const savedState = await bootstrap.loadApplicationState();
     if (savedState) {
+      console.log('[Renderer] Restoring application state...');
       bootstrap.restoreApplicationState(savedState);
     }
     // 2. Load initial data (sidebar tree, snippets)
+    console.log('[Renderer] Loading initial data...');
     const initialData = await bootstrap.loadInitialData();
     if (!initialData) {
+      console.error('[Renderer] Failed to load initial data');
       bootstrap.showCenteredWarning(
         'Failed to load essential application data. Please restart the application.'
       );
       return;
     }
+    console.log('[Renderer] Initial data loaded successfully');
     // Migrate old board card snippet paths if needed
     if (bootstrap.migrateBoardCardSnippetPaths) {
       await bootstrap.migrateBoardCardSnippetPaths();
@@ -134,6 +141,27 @@ async function init() {
         console.warn('Metadata panel not available:', error);
       }
     }, 500); // Wait for board system to be fully initialized
+    
+    // Initialize character builder after board system is ready
+    setTimeout(async () => {
+      try {
+        const { characterBuilder } = await import('./utils/characterBuilder.js');
+        await characterBuilder.init();
+        
+        // Setup character builder event listeners
+        const openCharacterBuilderBtn = document.getElementById('openCharacterBuilderBtn');
+        
+        if (openCharacterBuilderBtn) {
+          openCharacterBuilderBtn.addEventListener('click', () => {
+            characterBuilder.openModal();
+          });
+        }
+        
+        console.log('Character Builder initialized successfully');
+      } catch (error) {
+        console.warn('Character Builder not available:', error);
+      }
+    }, 600); // Wait slightly after metadata panel
     // Set current version in UI
     const versionElement = document.getElementById('currentVersion');
     if (versionElement) {
@@ -173,14 +201,17 @@ async function init() {
     }, 1000);
     
   } catch (error) {
-    console.error('Fatal error during application initialization:', error);
+    console.error('[Renderer] Fatal error during application initialization:', error);
+    console.error('[Renderer] Error stack:', error.stack);
     // Hide loading screen even on error
     loadingScreen.hide();
     try {
+      console.log('[Renderer] Attempting to show error warning...');
       bootstrap.showCenteredWarning(
         'A critical error occurred. Please restart the application.'
       );
     } catch (_e) {
+      console.error('[Renderer] Failed to show error warning:', _e);
       // Fallback if the UI is so broken that the warning can't be shown
       alert('A critical error occurred. Please restart the application.');
     }

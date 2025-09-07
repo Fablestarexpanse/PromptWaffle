@@ -12,6 +12,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   rename: (oldPath, newPath) =>
     ipcRenderer.invoke('fs-rename', oldPath, newPath),
   rm: path => ipcRenderer.invoke('fs-rm', path),
+  deleteFile: path => ipcRenderer.invoke('fs-rm', path),
   exists: path => ipcRenderer.invoke('fs-exists', path),
   stat: path => ipcRenderer.invoke('fs-stat', path),
   openDataPath: () => ipcRenderer.invoke('open-data-path'),

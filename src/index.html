@@ -2,17 +2,17 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta
+        <meta
       http-equiv="Content-Security-Policy"
-      content="default-src 'self'; 
-               script-src 'self' https://unpkg.com 'sha256-mMIugR+peXO12tiny2EW/7g/mVsVBQzEnFBT3lXmfw4='; 
-               style-src 'self'; 
-               img-src 'self' data: file: blob:;
-               object-src 'none';
-               base-uri 'self';
-               form-action 'self';
-               frame-ancestors 'none';
-               upgrade-insecure-requests;"
+       content="default-src 'self';
+                script-src 'self' https://unpkg.com 'sha256-mMIugR+peXO12tiny2EW/7g/mVsVBQzEnFBT3lXmfw4=';
+                style-src 'self' 'unsafe-inline';
+                img-src 'self' data: file: blob:;
+                object-src 'none';
+                base-uri 'self';
+                form-action 'self';
+
+                upgrade-insecure-requests;"
     />
     <title>PromptWaffle (Offline)</title>
     <link rel="stylesheet" href="style.css" />
@@ -47,7 +47,7 @@
               alt="PromptWaffle Logo"
             />
             <p class="tagline">Break it. Remix it. Generate better.</p>
-            <p class="version">v<span id="currentVersion">1.3.1</span></p>
+            <p class="version">v<span id="currentVersion">1.4.0</span></p>
             <button
               id="checkForUpdatesBtn"
               class="update-check-btn"
@@ -261,6 +261,19 @@
                   </button>
                   <div class="control-description">
                     Remove all cards from current board
+                  </div>
+                </div>
+                <div class="control-group">
+                  <button
+                    id="openCharacterBuilderBtn"
+                    class="control-btn"
+                    title="Open Character Builder"
+                  >
+                    <i data-feather="user-plus"></i>
+                    <span>Character Builder</span>
+                  </button>
+                  <div class="control-description">
+                    Create and manage character descriptions
                   </div>
                 </div>
               </div>
@@ -692,7 +705,135 @@
         </div>
       </div>
 
-
+    <!-- Character Builder Modal -->
+    <div id="characterBuilderModal" class="character-builder-modal">
+      <div class="character-builder-modal-content">
+        <div class="character-builder-header">
+          <h2>Character Builder</h2>
+          <button class="close-btn" id="closeCharacterBuilder">&times;</button>
+        </div>
+        
+        <div class="character-builder-body">
+          <div class="character-builder-left">
+            <!-- Character Library Section -->
+            <div class="character-builder-section">
+              <h3>Character Library</h3>
+              <div id="characterLibrary" class="character-library">
+                <!-- Saved characters will be populated here -->
+              </div>
+            </div>
+          </div>
+          
+          <div class="character-builder-right">
+            <!-- Character Editor Section -->
+            <div class="character-builder-section">
+              <h3>Character Editor</h3>
+              <div id="characterEditor" class="character-editor">
+                <div class="character-form-section">
+                  <div class="form-group">
+                    <label for="characterName">Character Name:</label>
+                    <input type="text" id="characterName" placeholder="Enter character name...">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="characterGender">Gender:</label>
+                    <input type="text" id="characterGender" placeholder="e.g., male, female, non-binary...">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="characterAge">Age:</label>
+                    <input type="text" id="characterAge" placeholder="e.g., young adult, middle-aged, elderly...">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="characterHair">Hair:</label>
+                    <input type="text" id="characterHair" placeholder="e.g., long blonde hair, short black hair...">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="characterEyes">Eyes:</label>
+                    <input type="text" id="characterEyes" placeholder="e.g., blue eyes, cybernetic eyes...">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="characterClothing">Clothing:</label>
+                    <input type="text" id="characterClothing" placeholder="e.g., leather jacket, formal suit...">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="characterStyle">Style/Theme:</label>
+                    <input type="text" id="characterStyle" placeholder="e.g., cyberpunk, medieval, modern...">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="characterPersonality">Personality:</label>
+                    <input type="text" id="characterPersonality" placeholder="e.g., confident, mysterious, cheerful...">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="characterGenitals">Genitals:</label>
+                    <input type="text" id="characterGenitals" placeholder="e.g., penis, vagina, both, none...">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="characterTags">Tags:</label>
+                    <input type="text" id="characterTags" placeholder="e.g., warrior, mage, engineer (comma separated)">
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label>Reference Images:</label>
+              <div class="character-image-sections">
+                <div class="character-image-section">
+                  <div class="character-image-preview" id="characterImagePreview1"></div>
+                  <input type="file" id="characterImage1" accept="image/*" style="display: none;">
+                  <div class="image-section-buttons">
+                    <button type="button" id="characterImageBtn1" class="character-image-btn">Choose Image 1</button>
+                    <button type="button" id="removeImageBtn1" class="character-image-remove" style="display: none;">Remove</button>
+                    <button type="button" id="updateImageBtn1" class="character-image-btn">Update</button>
+                  </div>
+                </div>
+                <div class="character-image-section">
+                  <div class="character-image-preview" id="characterImagePreview2"></div>
+                  <input type="file" id="characterImage2" accept="image/*" style="display: none;">
+                  <div class="image-section-buttons">
+                    <button type="button" id="characterImageBtn2" class="character-image-btn">Choose Image 2</button>
+                    <button type="button" id="removeImageBtn2" class="character-image-remove" style="display: none;">Remove</button>
+                    <button type="button" id="updateImageBtn2" class="character-image-btn">Update</button>
+                  </div>
+                </div>
+              </div>
+                </div>
+                
+                <!-- Character Preview Section -->
+                <div class="character-preview-section">
+                  <h4>Preview:</h4>
+                  <div id="characterPreview" class="character-preview-text">
+                    <!-- Generated character description will appear here -->
+                  </div>
+                  <div class="preview-actions">
+                    <button id="copyToClipboardBtn" class="character-builder-btn character-builder-btn-info">Copy to Clipboard</button>
+                    <button id="exportMarkdownBtn" class="character-builder-btn character-builder-btn-warning">Export Markdown</button>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="character-builder-actions">
+                <div class="image-controls">
+                  <!-- Update buttons moved to individual image sections -->
+                </div>
+                <div class="main-actions">
+            <button id="saveCharacterBtn" class="character-builder-btn character-builder-btn-primary">Add Character</button>
+            <button id="updateCharacterBtn" class="character-builder-btn character-builder-btn-secondary">Update Character</button>
+                  <button id="clearCharacterBtn" class="character-builder-btn character-builder-btn-warning">Clear</button>
+                  <button id="addToBoardBtn" class="character-builder-btn character-builder-btn-success">Add to Board</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
       <!-- Edit Snippet Modal -->
     <div id="editSnippetModal" class="modal" style="display: none">
@@ -741,23 +882,6 @@
       </div>
     </div>
 
-    <!-- Confirmation Modal -->
-    <div id="confirmModal" class="modal" style="display: none">
-      <div class="modal-content">
-        <h3 id="confirmModalTitle">Are you sure?</h3>
-        <p id="confirmModalMessage"></p>
-        <input
-          id="confirmDeleteInput"
-          type="text"
-          placeholder="Type 'delete' to confirm"
-          style="width: 100%; margin-bottom: 12px"
-        />
-        <div class="modal-buttons">
-          <button id="confirmBtn">Confirm</button>
-          <button id="cancelBtn">Cancel</button>
-        </div>
-      </div>
-    </div>
 
     <!-- Color Picker Modal -->
     <div id="colorPickerModal" class="color-picker-modal">
@@ -936,5 +1060,18 @@
 
     <script src="https://unpkg.com/exifreader@4.21.0/dist/exif-reader.js"></script>
     <script type="module" src="app.js"></script>
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="modal" style="display: none;">
+      <div class="modal-content">
+        <h3 id="confirmationTitle">Confirm Action</h3>
+        <p id="confirmationMessage">Are you sure you want to proceed?</p>
+        <div class="modal-buttons">
+          <button id="confirmationCancel" class="character-builder-btn character-builder-btn-secondary">Cancel</button>
+          <button id="confirmationConfirm" class="character-builder-btn character-builder-btn-danger">Confirm</button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="utils/characterBuilder.js"></script>
   </body>
 </html>

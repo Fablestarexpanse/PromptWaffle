@@ -210,16 +210,27 @@ export function isElectronAPIAvailable() {
   );
 }
 export async function safeElectronAPICall(method, ...args) {
+  console.log(`[Utils] safeElectronAPICall called: ${method}`, args);
   if (!isElectronAPIAvailable()) {
+    console.error(`[Utils] Electron API not available for method: ${method}`);
     throw new Error(`Electron API not available. Method: ${method}`);
   }
   if (typeof window.electronAPI[method] !== 'function') {
+    console.error(`[Utils] Electron API method '${method}' not found. Available methods:`, Object.keys(window.electronAPI));
     throw new Error(`Electron API method '${method}' not found`);
   }
   try {
-    return await window.electronAPI[method](...args);
+    console.log(`[Utils] Calling window.electronAPI.${method}...`);
+    const result = await window.electronAPI[method](...args);
+    console.log(`[Utils] window.electronAPI.${method} completed successfully`);
+    return result;
   } catch (error) {
-    console.error(`Electron API call failed for method '${method}':`, error);
+    console.error(`[Utils] Electron API call failed for method '${method}':`, error);
+    console.error(`[Utils] Error details:`, {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
     throw error;
   }
 }

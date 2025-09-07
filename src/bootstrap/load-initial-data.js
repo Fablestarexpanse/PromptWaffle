@@ -281,13 +281,20 @@ export async function loadInitialData() {
   // 2. Fetch sidebar data from the main process
   let initialData;
   try {
+    console.log('[Bootstrap] Calling getInitialData...');
     initialData = await safeElectronAPICall('getInitialData');
+    console.log('[Bootstrap] getInitialData response:', initialData);
     if (!initialData || typeof initialData !== 'object') {
-      console.error('Invalid initial data received:', initialData);
+      console.error('[Bootstrap] Invalid initial data received:', initialData);
       throw new Error('Invalid initial data');
     }
   } catch (dataError) {
-    console.error('Error fetching initial data:', dataError);
+    console.error('[Bootstrap] Error fetching initial data:', dataError);
+    console.error('[Bootstrap] Error details:', {
+      message: dataError.message,
+      stack: dataError.stack,
+      name: dataError.name
+    });
     showToast('Error loading application data', 'error');
     return;
   }

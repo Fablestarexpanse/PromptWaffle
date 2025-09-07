@@ -16,6 +16,11 @@ PromptWaffle is a desktop application for managing, organizing, and composing AI
 
 *The Wildcard Studio interface for dynamic prompt building. Create complex prompts using profiles and wildcard categories with dice-based randomization and real-time prompt assembly.*
 
+### Character Builder
+![Character Builder Interface](screenshots/character-builder.png)
+
+*The Character Builder interface for creating detailed character descriptions. Build comprehensive character profiles with reference images, customizable attributes, and automatic prompt generation.*
+
 ## 🚀 Quick Start - Beta Program
 
 ### **Getting Started (Source-Based Installation)**
@@ -159,6 +164,18 @@ Found a bug or have a suggestion?
 - **Auto-refresh**: Automatically detects new wildcard files and folders
 - **Seamless Integration**: Works alongside the existing snippet and board system
 
+### Character Builder
+
+- **Character Creation**: Build detailed character profiles with customizable attributes
+- **Reference Images**: Upload and manage character reference images with automatic resizing
+- **Character Library**: Organize characters with visual thumbnails and quick access
+- **Automatic Prompt Generation**: Generate AI-ready character descriptions from form data
+- **Character Duplication**: Clone existing characters with automatic naming conventions
+- **Image Management**: Upload, update, and remove character reference images
+- **Export Options**: Copy character prompts to clipboard or export as Markdown
+- **Sidebar Integration**: Characters appear as special snippets in the sidebar with unique styling
+- **Drag-and-Drop Support**: Drag character snippets directly onto boards for prompt composition
+
 ### Image Management
 
 - **Reference Images**: Add reference images to boards for visual context
@@ -196,7 +213,46 @@ Found a bug or have a suggestion?
 
 ## Release Notes
 
-### Version 1.3.1 (Current)
+### Version 1.4.0 (Current)
+
+#### New Features
+
+- **Character Builder**: Comprehensive character creation and management system
+  - Character profile creation with customizable attributes (name, gender, age, hair, eyes, clothing, style, personality, genitals, tags)
+  - Reference image upload and management with automatic resizing and optimization
+  - Character library with visual thumbnails and organized display
+  - Automatic AI-ready prompt generation from character data
+  - Character duplication with intelligent naming conventions (e.g., Character_01, Character_02)
+  - Image management with upload, update, and removal capabilities
+  - Export options including clipboard copy and Markdown export
+  - Sidebar integration as special character snippets with unique styling
+  - Drag-and-drop support for adding characters to boards
+  - Styled confirmation modals for all delete operations
+
+#### Improvements
+
+- **Unified Confirmation System**: Replaced all browser confirm() dialogs with styled, centered modals
+- **Enhanced User Experience**: No more typing "delete" - simple click-to-confirm interface
+- **Consistent Styling**: All confirmation dialogs now match the application's design language
+- **Better Image Handling**: Improved character image switching and display
+- **Character Management**: Enhanced character library with better organization and visual feedback
+
+#### Bug Fixes
+
+- Fixed character image switching to properly clear and display correct images
+- Resolved duplicate character creation issues
+- Fixed character deletion to properly remove from all locations (file system, AppState, sidebar)
+- Improved character duplication to create independent image copies
+- Enhanced character validation to prevent empty character creation
+
+#### Technical
+
+- **Global Confirmation Modal**: Reusable confirmation system for consistent user experience
+- **Character Data Format**: Standardized character storage with snippet compatibility
+- **Image Management**: Enhanced image handling with proper file system operations
+- **State Management**: Improved AppState synchronization for character operations
+
+### Version 1.3.1
 
 #### New Features
 
@@ -335,20 +391,21 @@ Found a bug or have a suggestion?
 ## Getting Started
 
 1. **Create Your First Snippet**: Click the "+" button in the sidebar or right-click on the board
-2. **Try Wildcard Studio**: Click the "Wildcard Studio" button to create dynamic prompts with wildcards
-3. **Organize with Folders**: Create folders to organize snippets by category (characters, styles, etc.)
-4. **Build a Prompt**: Drag snippets onto the board to compose your prompt
-5. **Add Visual Context**: Use "Add Image" for reference images or "Set Folder" for live preview
-6. **Customize Layout**: Resize, color-code, and arrange cards as needed
-7. **Export Results**: Copy the compiled prompt or save it as a new snippet
+2. **Try Character Builder**: Click the "Character Builder" button to create detailed character profiles
+3. **Try Wildcard Studio**: Click the "Wildcard Studio" button to create dynamic prompts with wildcards
+4. **Organize with Folders**: Create folders to organize snippets by category (characters, styles, etc.)
+5. **Build a Prompt**: Drag snippets onto the board to compose your prompt
+6. **Add Visual Context**: Use "Add Image" for reference images or "Set Folder" for live preview
+7. **Customize Layout**: Resize, color-code, and arrange cards as needed
+8. **Export Results**: Copy the compiled prompt or save it as a new snippet
 
 ### Workflow Example
 
-1. **Use Wildcard Studio**: Select a profile and roll wildcards for dynamic prompt generation
-2. Create character description snippets
+1. **Create Characters**: Use the Character Builder to create detailed character profiles with reference images
+2. **Use Wildcard Studio**: Select a profile and roll wildcards for dynamic prompt generation
 3. Create style and technique snippets
 4. Create environment and lighting snippets
-5. Drag combinations onto a board
+5. Drag character snippets and other components onto a board
 6. Add reference images for visual context
 7. Set up live preview to monitor AI generation output
 8. Arrange and color-code for clarity

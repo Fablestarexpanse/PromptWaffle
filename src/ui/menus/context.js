@@ -5,6 +5,7 @@ import {
 } from '../../utils/index.js';
 import { showColorPicker } from './color.js';
 import { AppState } from '../../state/appState.js';
+import { showDeleteConfirmation } from '../../utils/confirmationModal.js';
 
 import * as bootstrap from '../../bootstrap/index.js';
 /**
@@ -331,66 +332,29 @@ export function showSnippetContextMenu(e, snippet, path) {
     const deleteIcon = document.createElement('i');
     deleteIcon.setAttribute('data-feather', 'trash-2');
     deleteItem.insertBefore(deleteIcon, deleteItem.firstChild);
-    deleteItem.onclick = () => {
+    deleteItem.onclick = async () => {
       try {
         contextMenu.remove();
         const snippetText = snippet.text
                   ? escapeHtml(snippet.text.substring(0, 50)) +
           (snippet.text.length > 50 ? '...' : '')
           : 'this snippet';
-        // Show confirmation modal
-        const modal = document.getElementById('confirmModal');
-        const title = document.getElementById('confirmModalTitle');
-        const message = document.getElementById('confirmModalMessage');
-        const confirmBtn = document.getElementById('confirmBtn');
-        const cancelBtn = document.getElementById('cancelBtn');
-        const confirmInput = document.getElementById('confirmDeleteInput');
-        if (
-          !modal ||
-          !title ||
-          !message ||
-          !confirmBtn ||
-          !cancelBtn ||
-          !confirmInput
-        ) {
-          showToast('Confirmation modal not found', 'error');
+        
+        const confirmed = await showDeleteConfirmation(snippetText, 'snippet');
+        
+        if (!confirmed) {
           return;
         }
-        title.textContent = 'Delete Snippet?';
-        message.innerHTML = `<b>Are you sure?</b><br>This will <span style='color:#e74c3c;font-weight:bold;'>permanently delete</span> the snippet:<br><br><i>"${snippetText}"</i><br><br>This action <span style='color:#e74c3c;font-weight:bold;'>cannot be undone</span>.`;
-        modal.style.display = 'flex';
-        // Reset input and button state
-        confirmInput.value = '';
-        confirmBtn.disabled = true;
-        confirmInput.style.borderColor = '';
-        // Remove any previous event listeners
-        confirmBtn.onclick = null;
-        cancelBtn.onclick = null;
-        confirmInput.oninput = null;
-        confirmInput.oninput = () => {
-          if (confirmInput.value.trim().toLowerCase() === 'delete') {
-            confirmBtn.disabled = false;
-            confirmInput.style.borderColor = '#27ae60';
-          } else {
-            confirmBtn.disabled = true;
-            confirmInput.style.borderColor = '';
-          }
-        };
-        confirmBtn.onclick = async () => {
-          modal.style.display = 'none';
-          try {
-            const { deleteSnippetByPath } = await import(
-              '../../bootstrap/sidebar.js'
-            );
-            await deleteSnippetByPath(path);
-          } catch (error) {
-            console.error('Error deleting snippet:', error);
-            showToast('Error deleting snippet', 'error');
-          }
-        };
-        cancelBtn.onclick = () => {
-          modal.style.display = 'none';
-        };
+
+        try {
+          const { deleteSnippetByPath } = await import(
+            '../../bootstrap/sidebar.js'
+          );
+          await deleteSnippetByPath(path);
+        } catch (error) {
+          console.error('Error deleting snippet:', error);
+          showToast('Error deleting snippet', 'error');
+        }
       } catch (error) {
         console.error('Error in delete snippet menu item:', error);
       }

@@ -3,43 +3,34 @@
     "id": "board-default",
     "name": "Default Board",
     "tags": [],
+    "cards": [],
+    "groups": [],
+    "images": [],
+    "createdAt": "2025-09-06T21:36:49.108Z",
+    "modifiedAt": "2025-09-06T21:36:49.109Z",
+    "filePath": "Start Here\\default_board.json"
+  },
+  {
+    "id": "board-1756699254902",
+    "name": "test 2",
+    "tags": [
+      "test2"
+    ],
     "cards": [
       {
-        "id": "card-1756873438152",
+        "id": "card-1757196387465",
         "snippetPath": "Start Here/default_cyberpunk.json",
-        "x": 100,
-        "y": 21,
-        "width": 477,
-        "height": 93,
-        "locked": false,
-        "color": "#E74C3C"
-      },
-      {
-        "id": "card-1756873447508",
-        "snippetPath": "Start Here/default_photorealistic.json",
-        "x": 609,
-        "y": 28,
-        "width": 488,
-        "height": 119,
+        "x": 124,
+        "y": 36.859375,
         "locked": false,
         "color": "#3498DB"
-      },
-      {
-        "id": "card-1756873453047",
-        "snippetPath": "Start Here/default_space.json",
-        "x": 310,
-        "y": 187,
-        "width": 649,
-        "height": 89,
-        "locked": false,
-        "color": "#2ECC71"
       }
     ],
     "groups": [],
     "images": [],
-    "createdAt": "2025-07-18T00:01:10.279Z",
-    "modifiedAt": "2025-07-18T00:01:10.279Z",
-    "filePath": "Start Here\\default_board.json"
+    "createdAt": "2025-09-01T04:00:54.902Z",
+    "modifiedAt": "2025-09-01T04:00:54.902Z",
+    "filePath": "Start Here\\test_2_1756699254902.json"
   },
   {
     "id": "board-1753315898800",
@@ -53,18 +44,5 @@
     "createdAt": "2025-07-24T00:11:38.800Z",
     "modifiedAt": "2025-07-24T00:11:38.800Z",
     "filePath": "Start Here\\test_board_1753315898801.json"
-  },
-  {
-    "id": "board-1756699254902",
-    "name": "test 2",
-    "tags": [
-      "test2"
-    ],
-    "cards": [],
-    "groups": [],
-    "images": [],
-    "createdAt": "2025-09-01T04:00:54.902Z",
-    "modifiedAt": "2025-09-01T04:00:54.902Z",
-    "filePath": "Start Here\\test_2_1756699254902.json"
   }
 ]

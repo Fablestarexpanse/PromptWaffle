@@ -1,0 +1,16 @@
+# Character Builder Screenshot Placeholder
+
+This file represents a screenshot of the Character Builder feature in PromptWaffle v1.4.0.
+
+The Character Builder includes:
+- Character creation and editing interface
+- Reference image upload and management
+- Character prompt generation
+- Character library with duplicate functionality
+- Styled confirmation modals for deletions
+- Integration with the main application sidebar
+
+To add the actual screenshot:
+1. Take a screenshot of the Character Builder modal
+2. Save it as character-builder.png in the screenshots folder
+3. Replace this placeholder file
