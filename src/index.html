@@ -47,7 +47,7 @@
               alt="PromptWaffle Logo"
             />
             <p class="tagline">Break it. Remix it. Generate better.</p>
-            <p class="version">v<span id="currentVersion">1.4.0</span></p>
+            <p class="version">v<span id="currentVersion">1.4.1</span></p>
             <button
               id="checkForUpdatesBtn"
               class="update-check-btn"
@@ -276,6 +276,19 @@
                     Create and manage character descriptions
                   </div>
                 </div>
+                <div class="control-group">
+                  <button
+                    id="openWildcardStudioBtn"
+                    class="control-btn"
+                    title="Open Wildcard Studio"
+                  >
+                    <i data-feather="shuffle"></i>
+                    <span>Wildcard Studio</span>
+                  </button>
+                  <div class="control-description">
+                    Create and manage wildcard collections
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -319,6 +332,19 @@
             <div class="board-section reference-images-section">
               <div class="section-label">Reference Images</div>
               <div id="referenceImagesContainer" class="reference-images-container"></div>
+              
+              <!-- Character Images Display -->
+              <div id="characterImagesDisplay" class="character-images-display" style="display: none;">
+                <div class="character-images-header">
+                  <span class="character-images-title">Active Character</span>
+                  <button id="closeCharacterImagesBtn" class="close-character-images-btn" title="Close character images">
+                    <i data-feather="x"></i>
+                  </button>
+                </div>
+                <div id="characterImagesContainer" class="character-images-container">
+                  <!-- Character images will be displayed here -->
+                </div>
+              </div>
             </div>
 
             <!-- Appearance Section -->
@@ -358,6 +384,7 @@
             <div id="boardTagsDisplay" class="board-tags-display">            </div>
           </div>
         </div>
+
         
         <div class="board-container">
           <div class="board-layout">

@@ -3037,6 +3037,108 @@ select:focus {
   stroke-width: 2.5;
 }
 
+/* Character Images Display within Reference Images Section */
+.character-images-display {
+  background: rgba(47, 49, 54, 0.3);
+  border: 1px solid rgba(79, 84, 92, 0.3);
+  border-radius: 8px;
+  margin-top: 12px;
+  padding: 12px;
+  transition: all 0.3s ease;
+}
+
+.character-images-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(79, 84, 92, 0.3);
+}
+
+.character-images-title {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.close-character-images-btn {
+  background: rgba(79, 84, 92, 0.5);
+  border: none;
+  border-radius: 4px;
+  color: #dcddde;
+  padding: 0.25rem;
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.close-character-images-btn:hover {
+  background: #ed4245;
+  color: white;
+  transform: scale(1.1);
+}
+
+.close-character-images-btn svg {
+  width: 12px;
+  height: 12px;
+  stroke-width: 2.5;
+}
+
+.character-images-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.character-image-thumb {
+  position: relative;
+  width: 100%;
+  height: 150px;
+  background: #23272e;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(79, 84, 92, 0.3);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.character-image-thumb:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border-color: rgba(79, 84, 92, 0.6);
+}
+
+.character-image-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.character-image-thumb:hover img {
+  transform: scale(1.05);
+}
+
+.character-image-thumb .image-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+  color: white;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-align: center;
+}
+
 /* Live Preview Container */
 .live-preview-container {
   margin-top: 0.75rem;

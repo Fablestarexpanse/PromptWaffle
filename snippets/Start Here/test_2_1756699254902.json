@@ -4,16 +4,7 @@
   "tags": [
     "test2"
   ],
-  "cards": [
-    {
-      "id": "card-1757196387465",
-      "snippetPath": "Start Here/default_cyberpunk.json",
-      "x": 124,
-      "y": 36.859375,
-      "locked": false,
-      "color": "#3498DB"
-    }
-  ],
+  "cards": [],
   "groups": [],
   "images": [],
   "createdAt": "2025-09-01T04:00:54.902Z",

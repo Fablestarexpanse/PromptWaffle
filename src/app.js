@@ -157,11 +157,75 @@ async function init() {
           });
         }
         
+        // Setup wildcard studio event listeners
+        const openWildcardStudioBtn = document.getElementById('openWildcardStudioBtn');
+        
+        if (openWildcardStudioBtn) {
+          openWildcardStudioBtn.addEventListener('click', async () => {
+            try {
+              const { promptKitUI } = await import('./utils/promptkit-ui.js');
+              await promptKitUI.openModal();
+            } catch (error) {
+              console.error('Error opening Wildcard Studio:', error);
+              const { showToast } = await import('./utils/index.js');
+              showToast('Error opening Wildcard Studio', 'error');
+            }
+          });
+        }
+        
         console.log('Character Builder initialized successfully');
       } catch (error) {
         console.warn('Character Builder not available:', error);
       }
     }, 600); // Wait slightly after metadata panel
+
+    // Initialize Character Display
+    setTimeout(async () => {
+      try {
+        console.log('Attempting to initialize Character Display...');
+        
+        // Test if DOM elements are found first
+        const testDisplay = document.getElementById('characterImagesDisplay');
+        const testContainer = document.getElementById('characterImagesContainer');
+        console.log('Character Display DOM test - Display found:', !!testDisplay, 'Container found:', !!testContainer);
+        
+        if (!testDisplay || !testContainer) {
+          console.error('Character Display DOM elements not found!');
+          return;
+        }
+        
+        const { characterDisplay } = await import('./utils/characterDisplay.js');
+        console.log('Character Display module imported successfully');
+        console.log('Character Display instance:', characterDisplay);
+        
+        // Test the character display functionality
+        window.testCharacterDisplay = characterDisplay;
+        console.log('Character Display available globally as window.testCharacterDisplay');
+        
+        // Add a test function to manually trigger character display
+        window.testShowCharacter = async () => {
+          console.log('Testing character display with Test character...');
+          try {
+            const testSnippet = {
+              type: 'character',
+              characterData: {
+                imagePath1: 'snippets/characters/images/char_1757204863323_806f2vm5d_1.jpg',
+                imagePath2: 'snippets/characters/images/char_1757204863323_806f2vm5d_2.jpg'
+              }
+            };
+            await characterDisplay.showCharacterImages(testSnippet);
+            console.log('Character display test completed');
+          } catch (error) {
+            console.error('Character display test failed:', error);
+          }
+        };
+        console.log('Test function available as window.testShowCharacter()');
+        
+      } catch (error) {
+        console.error('Character Display initialization failed:', error);
+        console.error('Error stack:', error.stack);
+      }
+    }, 1000); // Wait longer to ensure DOM is ready
     // Set current version in UI
     const versionElement = document.getElementById('currentVersion');
     if (versionElement) {

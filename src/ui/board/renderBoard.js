@@ -5,6 +5,7 @@ import {
   injectBoardImages,
   postRenderSync
 } from './render/index.js';
+import { characterDisplay } from '../../utils/characterDisplay.js';
 export async function renderBoard(dependencies) {
   const boardContainer = document.getElementById('promptBoard');
   if (!boardContainer) return;
@@ -36,6 +37,10 @@ export async function renderBoard(dependencies) {
       boardContainer.appendChild(cardDiv);
     });
     postRenderSync(boardContainer);
+    
+    // Update character display based on active board cards
+    console.log('renderBoard: Updating character display for board cards:', activeBoard.cards);
+    characterDisplay.updateCharacterDisplayForBoard(activeBoard.cards);
   }
   await injectBoardImages();
 }
