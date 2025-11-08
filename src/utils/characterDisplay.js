@@ -125,6 +125,10 @@ export class CharacterDisplay {
         return null;
       }
 
+      // Convert ArrayBuffer to Blob URL
+      const blob = new Blob([imageData], { type: 'image/png' });
+      const blobUrl = URL.createObjectURL(blob);
+
       // Create thumbnail element
       const thumbDiv = document.createElement('div');
       thumbDiv.className = 'character-image-thumb';
@@ -132,7 +136,7 @@ export class CharacterDisplay {
 
       // Create image element
       const img = document.createElement('img');
-      img.src = imageData;
+      img.src = blobUrl;
       img.alt = label;
       img.loading = 'lazy';
 
@@ -143,7 +147,7 @@ export class CharacterDisplay {
 
       // Add click handler for full-size view
       thumbDiv.addEventListener('click', () => {
-        this.showFullSizeImage(imageData, label);
+        this.showFullSizeImage(blobUrl, label);
       });
 
       thumbDiv.appendChild(img);

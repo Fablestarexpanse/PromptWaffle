@@ -26,7 +26,9 @@ const cardColorPalette = [
 ];
 // UI Constants for card colors
 const UI_CONSTANTS = {
-  CARD_COLOR_PALETTE: cardColorPalette
+  CARD_COLOR_PALETTE: cardColorPalette,
+  DEFAULT_CARD_WIDTH: 200,
+  DEFAULT_CARD_HEIGHT: 100
 };
 // Application state management - encapsulated to prevent global pollution
 const AppState = {
@@ -162,6 +164,9 @@ const AppState = {
   },
   setSnippets(snippets) {
     this.snippets = snippets && typeof snippets === 'object' ? snippets : {};
+  },
+  getSnippetByPath(path) {
+    return this.snippets[path] || null;
   },
   // Text selection state methods
   getCurrentSelectedText() {

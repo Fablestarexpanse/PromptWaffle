@@ -306,7 +306,7 @@ ipcMain.handle('fs-mkdir', async (event, dirPath) => {
 ipcMain.handle('fs-rmdir', async (event, dirPath) => {
   try {
     const fullPath = path.join(__dirname, dirPath);
-    await fs.rmdir(fullPath, { recursive: true });
+    await fs.rm(fullPath, { recursive: true, force: true });
     return true;
   } catch (error) {
     console.error('Error removing directory:', error);
