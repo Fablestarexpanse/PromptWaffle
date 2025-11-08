@@ -1,7 +1,7 @@
 import { CONSTANTS } from '../../state/appState.js';
 import { createTreeStyles, applyStyles } from '../../utils/index.js';
 import { escapeHtml } from '../../utils/escapeHtml.js';
-import { createDragImage } from '../../ui/dnd.js';
+import { createDragImage, cleanupDragImages } from '../../ui/dnd.js';
 /**
  * Create a snippet element with improved error handling and defensive programming
  * @param {Object} props - The properties for the snippet element.
@@ -249,11 +249,20 @@ export function createSnippetElement({
           tooltip.remove();
           tooltip = null;
         }
+        // Clean up any orphaned drag images first
+        cleanupDragImages();
         // Create enhanced drag image with better cleanup
         const dragImageData = createDragImage(snippet.text || '', 'snippet');
         if (dragImageData && dragImageData.element) {
           e.dataTransfer.setDragImage(dragImageData.element, 10, 10);
           currentDragImage = dragImageData;
+          // Set a failsafe timeout to clean up the drag image
+          setTimeout(() => {
+            if (currentDragImage && currentDragImage.cleanup) {
+              currentDragImage.cleanup();
+              currentDragImage = null;
+            }
+          }, 5000); // Clean up after 5 seconds if dragend didn't fire
         }
         const dragData = {
           type: 'snippet-drag',
