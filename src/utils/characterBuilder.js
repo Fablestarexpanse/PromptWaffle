@@ -15,6 +15,9 @@ class CharacterBuilder {
     this.characterLibrary = null;
     this.characterEditor = null;
     this.characterPreview = null;
+    // Event handler references for cleanup
+    this.mouseMoveHandler = null;
+    this.mouseUpHandler = null;
   }
 
   /**
@@ -93,7 +96,8 @@ class CharacterBuilder {
       }
     });
 
-    document.addEventListener('mousemove', (e) => {
+    // Store handlers as class properties for cleanup
+    this.mouseMoveHandler = (e) => {
       if (isDragging) {
         e.preventDefault();
         currentX = e.clientX - initialX;
@@ -104,16 +108,19 @@ class CharacterBuilder {
 
         modalContent.style.transform = `translate(${currentX}px, ${currentY}px)`;
       }
-    });
+    };
 
-    document.addEventListener('mouseup', () => {
+    this.mouseUpHandler = () => {
       if (isDragging) {
         initialX = currentX;
         initialY = currentY;
         isDragging = false;
         header.style.cursor = 'move';
       }
-    });
+    };
+
+    document.addEventListener('mousemove', this.mouseMoveHandler);
+    document.addEventListener('mouseup', this.mouseUpHandler);
 
     // Reset position when modal is closed
     this.modal.addEventListener('click', (e) => {
@@ -182,12 +189,14 @@ class CharacterBuilder {
     }
 
     // Form inputs - update preview on change
-    const formInputs = this.characterEditor.querySelectorAll('input, select');
-    formInputs.forEach(input => {
-      input.addEventListener('input', () => {
-        this.updatePreview();
+    if (this.characterEditor) {
+      const formInputs = this.characterEditor.querySelectorAll('input, select');
+      formInputs.forEach(input => {
+        input.addEventListener('input', () => {
+          this.updatePreview();
+        });
       });
-    });
+    }
 
     // Image upload functionality
     const imageBtn1 = document.getElementById('characterImageBtn1');
@@ -1407,11 +1416,19 @@ class CharacterBuilder {
   closeModal() {
     if (this.modal) {
       this.modal.style.display = 'none';
-      
+
       // Reset modal position
       const modalContent = this.modal.querySelector('.character-builder-modal-content');
       if (modalContent) {
         modalContent.style.transform = 'translate(0px, 0px)';
+      }
+
+      // Clean up event listeners to prevent memory leaks
+      if (this.mouseMoveHandler) {
+        document.removeEventListener('mousemove', this.mouseMoveHandler);
+      }
+      if (this.mouseUpHandler) {
+        document.removeEventListener('mouseup', this.mouseUpHandler);
       }
     }
   }

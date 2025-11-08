@@ -501,7 +501,7 @@ export function checkDataIntegrity() {
       return true;
     });
     if (validBoards.length !== boards.length) {
-      boards = validBoards;
+      AppState.setBoards(validBoards);
       scheduleAutosave();
     }
     return true;

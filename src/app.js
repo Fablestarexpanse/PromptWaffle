@@ -6,6 +6,18 @@ import { tutorial } from './tutorial.js';
 import { versionChecker } from './utils/version-checker.js';
 import { updateUI } from './utils/update-ui.js';
 import { LoadingScreen } from './utils/loading-screen.js';
+
+// Initialization timing constants
+const INIT_DELAYS = {
+  METADATA_PANEL: 500,      // Wait for board system to be fully initialized
+  CHARACTER_BUILDER: 600,   // Wait slightly after metadata panel
+  CHARACTER_DISPLAY: 1000,  // Wait longer to ensure DOM is ready
+  TUTORIAL_START: 1000,     // Wait for UI to be fully loaded
+  UPDATE_MODAL: 2000,       // Delay before showing update notification
+  VERSION_CHECK: 3000,      // Delay before checking for updates
+  LOADING_SCREEN: 1000      // Minimum time before hiding loading screen
+};
+
 async function init() {
   console.log('[Renderer] Starting application initialization...');
   // Initialize loading screen
@@ -140,7 +152,7 @@ async function init() {
       } catch (error) {
         console.warn('Metadata panel not available:', error);
       }
-    }, 500); // Wait for board system to be fully initialized
+    }, INIT_DELAYS.METADATA_PANEL);
     
     // Initialize character builder after board system is ready
     setTimeout(async () => {
@@ -177,7 +189,7 @@ async function init() {
       } catch (error) {
         console.warn('Character Builder not available:', error);
       }
-    }, 600); // Wait slightly after metadata panel
+    }, INIT_DELAYS.CHARACTER_BUILDER);
 
     // Initialize Character Display
     setTimeout(async () => {
@@ -225,7 +237,7 @@ async function init() {
         console.error('Character Display initialization failed:', error);
         console.error('Error stack:', error.stack);
       }
-    }, 1000); // Wait longer to ensure DOM is ready
+    }, INIT_DELAYS.CHARACTER_DISPLAY);
     // Set current version in UI
     const versionElement = document.getElementById('currentVersion');
     if (versionElement) {
@@ -236,7 +248,7 @@ async function init() {
       if (tutorial.shouldShowTutorial()) {
         tutorial.start();
       }
-    }, 1000);
+    }, INIT_DELAYS.TUTORIAL_START);
     // Check for updates after a delay to avoid blocking startup
     setTimeout(async () => {
       try {
@@ -248,7 +260,7 @@ async function init() {
           if (updateInfo.success && updateInfo.isOutdated) {
             setTimeout(() => {
               updateUI.showStoredUpdateNotification();
-            }, 2000); // Show modal after 2 seconds
+            }, INIT_DELAYS.UPDATE_MODAL);
           }
         } else {
           // Show stored update notification if available
@@ -257,12 +269,12 @@ async function init() {
       } catch (error) {
         console.error('❌ Error during version check:', error);
       }
-    }, 3000); // Check for updates 3 seconds after startup
-    
+    }, INIT_DELAYS.VERSION_CHECK);
+
     // Ensure loading screen is hidden after everything is initialized
     setTimeout(() => {
       loadingScreen.hide();
-    }, 1000);
+    }, INIT_DELAYS.LOADING_SCREEN);
     
   } catch (error) {
     console.error('[Renderer] Fatal error during application initialization:', error);
