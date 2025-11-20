@@ -36,7 +36,7 @@ export function buildCardElement(
   const header = document.createElement('div');
   header.className = 'card-header';
   header.title = 'Drag to move card';
-  if (snippet.tags && Array.isArray(snippet.tags) && snippet.tags.length > 0) {
+  if (snippet.tags.length > 0) {
     // Create individual tag elements
     snippet.tags.forEach((tag, index) => {
       const tagSpan = document.createElement('span');

@@ -5,7 +5,6 @@ import {
 } from '../../utils/index.js';
 import { escapeHtml } from '../../utils/escapeHtml.js';
 import { showToast } from '../../utils/index.js';
-import { createDragImage, cleanupDragImages } from '../../ui/dnd.js';
 /**
  * Create a folder element with improved error handling and defensive programming
  * @param {Object} props - The properties for the folder element.
@@ -199,7 +198,6 @@ export function createFolderElement({
     folderElement.appendChild(content);
     // Make only the header draggable, not the entire folder element
     header.draggable = true;
-    let currentDragImage = null;
     header.addEventListener('dragstart', e => {
       e.dataTransfer.setData(
         'application/json',
@@ -209,27 +207,12 @@ export function createFolderElement({
           name
         })
       );
-      // Clean up any orphaned drag images first
-      cleanupDragImages();
-      // Create drag image
-      const dragImageData = createDragImage(name, 'folder');
-      if (dragImageData && dragImageData.element) {
-        e.dataTransfer.setDragImage(dragImageData.element, 10, 10);
-        currentDragImage = dragImageData;
-        // Set a failsafe timeout to clean up the drag image
-        setTimeout(() => {
-          if (currentDragImage && currentDragImage.cleanup) {
-            currentDragImage.cleanup();
-            currentDragImage = null;
-          }
-        }, 5000); // Clean up after 5 seconds if dragend didn't fire
-      }
-    });
-    header.addEventListener('dragend', e => {
-      // Clean up drag image
-      if (currentDragImage && currentDragImage.cleanup) {
-        currentDragImage.cleanup();
-        currentDragImage = null;
+      // Optionally, set a drag image
+      if (typeof createDragImage === 'function') {
+        const dragImageData = createDragImage(name, 'folder');
+        if (dragImageData && dragImageData.element) {
+          e.dataTransfer.setDragImage(dragImageData.element, 10, 10);
+        }
       }
     });
     // Remove draggable and dragstart from folderElement

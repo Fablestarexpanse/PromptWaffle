@@ -4,20 +4,14 @@
   "tags": [],
   "cards": [
     {
-      "id": "card-1757206821742",
+      "id": "card-1763619302091",
       "snippetPath": "Start Here/default_cyberpunk.json",
-      "x": 551,
-      "y": 85.859375,
+      "x": 140,
+      "y": 86.859375,
       "locked": false,
-      "color": "#E74C3C"
-    },
-    {
-      "id": "card-1757206822589",
-      "snippetPath": "Start Here/default_photorealistic.json",
-      "x": 297,
-      "y": 129.859375,
-      "locked": false,
-      "color": "#3498DB"
+      "color": "#3498DB",
+      "width": 406,
+      "height": 228
     }
   ],
   "groups": [],

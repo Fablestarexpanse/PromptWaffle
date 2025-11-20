@@ -1,13 +1,13 @@
 ---
 title: "Untitled Board"
-created: "2025-09-06T22:09:05.347Z"
+created: "2025-09-07T05:57:42.851Z"
 tags: []
 ---
 
 # 🎨 Untitled Board
 
 > [!info] Export Info
-> **Created:** 9/6/2025, 3:09:05 PM
+> **Created:** 9/6/2025, 10:57:42 PM
 > **Source:** PromptWaffle
 > **Type:** AI Image Generation Prompt
 
@@ -16,20 +16,8 @@ tags: []
 ## 📝 Compiled Prompt
 
 > [!quote] Generated Prompt
-> female, black,tywo ponytails,
+> *No prompt compiled*
 
-
-## ⚙️ Generation Parameters
-
-> [!note] Settings
-> | Parameter | Value |
-> |-----------|-------|
-> | **Checkpoint** | `test me please` |
-> | **CFG Scale** | `5` |
-> | **Seed** | `1234` |
-> | **Steps** | `25` |
-> | **Sampler** | `Euler` |
-> | **Clip Skip** | `1` |
 
 
 

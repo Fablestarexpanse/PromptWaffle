@@ -14,7 +14,7 @@ import {
   filterByTag,
   refreshUI
 } from './index.js';
-import { createDragImage, cleanupDragImages } from '../ui/dnd.js';
+import { createDragImage } from '../ui/dnd.js';
 import { showColorPicker } from '../ui/menus/color.js';
 let activeCard = null;
 let offsetX, offsetY;
@@ -1038,8 +1038,6 @@ export async function renderBoard() {
         };
         e.dataTransfer.setData('application/json', JSON.stringify(dragData));
         e.dataTransfer.effectAllowed = 'move';
-        // Clean up any orphaned drag images first
-        cleanupDragImages();
         // Create drag image for card
         try {
           const dragImageData = createDragImage(
@@ -1049,13 +1047,6 @@ export async function renderBoard() {
           if (dragImageData && dragImageData.element) {
             e.dataTransfer.setDragImage(dragImageData.element, 10, 10);
             currentDragImage = dragImageData;
-            // Set a failsafe timeout to clean up the drag image
-            setTimeout(() => {
-              if (currentDragImage && currentDragImage.cleanup) {
-                currentDragImage.cleanup();
-                currentDragImage = null;
-              }
-            }, 5000); // Clean up after 5 seconds if dragend didn't fire
           }
         } catch (error) {
           console.error('Error creating drag image:', error);

@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "timestamp": 1757207610729,
+  "timestamp": 1763619357237,
   "boards": [
     {
       "id": "board-default",
@@ -8,20 +8,14 @@
       "tags": [],
       "cards": [
         {
-          "id": "card-1757206821742",
+          "id": "card-1763619302091",
           "snippetPath": "Start Here/default_cyberpunk.json",
-          "x": 551,
-          "y": 85.859375,
+          "x": 140,
+          "y": 86.859375,
           "locked": false,
-          "color": "#E74C3C"
-        },
-        {
-          "id": "card-1757206822589",
-          "snippetPath": "Start Here/default_photorealistic.json",
-          "x": 297,
-          "y": 129.859375,
-          "locked": false,
-          "color": "#3498DB"
+          "color": "#3498DB",
+          "width": 406,
+          "height": 228
         }
       ],
       "groups": [],
@@ -49,7 +43,28 @@
       "tags": [
         "test board"
       ],
-      "cards": [],
+      "cards": [
+        {
+          "id": "card-1763619347666",
+          "snippetPath": "Start Here/default_space.json",
+          "x": 79,
+          "y": 92.859375,
+          "width": 482,
+          "height": 287,
+          "locked": false,
+          "color": "#E74C3C"
+        },
+        {
+          "id": "card-1763619348747",
+          "snippetPath": "Start Here/default_cyberpunk.json",
+          "x": 96,
+          "y": 463.859375,
+          "width": 622,
+          "height": 167,
+          "locked": false,
+          "color": "#3498DB"
+        }
+      ],
       "groups": [],
       "images": [],
       "createdAt": "2025-07-24T00:11:38.800Z",
@@ -71,10 +86,10 @@
   },
   "uiState": {
     "expandedFolders": [
-      "PromptKit",
+      "Start Here",
       "characters"
     ],
-    "currentBoardId": "board-default",
+    "currentBoardId": "board-1753315898800",
     "searchTerm": "",
     "compiledPromptExpanded": false
   },

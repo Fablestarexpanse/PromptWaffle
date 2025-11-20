@@ -10,12 +10,12 @@ async function init() {
   console.log('[Renderer] Starting application initialization...');
   // Initialize loading screen
   const loadingScreen = new LoadingScreen();
-  
+
   try {
     console.log('[Renderer] Starting loading simulation...');
     // Start loading simulation
     loadingScreen.simulateLoading();
-    
+
     // 1. Load application state
     console.log('[Renderer] Loading application state...');
     const savedState = await bootstrap.loadApplicationState();
@@ -123,7 +123,7 @@ async function init() {
     tutorial.loadTutorialState();
     // Initialize version checking system
     updateUI.init();
-    
+
     // Initialize auto-updater UI
     try {
       const { autoUpdaterUI } = await import('./utils/auto-updater-ui.js');
@@ -131,105 +131,74 @@ async function init() {
     } catch (error) {
       console.warn('Auto-updater UI not available:', error);
     }
-    
+
     // Initialize metadata panel after board system is ready
-    setTimeout(async () => {
-      try {
-        const { metadataPanel } = await import('./utils/metadata-panel.js');
-        // Metadata panel is automatically initialized when imported
-      } catch (error) {
-        console.warn('Metadata panel not available:', error);
-      }
-    }, 500); // Wait for board system to be fully initialized
-    
+    // Initialize metadata panel
+    try {
+      const { metadataPanel } = await import('./utils/metadata-panel.js');
+      // Metadata panel is automatically initialized when imported
+    } catch (error) {
+      console.warn('Metadata panel not available:', error);
+    }
+
     // Initialize character builder after board system is ready
-    setTimeout(async () => {
-      try {
-        const { characterBuilder } = await import('./utils/characterBuilder.js');
-        await characterBuilder.init();
-        
-        // Setup character builder event listeners
-        const openCharacterBuilderBtn = document.getElementById('openCharacterBuilderBtn');
-        
-        if (openCharacterBuilderBtn) {
-          openCharacterBuilderBtn.addEventListener('click', () => {
-            characterBuilder.openModal();
-          });
-        }
-        
-        // Setup wildcard studio event listeners
-        const openWildcardStudioBtn = document.getElementById('openWildcardStudioBtn');
-        
-        if (openWildcardStudioBtn) {
-          openWildcardStudioBtn.addEventListener('click', async () => {
-            try {
-              const { promptKitUI } = await import('./utils/promptkit-ui.js');
-              await promptKitUI.openModal();
-            } catch (error) {
-              console.error('Error opening Wildcard Studio:', error);
-              const { showToast } = await import('./utils/index.js');
-              showToast('Error opening Wildcard Studio', 'error');
-            }
-          });
-        }
-        
-        console.log('Character Builder initialized successfully');
-      } catch (error) {
-        console.warn('Character Builder not available:', error);
+    // Initialize character builder
+    try {
+      const { characterBuilder } = await import('./utils/characterBuilder.js');
+      await characterBuilder.init();
+
+      // Setup character builder event listeners
+      const openCharacterBuilderBtn = document.getElementById('openCharacterBuilderBtn');
+
+      if (openCharacterBuilderBtn) {
+        openCharacterBuilderBtn.addEventListener('click', () => {
+          characterBuilder.openModal();
+        });
       }
-    }, 600); // Wait slightly after metadata panel
+
+      // Setup wildcard studio event listeners
+      const openWildcardStudioBtn = document.getElementById('openWildcardStudioBtn');
+
+      if (openWildcardStudioBtn) {
+        openWildcardStudioBtn.addEventListener('click', async () => {
+          try {
+            const { promptKitUI } = await import('./utils/promptkit-ui.js');
+            await promptKitUI.openModal();
+          } catch (error) {
+            console.error('Error opening Wildcard Studio:', error);
+            const { showToast } = await import('./utils/index.js');
+            showToast('Error opening Wildcard Studio', 'error');
+          }
+        });
+      }
+
+      console.log('Character Builder initialized successfully');
+    } catch (error) {
+      console.warn('Character Builder not available:', error);
+    }
 
     // Initialize Character Display
-    setTimeout(async () => {
-      try {
-        console.log('Attempting to initialize Character Display...');
-        
-        // Test if DOM elements are found first
-        const testDisplay = document.getElementById('characterImagesDisplay');
-        const testContainer = document.getElementById('characterImagesContainer');
-        console.log('Character Display DOM test - Display found:', !!testDisplay, 'Container found:', !!testContainer);
-        
-        if (!testDisplay || !testContainer) {
-          console.error('Character Display DOM elements not found!');
-          return;
-        }
-        
+    // Initialize Character Display
+    try {
+      console.log('Attempting to initialize Character Display...');
+
+      // Test if DOM elements are found first
+      const testDisplay = document.getElementById('characterImagesDisplay');
+      const testContainer = document.getElementById('characterImagesContainer');
+
+      if (testDisplay && testContainer) {
         const { characterDisplay } = await import('./utils/characterDisplay.js');
         console.log('Character Display module imported successfully');
-        console.log('Character Display instance:', characterDisplay);
-        
-        // Test the character display functionality
-        window.testCharacterDisplay = characterDisplay;
-        console.log('Character Display available globally as window.testCharacterDisplay');
-        
-        // Add a test function to manually trigger character display
-        window.testShowCharacter = async () => {
-          console.log('Testing character display with Test character...');
-          try {
-            const testSnippet = {
-              type: 'character',
-              characterData: {
-                imagePath1: 'snippets/characters/images/char_1757204863323_806f2vm5d_1.jpg',
-                imagePath2: 'snippets/characters/images/char_1757204863323_806f2vm5d_2.jpg'
-              }
-            };
-            await characterDisplay.showCharacterImages(testSnippet);
-            console.log('Character display test completed');
-          } catch (error) {
-            console.error('Character display test failed:', error);
-          }
-        };
-        console.log('Test function available as window.testShowCharacter()');
-        
-      } catch (error) {
-        console.error('Character Display initialization failed:', error);
-        console.error('Error stack:', error.stack);
+      } else {
+        console.error('Character Display DOM elements not found!');
       }
-    }, 1000); // Wait longer to ensure DOM is ready
+    } catch (error) {
+      console.error('Character Display initialization failed:', error);
+    }
     // Set current version in UI
     const versionElement = document.getElementById('currentVersion');
     if (versionElement) {
-      versionElement.textContent = versionChecker.getCurrentVersion();
+      versionElement.textContent = await versionChecker.getCurrentVersion();
     }
     // Start tutorial after a short delay to ensure UI is fully loaded
     setTimeout(() => {
@@ -258,12 +227,12 @@ async function init() {
         console.error('❌ Error during version check:', error);
       }
     }, 3000); // Check for updates 3 seconds after startup
-    
+
     // Ensure loading screen is hidden after everything is initialized
     setTimeout(() => {
       loadingScreen.hide();
     }, 1000);
-    
+
   } catch (error) {
     console.error('[Renderer] Fatal error during application initialization:', error);
     console.error('[Renderer] Error stack:', error.stack);

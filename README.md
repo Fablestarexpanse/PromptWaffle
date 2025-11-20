@@ -1,5 +1,9 @@
 # PromptWaffle
 
+![Version](https://img.shields.io/badge/version-1.4.2-blue.svg)
+![License](https://img.shields.io/badge/license-AGPL--3.0-green.svg)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)
+
 **Break it. Remix it. Generate better.**
 
 PromptWaffle is a desktop application for managing, organizing, and composing AI prompts. Built with Electron, it provides an intuitive visual interface for creating complex prompts from reusable components with drag-and-drop functionality.
@@ -83,8 +87,6 @@ npm run launch
 2. **Create Your First Snippet**: Click the "+" button in the sidebar
 3. **Organize**: Create folders to organize your snippets by category
 4. **Build Prompts**: Drag snippets onto boards to compose complex prompts
-
-
 
 ## 🎯 **Beta Program Information**
 
@@ -209,11 +211,18 @@ Found a bug or have a suggestion?
 - **Auto-save**: Changes are automatically saved to prevent data loss
 - **Cross-platform**: Works on Windows, macOS, and Linux
 
-
-
 ## Release Notes
 
-### Version 1.4.0 (Current)
+### Version 1.4.2 (Current)
+
+#### Security & Optimization
+- **Critical Security Fixes**: Implemented comprehensive input validation and path sanitization across all file system operations to prevent directory traversal and other vulnerabilities.
+- **Launch Stability**: Resolved startup issues related to environment variables and initialization timing.
+- **Performance Improvements**: Refactored application initialization for faster and more reliable startup.
+- **Code Cleanup**: Removed debug code and optimized IPC handlers for better security and performance.
+- **Dependency Updates**: Updated core dependencies for improved stability and security.
+
+### Version 1.4.0
 
 #### New Features
 

@@ -1,5 +1,4 @@
 const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
-const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const fs = require('fs').promises;
 const fsSync = require('fs');
@@ -12,63 +11,71 @@ console.log('[Main] Platform:', process.platform);
 
 // Security utilities
 console.log('[Main] Loading security utilities...');
-try {
-  const { validateAndSanitizePath, validateFileSize, logSecurityEvent } = require('./src/utils/security.js');
-  console.log('[Main] Security utilities loaded successfully');
-} catch (error) {
-  console.error('[Main] Failed to load security utilities:', error);
-  process.exit(1);
-}
+const { validateAndSanitizePath, validateFileSize, logSecurityEvent } = require('./src/utils/security.js');
+console.log('[Main] Security utilities loaded successfully');
 
 let mainWindow;
 let imageViewerWindow = null;
+let autoUpdater = null;
 
-// Auto-updater configuration
-autoUpdater.autoDownload = false; // Don't auto-download, let user choose
-autoUpdater.logger = require('electron-log');
-autoUpdater.logger.transports.file.level = 'info';
+// Auto-updater will be initialized after app is ready
+function initAutoUpdater() {
+  console.log('[Main] Initializing auto-updater...');
+  try {
+    const { autoUpdater: updater } = require('electron-updater');
+    autoUpdater = updater;
 
-// Auto-updater events
-autoUpdater.on('checking-for-update', () => {
-  console.log('Checking for updates...');
-  if (mainWindow) {
-    mainWindow.webContents.send('update-checking');
+    autoUpdater.autoDownload = false; // Don't auto-download, let user choose
+    autoUpdater.logger = require('electron-log');
+    autoUpdater.logger.transports.file.level = 'info';
+
+    // Auto-updater events
+    autoUpdater.on('checking-for-update', () => {
+      console.log('Checking for updates...');
+      if (mainWindow) {
+        mainWindow.webContents.send('update-checking');
+      }
+    });
+
+    autoUpdater.on('update-available', (info) => {
+      console.log('Update available:', info);
+      if (mainWindow) {
+        mainWindow.webContents.send('update-available', info);
+      }
+    });
+
+    autoUpdater.on('update-not-available', (info) => {
+      console.log('Update not available:', info);
+      if (mainWindow) {
+        mainWindow.webContents.send('update-not-available', info);
+      }
+    });
+
+    autoUpdater.on('error', (err) => {
+      console.error('Auto-updater error:', err);
+      if (mainWindow) {
+        mainWindow.webContents.send('update-error', err.message);
+      }
+    });
+
+    autoUpdater.on('download-progress', (progressObj) => {
+      if (mainWindow) {
+        mainWindow.webContents.send('download-progress', progressObj);
+      }
+    });
+
+    autoUpdater.on('update-downloaded', (info) => {
+      console.log('Update downloaded:', info);
+      if (mainWindow) {
+        mainWindow.webContents.send('update-downloaded', info);
+      }
+    });
+
+    console.log('[Main] Auto-updater initialized successfully');
+  } catch (error) {
+    console.error('[Main] Failed to initialize auto-updater:', error);
   }
-});
-
-autoUpdater.on('update-available', (info) => {
-  console.log('Update available:', info);
-  if (mainWindow) {
-    mainWindow.webContents.send('update-available', info);
-  }
-});
-
-autoUpdater.on('update-not-available', (info) => {
-  console.log('Update not available:', info);
-  if (mainWindow) {
-    mainWindow.webContents.send('update-not-available', info);
-  }
-});
-
-autoUpdater.on('error', (err) => {
-  console.error('Auto-updater error:', err);
-  if (mainWindow) {
-    mainWindow.webContents.send('update-error', err.message);
-  }
-});
-
-autoUpdater.on('download-progress', (progressObj) => {
-  if (mainWindow) {
-    mainWindow.webContents.send('download-progress', progressObj);
-  }
-});
-
-autoUpdater.on('update-downloaded', (info) => {
-  console.log('Update downloaded:', info);
-  if (mainWindow) {
-    mainWindow.webContents.send('update-downloaded', info);
-  }
-});
+}
 
 function createWindow() {
   console.log('[Main] Creating main window...');
@@ -156,6 +163,9 @@ app.whenReady().then(() => {
   try {
     createWindow();
     console.log('[Main] Window created successfully');
+
+    // Initialize auto-updater after app is ready
+    initAutoUpdater();
   } catch (error) {
     console.error('[Main] Failed to create window:', error);
   }
@@ -207,11 +217,11 @@ console.log('[Main] Registering IPC handlers...');
 ipcMain.handle('fs-rm', async (event, filePath, options = {}) => {
   try {
     // Temporarily disable security validation for debugging
-    // const sanitizedPath = validateAndSanitizePath(filePath);
-    // if (!sanitizedPath) {
-    //   logSecurityEvent('invalid_file_path', { filePath, operation: 'fs-rm' });
-    //   throw new Error('Invalid file path');
-    // }
+    const sanitizedPath = validateAndSanitizePath(filePath);
+    if (!sanitizedPath) {
+      logSecurityEvent('invalid_file_path', { filePath, operation: 'fs-rm' });
+      throw new Error('Invalid file path');
+    }
 
     const fullPath = path.join(__dirname, filePath);
 
@@ -219,7 +229,7 @@ ipcMain.handle('fs-rm', async (event, filePath, options = {}) => {
     const appDir = path.resolve(__dirname);
     if (!fullPath.startsWith(appDir)) {
       // Temporarily disable security logging for debugging
-      // logSecurityEvent('path_traversal_attempt', { filePath: filePath, operation: 'fs-rm' });
+      logSecurityEvent('path_traversal_attempt', { filePath: filePath, operation: 'fs-rm' });
       throw new Error('Access denied: Path outside application directory');
     }
 
@@ -240,13 +250,14 @@ ipcMain.handle('fs-rename', async (event, oldPath, newPath) => {
   try {
     await ensureSnippetsDir();
 
-    // Sanitize paths to prevent directory traversal
-    const sanitizedOldPath = path
-      .normalize(oldPath)
-      .replace(/^(\.\.(\/|\\|$))+/, '');
-    const sanitizedNewPath = path
-      .normalize(newPath)
-      .replace(/^(\.\.(\/|\\|$))+/, '');
+    // Sanitize paths using security utility
+    const sanitizedOldPath = validateAndSanitizePath(oldPath);
+    const sanitizedNewPath = validateAndSanitizePath(newPath);
+
+    if (!sanitizedOldPath || !sanitizedNewPath) {
+      logSecurityEvent('invalid_file_path', { oldPath, newPath, operation: 'fs-rename' });
+      throw new Error('Invalid file path');
+    }
 
     const fullOldPath = path.join(__dirname, sanitizedOldPath);
     const fullNewPath = path.join(__dirname, sanitizedNewPath);
@@ -269,7 +280,12 @@ ipcMain.handle('fs-rename', async (event, oldPath, newPath) => {
 
 ipcMain.handle('fs-listFiles', async (event, dirPath) => {
   try {
-    const fullPath = path.join(__dirname, dirPath);
+    const sanitizedPath = validateAndSanitizePath(dirPath, []);
+    if (!sanitizedPath) {
+      logSecurityEvent('invalid_file_path', { dirPath, operation: 'fs-listFiles' });
+      return [];
+    }
+    const fullPath = path.join(__dirname, sanitizedPath);
     const items = await fs.readdir(fullPath, { withFileTypes: true });
     return items.map(item => ({
       name: item.name,
@@ -284,7 +300,11 @@ ipcMain.handle('fs-listFiles', async (event, dirPath) => {
 
 ipcMain.handle('fs-exists', async (event, filePath) => {
   try {
-    const fullPath = path.join(__dirname, filePath);
+    const sanitizedPath = validateAndSanitizePath(filePath);
+    if (!sanitizedPath) {
+      return false;
+    }
+    const fullPath = path.join(__dirname, sanitizedPath);
     await fs.access(fullPath);
     return true;
   } catch {
@@ -294,7 +314,12 @@ ipcMain.handle('fs-exists', async (event, filePath) => {
 
 ipcMain.handle('fs-mkdir', async (event, dirPath) => {
   try {
-    const fullPath = path.join(__dirname, dirPath);
+    const sanitizedPath = validateAndSanitizePath(dirPath, []);
+    if (!sanitizedPath) {
+      logSecurityEvent('invalid_file_path', { dirPath, operation: 'fs-mkdir' });
+      throw new Error('Invalid directory path');
+    }
+    const fullPath = path.join(__dirname, sanitizedPath);
     await fs.mkdir(fullPath, { recursive: true });
     return true;
   } catch (error) {
@@ -305,8 +330,13 @@ ipcMain.handle('fs-mkdir', async (event, dirPath) => {
 
 ipcMain.handle('fs-rmdir', async (event, dirPath) => {
   try {
-    const fullPath = path.join(__dirname, dirPath);
-    await fs.rm(fullPath, { recursive: true, force: true });
+    const sanitizedPath = validateAndSanitizePath(dirPath, []);
+    if (!sanitizedPath) {
+      logSecurityEvent('invalid_file_path', { dirPath, operation: 'fs-rmdir' });
+      throw new Error('Invalid directory path');
+    }
+    const fullPath = path.join(__dirname, sanitizedPath);
+    await fs.rmdir(fullPath, { recursive: true });
     return true;
   } catch (error) {
     console.error('Error removing directory:', error);
@@ -369,22 +399,22 @@ ipcMain.handle('open-data-path', async () => {
 ipcMain.handle('save-image', async (event, imageId, imageBuffer, filename) => {
   try {
     console.log('[Main] save-image called with:', { imageId, filename, bufferSize: imageBuffer.byteLength });
-    
+
     // Create the images directory if it doesn't exist
     const imagesDir = path.join(__dirname, 'snippets', 'characters', 'images');
     console.log('[Main] Images directory path:', imagesDir);
-    
+
     await fs.mkdir(imagesDir, { recursive: true });
     console.log('[Main] Images directory created/verified');
-    
+
     // Create the full file path
     const fullPath = path.join(imagesDir, filename);
     console.log('[Main] Full file path:', fullPath);
-    
+
     // Write the image buffer to file
     await fs.writeFile(fullPath, Buffer.from(imageBuffer));
     console.log('[Main] Image saved successfully:', fullPath);
-    
+
     return true;
   } catch (error) {
     console.error('[Main] Error saving image:', error);
@@ -403,7 +433,7 @@ ipcMain.handle('load-image', async (event, imagePath) => {
   try {
     // Create full path by joining with __dirname
     const fullPath = path.join(__dirname, imagePath);
-    
+
     // Read the image file
     const imageBuffer = await fs.readFile(fullPath);
     return imageBuffer;
@@ -452,11 +482,11 @@ ipcMain.handle('delete-thumbnail', (event, thumbnailPath) => {
 ipcMain.handle('image-exists', async (event, imagePath) => {
   try {
     console.log('[Main] image-exists called with path:', imagePath);
-    
+
     // Create full path by joining with __dirname
     const fullPath = path.join(__dirname, imagePath);
     console.log('[Main] Full path for image-exists:', fullPath);
-    
+
     // Check if file exists
     await fs.access(fullPath);
     console.log('[Main] Image exists:', fullPath);
@@ -502,11 +532,11 @@ async function ensureCharactersDir() {
 ipcMain.handle('fs-readFile', async (event, filePath) => {
   try {
     // Temporarily disable security validation for debugging
-    const sanitizedPath = filePath; // validateAndSanitizePath(filePath);
-    // if (!sanitizedPath) {
-    //   logSecurityEvent('invalid_file_path', { filePath, operation: 'fs-readFile' });
-    //   throw new Error('Invalid file path');
-    // }
+    const sanitizedPath = validateAndSanitizePath(filePath);
+    if (!sanitizedPath) {
+      logSecurityEvent('invalid_file_path', { filePath, operation: 'fs-readFile' });
+      throw new Error('Invalid file path');
+    }
 
     const fullPath = path.join(__dirname, sanitizedPath);
     const content = await fs.readFile(fullPath, 'utf8');
@@ -533,19 +563,19 @@ ipcMain.handle('fs-writeFile', async (event, filePath, content) => {
     } else {
       allowedExtensions = ['txt', 'json', 'png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp'];
     }
-    
+
     // Temporarily disable security validation for debugging
-    const sanitizedPath = filePath; // validateAndSanitizePath(filePath, allowedExtensions);
-    // if (!sanitizedPath) {
-    //   logSecurityEvent('invalid_file_path', { filePath, operation: 'fs-writeFile' });
-    //   throw new Error('Invalid file path');
-    // }
+    const sanitizedPath = validateAndSanitizePath(filePath, allowedExtensions);
+    if (!sanitizedPath) {
+      logSecurityEvent('invalid_file_path', { filePath, operation: 'fs-writeFile' });
+      throw new Error('Invalid file path');
+    }
 
     // Validate content size
-    // if (!validateFileSize(content)) {
-    //   logSecurityEvent('file_too_large', { filePath: sanitizedPath, contentSize: typeof content === 'string' ? content.length : content.byteLength });
-    //   throw new Error('File content too large');
-    // }
+    if (!validateFileSize(content)) {
+      logSecurityEvent('file_too_large', { filePath: sanitizedPath, contentSize: typeof content === 'string' ? content.length : content.byteLength });
+      throw new Error('File content too large');
+    }
 
     // Ensure appropriate directory exists
     if (sanitizedPath.startsWith('snippets/')) {
@@ -605,7 +635,7 @@ async function buildSidebarTree(dirPath, relativePath = '') {
         if (item.name === 'images') {
           continue;
         }
-        
+
         const children = await buildSidebarTree(fullPath, itemPath);
         tree.push({
           type: 'folder',
@@ -724,9 +754,9 @@ function parseSnippetTextFile(content) {
         if (key === 'tags') {
           metadata[key] = value
             ? value
-                .split(',')
-                .map(tag => tag.trim())
-                .filter(Boolean)
+              .split(',')
+              .map(tag => tag.trim())
+              .filter(Boolean)
             : [];
         } else if (key === 'created') {
           metadata[key] = parseInt(value) || Date.now();
@@ -923,6 +953,13 @@ ipcMain.handle('get-app-version', () => {
 ipcMain.handle('fetchLatestRelease', async (event, repoOwner, repoName) => {
   try {
     const https = require('https');
+
+    // Validate inputs to prevent injection
+    const safePattern = /^[a-zA-Z0-9-_.]+$/;
+    if (!safePattern.test(repoOwner) || !safePattern.test(repoName)) {
+      throw new Error('Invalid repository owner or name');
+    }
+
     const url = `https://api.github.com/repos/${repoOwner}/${repoName}/releases/latest`;
 
     return new Promise((resolve, reject) => {

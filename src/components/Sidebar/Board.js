@@ -1,5 +1,5 @@
 import { escapeHtml } from '../../utils/escapeHtml.js';
-import { createDragImage, cleanupDragImages } from '../../ui/dnd.js';
+import { createDragImage } from '../../ui/dnd.js';
 import { AppState } from '../../state/appState.js';
 /**
  * Creates a board element for the sidebar.
@@ -226,27 +226,14 @@ export function createBoardElement({
     }
   });
   // Add drag and drop functionality
-  let currentDragImage = null;
   boardElement.addEventListener('dragstart', e => {
     // Set global drag state
     window.isDragging = true;
     // Hide any image previews when dragging starts
     eventHandlers.hideImagePreview();
-    // Clean up any orphaned drag images first
-    cleanupDragImages();
     // Create enhanced drag image with better cleanup
     const dragImageData = createDragImage(displayName, 'board');
-    if (dragImageData && dragImageData.element) {
-      e.dataTransfer.setDragImage(dragImageData.element, 10, 10);
-      currentDragImage = dragImageData;
-      // Set a failsafe timeout to clean up the drag image
-      setTimeout(() => {
-        if (currentDragImage && currentDragImage.cleanup) {
-          currentDragImage.cleanup();
-          currentDragImage = null;
-        }
-      }, 5000); // Clean up after 5 seconds if dragend didn't fire
-    }
+    e.dataTransfer.setDragImage(dragImageData.element, 10, 10);
     e.dataTransfer.setData(
       'application/json',
       JSON.stringify({
@@ -263,11 +250,6 @@ export function createBoardElement({
   boardElement.addEventListener('dragend', e => {
     // Clear global drag state
     window.isDragging = false;
-    // Clean up drag image
-    if (currentDragImage && currentDragImage.cleanup) {
-      currentDragImage.cleanup();
-      currentDragImage = null;
-    }
   });
   // Add context menu for board actions
   boardElement.addEventListener('contextmenu', e => {
