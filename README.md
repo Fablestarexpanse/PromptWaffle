@@ -1,6 +1,6 @@
 # PromptWaffle
 
-![Version](https://img.shields.io/badge/version-1.4.2-blue.svg)
+![Version](https://img.shields.io/badge/version-1.5.0-blue.svg)
 ![License](https://img.shields.io/badge/license-AGPL--3.0-green.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)
 
@@ -213,7 +213,26 @@ Found a bug or have a suggestion?
 
 ## Release Notes
 
-### Version 1.4.2 (Current)
+### Version 1.5.0 (Current)
+
+#### Major UI Overhaul
+- **Premium Dark Theme**: Complete visual refresh with a modern, cohesive dark color palette.
+- **Glassmorphism Design**: Added semi-transparent, blurred backgrounds to the sidebar and panels for depth and visual hierarchy.
+- **Streamlined Interface**: Removed heavy borders and boxes for a cleaner, more open layout.
+- **New Logo**: Replaced the old PNG logo with a crisp, vibrant SVG logo that scales perfectly.
+- **Enhanced Interactions**: Added subtle glow effects and smooth transitions to buttons, inputs, and cards.
+- **Polished Typography**: Improved readability with better spacing and font weights.
+
+#### Improvements
+- **Board Card Styling**: Cards now feature a subtle gradient overlay that respects custom colors while adding depth.
+- **Sidebar Readability**: Increased spacing in the folder tree for easier navigation.
+- **Input Standardization**: Consistent styling for all text inputs and search bars.
+
+#### Security & Stability
+- **Electron Launch Fix**: Resolved compatibility issues with Node.js v22 environments.
+- **Security Hardening**: Continued improvements to input validation and path handling.
+
+### Version 1.4.2
 
 #### Security & Optimization
 - **Critical Security Fixes**: Implemented comprehensive input validation and path sanitization across all file system operations to prevent directory traversal and other vulnerabilities.

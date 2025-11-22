@@ -193,7 +193,8 @@ class RateLimiter {
 const ipcRateLimiter = new RateLimiter(100, 60000); // 100 requests per minute
 
 // Cleanup rate limiter every minute
-setInterval(() => ipcRateLimiter.cleanup(), 60000);
+// Commented out to prevent initialization issues - can be re-enabled after app is ready
+// setInterval(() => ipcRateLimiter.cleanup(), 60000);
 
 /**
  * Validates IPC request parameters

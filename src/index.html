@@ -1,10 +1,9 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-        <meta
-      http-equiv="Content-Security-Policy"
-       content="default-src 'self';
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self';
                 script-src 'self' https://unpkg.com 'sha256-mMIugR+peXO12tiny2EW/7g/mVsVBQzEnFBT3lXmfw4=';
                 style-src 'self' 'unsafe-inline';
                 img-src 'self' data: file: blob:;
@@ -12,1093 +11,899 @@
                 base-uri 'self';
                 form-action 'self';
 
-                upgrade-insecure-requests;"
-    />
-    <title>PromptWaffle (Offline)</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="stylesheet" href="../node_modules/notyf/notyf.min.css" />
-    <script src="https://unpkg.com/feather-icons"></script>
-    <script src="../node_modules/notyf/notyf.min.js"></script>
-  </head>
-  <body>
-    <!-- Loading Screen -->
-    <div id="loadingScreen" class="loading-screen">
-      <div class="loading-content">
-        <div class="loading-logo">
-          <img src="assets/waffle-loading.png" alt="PromptWaffle Loading" />
+                upgrade-insecure-requests;" />
+  <title>PromptWaffle (Offline)</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="../node_modules/notyf/notyf.min.css" />
+  <script src="https://unpkg.com/feather-icons"></script>
+  <script src="../node_modules/notyf/notyf.min.js"></script>
+</head>
+
+<body>
+  <!-- Loading Screen -->
+  <div id="loadingScreen" class="loading-screen">
+    <div class="loading-content">
+      <div class="loading-logo">
+        <img src="assets/logo.svg" alt="PromptWaffle Loading" />
+      </div>
+      <h2 class="loading-title">PromptWaffle</h2>
+      <p class="loading-subtitle">Break it. Remix it. Generate better.</p>
+      <div class="loading-progress">
+        <div class="loading-bar">
+          <div class="loading-fill"></div>
         </div>
-        <h2 class="loading-title">PromptWaffle</h2>
-        <p class="loading-subtitle">Break it. Remix it. Generate better.</p>
-        <div class="loading-progress">
-          <div class="loading-bar">
-            <div class="loading-fill"></div>
-          </div>
-          <div class="loading-text">Initializing...</div>
-        </div>
+        <div class="loading-text">Initializing...</div>
       </div>
     </div>
+  </div>
 
-    <div class="app-layout" id="mainApp" style="display: none;">
-      <aside class="sidebar">
-        <div class="sidebar-top">
-          <div class="sidebar-logo">
-            <img
-              src="assets/800x800 logo prompt waffel.png"
-              alt="PromptWaffle Logo"
-            />
-            <p class="tagline">Break it. Remix it. Generate better.</p>
-            <p class="version">v<span id="currentVersion">1.4.1</span></p>
-            <button
-              id="checkForUpdatesBtn"
-              class="update-check-btn"
-              title="Check for updates"
-            >
-              <i data-feather="refresh-cw"></i>
-              Check for Updates
-            </button>
-            <a
-              href="#"
-              id="kofiLink"
-              class="kofi-link"
-              title="Support PromptWaffle development"
-            >
-              <i data-feather="heart"></i>
-              <span>Support on Ko-fi</span>
-            </a>
-          </div>
-          <div class="sidebar-header">
-            <div class="header-tools-row">
-              <div class="header-tool">
-                <button
-                  class="action-button"
-                  id="newFolderBtn"
-                  title="Create new folder"
-                >
-                  <i data-feather="folder-plus"></i>
-                </button>
-                <span class="header-tool-label">Folder</span>
-              </div>
-              <div class="header-tool">
-                <button
-                  class="action-button"
-                  id="newSnippetBtn"
-                  title="Create new snippet"
-                >
-                  <i data-feather="file-plus"></i>
-                </button>
-                <span class="header-tool-label">Snippet</span>
-              </div>
-                              <div class="header-tool">
-                  <button
-                    class="action-button"
-                    id="promptKitBtn"
-                    title="Wildcard Studio - Build prompts with wildcards"
-                  >
-                    <i data-feather="smile"></i>
-                  </button>
-                  <span class="header-tool-label">Wildcard Studio</span>
-                </div>
-                <div class="header-tool">
-                  <div class="dropdown">
-                  <button class="action-button" id="sortBtn" title="Sort">
-                    <i data-feather="menu"></i>
-                  </button>
-                  <div
-                    id="sortMenu"
-                    class="dropdown-content"
-                    style="display: none"
-                  >
-                    <a href="#" data-sort="name" data-direction="asc"
-                      >File name (A to Z)</a
-                    >
-                    <a href="#" data-sort="name" data-direction="desc"
-                      >File name (Z to A)</a
-                    >
-                    <a href="#" data-sort="modifiedAt" data-direction="desc"
-                      >Modified time (new → old)</a
-                    >
-                    <a href="#" data-sort="modifiedAt" data-direction="asc"
-                      >Modified time (old → new)</a
-                    >
-                    <a href="#" data-sort="createdAt" data-direction="desc"
-                      >Created time (new → old)</a
-                    >
-                    <a href="#" data-sort="createdAt" data-direction="asc"
-                      >Created time (old → new)</a
-                    >
-                  </div>
-                </div>
-                <span class="header-tool-label">Sort</span>
-              </div>
-              <div class="header-tool">
-                <button
-                  class="action-button"
-                  id="collapseAllBtn"
-                  title="Expand all folders"
-                >
-                  <i data-feather="chevrons-down"></i>
-                </button>
-                <span class="header-tool-label">Toggle</span>
-              </div>
-              <div class="vr"></div>
-              <div class="header-tool">
-                <button
-                  class="action-button"
-                  id="deleteDropZone"
-                  title="Drag snippets here to delete"
-                >
-                  <i data-feather="trash-2"></i>
-                </button>
-                <span class="header-tool-label">Trash</span>
-              </div>
-            </div>
-          </div>
-          <div class="search-container">
-            <input
-              type="text"
-              id="tagSearchInput"
-              placeholder="Search by tags..."
-            />
-            <button
-              id="clearSearchBtn"
-              class="search-clear-btn"
-              title="Clear search"
-            >
-              <i data-feather="x"></i>
-            </button>
-          </div>
+  <div class="app-layout" id="mainApp" style="display: none;">
+    <aside class="sidebar">
+      <div class="sidebar-top">
+        <div class="sidebar-logo">
+          <img src="assets/logo.svg" alt="PromptWaffle Logo" />
+          <p class="tagline">Break it. Remix it. Generate better.</p>
+          <p class="version">v<span id="currentVersion">1.5.0</span></p>
+          <button id="checkForUpdatesBtn" class="update-check-btn" title="Check for updates">
+            <i data-feather="refresh-cw"></i>
+            Check for Updates
+          </button>
+          <a href="#" id="kofiLink" class="kofi-link" title="Support PromptWaffle development">
+            <i data-feather="heart"></i>
+            <span>Support on Ko-fi</span>
+          </a>
         </div>
-        <div
-          id="rootDropZone"
-          class="root-drop-zone"
-          title="Drop here to move to root level"
-        >
-          <div class="root-drop-content">
-            <i data-feather="folder"></i>
-            <span>Drop here to move to root</span>
-          </div>
-        </div>
-        <button
-          id="sidebarExpandBtn"
-          class="sidebar-expand-btn"
-          title="Expand/Collapse Sidebar"
-        >
-          <i data-feather="chevron-right"></i>
-        </button>
-        <div
-          id="inlineFolderCreation"
-          class="inline-folder-creation"
-          style="display: none"
-        >
-          <label for="newFolderNameInput">New Folder Name:</label>
-          <div class="inline-folder-input-container">
-            <input
-              type="text"
-              id="newFolderNameInput"
-              placeholder="Enter folder name..."
-            />
-            <button
-              type="button"
-              id="createInlineFolderBtn"
-              class="small-button"
-              title="Create folder"
-            >
-              <i data-feather="check"></i>
-            </button>
-            <button
-              type="button"
-              id="cancelInlineFolderBtn"
-              class="small-button secondary"
-              title="Cancel"
-            >
-              <i data-feather="x"></i>
-            </button>
-          </div>
-        </div>
-        <div id="foldersContainer"></div>
-      </aside>
-      <main class="main-content">
-        <div id="currentBoardInfo" class="current-board-info"></div>
-        <div class="board-header">
-          <div class="header-container">
-            <!-- Board Management Section -->
-            <div class="board-section">
-              <div class="section-label">Board</div>
-              <div class="section-controls">
-                <div class="control-group">
-                  <button
-                    id="newBoardBtn"
-                    class="control-btn primary"
-                    title="Create a new board"
-                  >
-                    <i data-feather="plus"></i>
-                    <span>New</span>
-                  </button>
-                  <div class="control-description">
-                    Create a new empty board
-                  </div>
-                </div>
-                <div class="control-group">
-                  <select
-                    id="boardSelect"
-                    class="board-select"
-                    title="Select an existing board"
-                  >
-                    <option value="">Select Board...</option>
-                  </select>
-                  <div class="control-description">
-                    Switch to an existing board
-                  </div>
-                </div>
-                <div class="control-group">
-                  <button
-                    id="clearBoardBtn"
-                    class="control-btn secondary"
-                    title="Remove all cards from current board"
-                  >
-                    <i data-feather="trash-2"></i>
-                    <span>Clear</span>
-                  </button>
-                  <div class="control-description">
-                    Remove all cards from current board
-                  </div>
-                </div>
-                <div class="control-group">
-                  <button
-                    id="openCharacterBuilderBtn"
-                    class="control-btn"
-                    title="Open Character Builder"
-                  >
-                    <i data-feather="user-plus"></i>
-                    <span>Character Builder</span>
-                  </button>
-                  <div class="control-description">
-                    Create and manage character descriptions
-                  </div>
-                </div>
-                <div class="control-group">
-                  <button
-                    id="openWildcardStudioBtn"
-                    class="control-btn"
-                    title="Open Wildcard Studio"
-                  >
-                    <i data-feather="shuffle"></i>
-                    <span>Wildcard Studio</span>
-                  </button>
-                  <div class="control-description">
-                    Create and manage wildcard collections
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Content Section -->
-            <div class="board-section">
-              <div class="section-label">Content</div>
-              <div class="section-controls">
-                <div class="control-group">
-                  <button
-                    id="addImageBtn"
-                    class="control-btn"
-                    title="Add reference image to board"
-                  >
-                    <i data-feather="image"></i>
-                    <span>Images</span>
-                  </button>
-                  <div class="control-description">
-                    Add reference images to your board (max 6)
-                  </div>
-                </div>
-                <div class="control-group">
-                  <button
-                    id="setFolderBtn"
-                    class="control-btn"
-                    title="Set folder to monitor"
-                  >
-                    <i data-feather="folder"></i>
-                    <span>Monitor</span>
-                  </button>
-                  <div class="control-description">
-                    Monitor a folder for new AI-generated images
-                  </div>
-                </div>
-              </div>
-              
-              <!-- Live Preview Area -->
-              <div id="livePreviewContainer" class="live-preview-container"></div>
-            </div>
-            
-            <!-- Reference Images Section -->
-            <div class="board-section reference-images-section">
-              <div class="section-label">Reference Images</div>
-              <div id="referenceImagesContainer" class="reference-images-container"></div>
-              
-              <!-- Character Images Display -->
-              <div id="characterImagesDisplay" class="character-images-display" style="display: none;">
-                <div class="character-images-header">
-                  <span class="character-images-title">Active Character</span>
-                  <button id="closeCharacterImagesBtn" class="close-character-images-btn" title="Close character images">
-                    <i data-feather="x"></i>
-                  </button>
-                </div>
-                <div id="characterImagesContainer" class="character-images-container">
-                  <!-- Character images will be displayed here -->
-                </div>
-              </div>
-            </div>
-
-            <!-- Appearance Section -->
-            <div class="board-section">
-              <div class="section-label">Appearance</div>
-              <div class="section-controls">
-                <div class="control-group">
-                  <button
-                    id="toggleSnippetColorsBtn"
-                    class="control-btn"
-                    title="Toggle snippet colors on board"
-                  >
-                    <i data-feather="droplet"></i>
-                    <span>Colors</span>
-                  </button>
-                  <div class="control-description">
-                    Toggle snippet colors on board
-                  </div>
-                </div>
-                <div class="control-group">
-                  <button
-                    id="backgroundColorBtn"
-                    class="control-btn"
-                    title="Set board background color"
-                  >
-                    <i data-feather="square"></i>
-                    <span>Background</span>
-                  </button>
-                  <div class="control-description">
-                    Set board background color
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Board Tags -->
-            <div id="boardTagsDisplay" class="board-tags-display">            </div>
-          </div>
-        </div>
-
-        
-        <div class="board-container">
-          <div class="board-layout">
-            <div id="promptBoard" class="prompt-board">
-              <div class="board-placeholder">
-                Drag snippets here to build your prompt
-              </div>
-            </div>
-            <div class="metadata-panel">
-              <button id="toggleMetadataBtn" class="metadata-toggle-btn" title="Toggle metadata panel">
-                <i data-feather="chevron-left"></i>
+        <div class="sidebar-header">
+          <div class="header-tools-row">
+            <div class="header-tool">
+              <button class="action-button" id="newFolderBtn" title="Create new folder">
+                <i data-feather="folder-plus"></i>
               </button>
-              <div class="metadata-header">
-                <h3>Image Metadata</h3>
-                <div class="metadata-header-controls">
-                  <button id="lockMetadataBtn" class="metadata-lock-btn" title="Lock metadata fields (prevent editing)">
-                    <i data-feather="unlock"></i>
-                  </button>
+              <span class="header-tool-label">Folder</span>
+            </div>
+            <div class="header-tool">
+              <button class="action-button" id="newSnippetBtn" title="Create new snippet">
+                <i data-feather="file-plus"></i>
+              </button>
+              <span class="header-tool-label">Snippet</span>
+            </div>
+            <div class="header-tool">
+              <button class="action-button" id="promptKitBtn" title="Wildcard Studio - Build prompts with wildcards">
+                <i data-feather="smile"></i>
+              </button>
+              <span class="header-tool-label">Wildcard Studio</span>
+            </div>
+            <div class="header-tool">
+              <div class="dropdown">
+                <button class="action-button" id="sortBtn" title="Sort">
+                  <i data-feather="menu"></i>
+                </button>
+                <div id="sortMenu" class="dropdown-content" style="display: none">
+                  <a href="#" data-sort="name" data-direction="asc">File name (A to Z)</a>
+                  <a href="#" data-sort="name" data-direction="desc">File name (Z to A)</a>
+                  <a href="#" data-sort="modifiedAt" data-direction="desc">Modified time (new → old)</a>
+                  <a href="#" data-sort="modifiedAt" data-direction="asc">Modified time (old → new)</a>
+                  <a href="#" data-sort="createdAt" data-direction="desc">Created time (new → old)</a>
+                  <a href="#" data-sort="createdAt" data-direction="asc">Created time (old → new)</a>
                 </div>
               </div>
-              <div class="metadata-content">
-                <div class="metadata-field">
-                  <label for="checkpointInput">Checkpoint:</label>
-                  <input type="text" id="checkpointInput" placeholder="e.g., realisticVisionV51" />
-                </div>
-                <div class="metadata-field">
-                  <label for="cfgInput">CFG Scale:</label>
-                  <input type="number" id="cfgInput" placeholder="7" min="1" max="30" step="0.5" />
-                </div>
-                <div class="metadata-field">
-                  <label for="seedInput">Seed:</label>
-                  <input type="number" id="seedInput" placeholder="123456789" />
-                </div>
-                <div class="metadata-field">
-                  <label for="stepsInput">Steps:</label>
-                  <input type="number" id="stepsInput" placeholder="20" min="1" max="150" />
-                </div>
-                <div class="metadata-field">
-                  <label for="samplerInput">Sampler:</label>
-                  <select id="samplerInput">
-                    <option value="">Select sampler...</option>
-                    <option value="Euler a">Euler a</option>
-                    <option value="Euler">Euler</option>
-                    <option value="LMS">LMS</option>
-                    <option value="Heun">Heun</option>
-                    <option value="DPM2">DPM2</option>
-                    <option value="DPM2 a">DPM2 a</option>
-                    <option value="DPM++ 2S a">DPM++ 2S a</option>
-                    <option value="DPM++ 2M">DPM++ 2M</option>
-                    <option value="DPM++ SDE">DPM++ SDE</option>
-                    <option value="DPM fast">DPM fast</option>
-                    <option value="DPM adaptive">DPM adaptive</option>
-                    <option value="LMS Karras">LMS Karras</option>
-                    <option value="DPM2 Karras">DPM2 Karras</option>
-                    <option value="DPM2 a Karras">DPM2 a Karras</option>
-                    <option value="DPM++ 2S a Karras">DPM++ 2S a Karras</option>
-                    <option value="DPM++ 2M Karras">DPM++ 2M Karras</option>
-                    <option value="DPM++ SDE Karras">DPM++ SDE Karras</option>
-                    <option value="DDIM">DDIM</option>
-                    <option value="PLMS">PLMS</option>
-                  </select>
-                </div>
-                <div class="metadata-field">
-                  <label for="schedulerInput">Scheduler:</label>
-                  <select id="schedulerInput">
-                    <option value="">Select scheduler...</option>
-                    <option value="simple">Simple</option>
-                    <option value="sgm_uniform">SGM Uniform</option>
-                    <option value="karras">Karras</option>
-                    <option value="exponential">Exponential</option>
-                    <option value="ddim_uniform">DDIM Uniform</option>
-                    <option value="beta">Beta</option>
-                    <option value="normal">Normal</option>
-                    <option value="linear_quadratic">Linear Quadratic</option>
-                    <option value="kl_optimal">KL Optimal</option>
-                    <option value="UniPC">UniPC</option>
-                    <option value="Linear">Linear</option>
-                    <option value="Cosine">Cosine</option>
-                    <option value="Cosine with Restarts">Cosine with Restarts</option>
-                    <option value="Polynomial">Polynomial</option>
-                    <option value="Constant">Constant</option>
-                    <option value="SGDR">SGDR</option>
-                    <option value="Inverse">Inverse</option>
-                    <option value="Inverse Sqrt">Inverse Sqrt</option>
-                    <option value="Cosine Annealing">Cosine Annealing</option>
-                    <option value="Cosine Annealing Warm Restarts">Cosine Annealing Warm Restarts</option>
-                  </select>
-                </div>
-                <div class="metadata-field">
-                  <label for="clipskipInput">Clip Skip:</label>
-                  <input type="number" id="clipskipInput" placeholder="1" min="1" max="12" />
-                </div>
-                <div class="metadata-field">
-                  <label for="sizeInput">Size:</label>
-                  <input type="text" id="sizeInput" placeholder="512x768" />
-                </div>
-                <div class="metadata-field">
-                  <label for="negativePromptInput">Negative Prompt:</label>
-                  <textarea id="negativePromptInput" placeholder="Enter negative prompt..." rows="3"></textarea>
-                </div>
-                <div class="metadata-actions">
-                  <button id="pasteMetadataBtn" class="metadata-btn primary">
-                    <i data-feather="clipboard"></i>
-                    Paste
-                  </button>
-                  <button id="clearMetadataBtn" class="metadata-btn secondary">
-                    <i data-feather="trash-2"></i>
-                    Clear
-                  </button>
-                  <button id="copyMetadataBtn" class="metadata-btn secondary">
-                    <i data-feather="copy"></i>
-                    Copy
-                  </button>
-                </div>
-              </div>
+              <span class="header-tool-label">Sort</span>
+            </div>
+            <div class="header-tool">
+              <button class="action-button" id="collapseAllBtn" title="Expand all folders">
+                <i data-feather="chevrons-down"></i>
+              </button>
+              <span class="header-tool-label">Toggle</span>
+            </div>
+            <div class="vr"></div>
+            <div class="header-tool">
+              <button class="action-button" id="deleteDropZone" title="Drag snippets here to delete">
+                <i data-feather="trash-2"></i>
+              </button>
+              <span class="header-tool-label">Trash</span>
             </div>
           </div>
         </div>
-        <div class="compiled-prompt">
-          <div class="compiled-prompt-header">
-            <h3>Compiled Prompt:</h3>
-            <button
-              id="expandCompiledBtn"
-              class="expand-button"
-              title="Expand/Collapse"
-            >
-              <i data-feather="chevron-up"></i>
-            </button>
-          </div>
-          <div id="compiledPrompt" class="compiled-prompt-output"></div>
-          <div class="compiled-prompt-buttons">
-            <button
-              id="copyCompiledBtn"
-              title="Copy compiled prompt to clipboard"
-            >
-              Copy to Clipboard
-            </button>
-            <button
-              id="toggleColorBtn"
-              title="Show/hide card colors in compiled prompt"
-            >
-              Toggle Colors
-            </button>
-            <button
-              id="saveCompiledBtn"
-              title="Save compiled prompt as a new snippet"
-            >
-              Save as Snippet
-            </button>
-            <button
-              id="exportToObsidianBtn"
-              title="Export to Markdown file for Obsidian"
-            >
-              <i data-feather="file-text"></i>
-              Export to Markdown
-            </button>
-          </div>
-        </div>
-      </main>
-    </div>
-
-    <input
-      type="file"
-      id="referenceImageUpload"
-      accept="image/*"
-      style="display: none"
-      multiple
-    />
-
-    <!-- Text Selection Toolbar -->
-    <div id="textSelectionToolbar" class="text-selection-toolbar">
-      <button id="splitTextBtn">
-        <i data-feather="scissors"></i>
-        Split into new snippet
-      </button>
-    </div>
-
-    <!-- Folder Modal -->
-    <div id="folderModal" class="modal" style="display: none">
-      <div class="modal-content">
-        <h3>Create Folder</h3>
-        <input id="folderNameInput" placeholder="Folder name" />
-        <button id="createFolderConfirmBtn">Create</button>
-        <button id="cancelFolderBtn">Cancel</button>
-      </div>
-    </div>
-
-    <!-- Snippet Modal -->
-    <div id="snippetModal" class="modal" style="display: none">
-      <div class="modal-content">
-        <h3 id="snippetModalTitle">Create Snippet</h3>
-        <label for="snippetTextInput">Snippet Text:</label>
-        <textarea
-          id="snippetTextInput"
-          placeholder="Enter your snippet text here..."
-          rows="6"
-        ></textarea>
-        <label for="snippetTagsInput">Tags:</label>
-        <input id="snippetTagsInput" placeholder="comma, separated, tags" />
-        <label for="snippetFolderSelect">Folder:</label>
-        <div class="folder-selector-container">
-          <select id="snippetFolderSelect"></select>
-          <button
-            type="button"
-            id="newFolderFromSnippetBtn"
-            class="small-button"
-            title="Create new folder"
-          >
-            <i data-feather="folder-plus"></i>
-          </button>
-        </div>
-
-        <!-- Inline folder creation -->
-        <div
-          id="inlineFolderCreation"
-          class="inline-folder-creation"
-          style="display: none"
-        >
-          <label for="newFolderNameInput">New Folder Name:</label>
-          <div class="inline-folder-input-container">
-            <input
-              type="text"
-              id="newFolderNameInput"
-              placeholder="Enter folder name..."
-            />
-            <button
-              type="button"
-              id="createInlineFolderBtn"
-              class="small-button"
-              title="Create folder"
-            >
-              <i data-feather="check"></i>
-            </button>
-            <button
-              type="button"
-              id="cancelInlineFolderBtn"
-              class="small-button secondary"
-              title="Cancel"
-            >
-              <i data-feather="x"></i>
-            </button>
-          </div>
-        </div>
-        <div class="modal-buttons">
-          <button id="createSnippetConfirmBtn">Create</button>
-          <button id="cancelSnippetBtn">Cancel</button>
-        </div>
-      </div>
-    </div>
-
-          <!-- PromptKit Modal -->
-      <div id="promptKitModal" class="promptkit-modal">
-        <div class="promptkit-modal-content">
-          <div class="promptkit-header">
-            <h2>Wildcard Studio - Build Prompts with Wildcards</h2>
-          </div>
-          
-          <div class="promptkit-left">
-            <!-- Profile Selection Section -->
-            <div class="promptkit-section promptkit-profiles">
-              <h3>Profile Selection</h3>
-              <select id="promptKitProfileSelect">
-                <option value="">Select a profile...</option>
-              </select>
-            </div>
-            
-            <!-- Wildcard Categories Section -->
-            <div class="promptkit-section">
-              <h3>Wildcard Categories</h3>
-              <div id="promptKitWildcardCategories" class="promptkit-wildcard-categories">
-                <!-- Wildcard categories will be populated here -->
-              </div>
-            </div>
-            
-            <!-- Profile Creation Section -->
-            <div class="promptkit-section promptkit-profile-creator">
-              <h3>Create New Profile</h3>
-              <div class="profile-creator-form">
-                <div class="form-group">
-                  <label for="newProfileName">Profile Name:</label>
-                  <input type="text" id="newProfileName" placeholder="Enter profile name...">
-                </div>
-                <div class="form-group">
-                  <label for="newProfileDescription">Description:</label>
-                  <input type="text" id="newProfileDescription" placeholder="Brief description...">
-                </div>
-                <div class="form-group">
-                  <label for="newProfilePositive">Positive Prompts:</label>
-                  <textarea id="newProfilePositive" placeholder="Enter positive prompts (comma separated)..."></textarea>
-                </div>
-                <div class="profile-creator-actions">
-                  <button id="createProfileBtn" class="promptkit-btn promptkit-btn-primary">Create Profile</button>
-                  <button id="clearProfileFormBtn" class="promptkit-btn promptkit-btn-secondary">Clear Form</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="promptkit-right">
-            <!-- Generated Prompt Section -->
-            <div class="promptkit-section promptkit-output">
-              <h3>Generated Prompt</h3>
-              <div class="promptkit-prompt-sections">
-                <div class="promptkit-section-group">
-                  <label>Top Section (Profile Terms)</label>
-                  <textarea id="promptKitTopSection" placeholder="Profile terms will appear here..." readonly></textarea>
-                </div>
-                <div class="promptkit-section-group">
-                  <label>Middle Section (Wildcards)</label>
-                  <textarea id="promptKitMiddleSection" placeholder="Wildcard selections will appear here..." readonly></textarea>
-                </div>
-                <div class="promptkit-section-group">
-                  <label>Bottom Section (Additional)</label>
-                  <textarea id="promptKitBottomSection" placeholder="Additional terms can be added here..." readonly></textarea>
-                </div>
-                <div class="promptkit-section-group">
-                  <label>Final Combined Prompt</label>
-                  <textarea id="promptKitPositiveOutput" placeholder="Your final prompt will appear here..." readonly></textarea>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Save Options Section -->
-            <div class="promptkit-section promptkit-save-options">
-              <h3>Save Options</h3>
-              <label for="promptKitSnippetName">Snippet Name:</label>
-              <input type="text" id="promptKitSnippetName" placeholder="Enter snippet name...">
-              
-              <label for="promptKitSnippetTags">Tags:</label>
-              <input type="text" id="promptKitSnippetTags" placeholder="comma, separated, tags">
-              
-              <label for="promptKitSnippetFolder">Folder:</label>
-              <select id="promptKitSnippetFolder">
-                <option value="">Root folder</option>
-              </select>
-            </div>
-          </div>
-          
-          <!-- Action Buttons -->
-          <div class="promptkit-actions">
-            <button id="promptKitClearBtn" class="promptkit-btn promptkit-btn-danger">Clear All</button>
-            <button id="promptKitCancelBtn" class="promptkit-btn promptkit-btn-secondary">Cancel</button>
-            <button id="promptKitSaveBtn" class="promptkit-btn promptkit-btn-primary">Save Snippet</button>
-          </div>
-        </div>
-      </div>
-
-    <!-- Character Builder Modal -->
-    <div id="characterBuilderModal" class="character-builder-modal">
-      <div class="character-builder-modal-content">
-        <div class="character-builder-header">
-          <h2>Character Builder</h2>
-          <button class="close-btn" id="closeCharacterBuilder">&times;</button>
-        </div>
-        
-        <div class="character-builder-body">
-          <div class="character-builder-left">
-            <!-- Character Library Section -->
-            <div class="character-builder-section">
-              <h3>Character Library</h3>
-              <div id="characterLibrary" class="character-library">
-                <!-- Saved characters will be populated here -->
-              </div>
-            </div>
-          </div>
-          
-          <div class="character-builder-right">
-            <!-- Character Editor Section -->
-            <div class="character-builder-section">
-              <h3>Character Editor</h3>
-              <div id="characterEditor" class="character-editor">
-                <div class="character-form-section">
-                  <div class="form-group">
-                    <label for="characterName">Character Name:</label>
-                    <input type="text" id="characterName" placeholder="Enter character name...">
-                  </div>
-                  
-                  <div class="form-group">
-                    <label for="characterGender">Gender:</label>
-                    <input type="text" id="characterGender" placeholder="e.g., male, female, non-binary...">
-                  </div>
-                  
-                  <div class="form-group">
-                    <label for="characterAge">Age:</label>
-                    <input type="text" id="characterAge" placeholder="e.g., young adult, middle-aged, elderly...">
-                  </div>
-                  
-                  <div class="form-group">
-                    <label for="characterHair">Hair:</label>
-                    <input type="text" id="characterHair" placeholder="e.g., long blonde hair, short black hair...">
-                  </div>
-                  
-                  <div class="form-group">
-                    <label for="characterEyes">Eyes:</label>
-                    <input type="text" id="characterEyes" placeholder="e.g., blue eyes, cybernetic eyes...">
-                  </div>
-                  
-                  <div class="form-group">
-                    <label for="characterClothing">Clothing:</label>
-                    <input type="text" id="characterClothing" placeholder="e.g., leather jacket, formal suit...">
-                  </div>
-                  
-                  <div class="form-group">
-                    <label for="characterStyle">Style/Theme:</label>
-                    <input type="text" id="characterStyle" placeholder="e.g., cyberpunk, medieval, modern...">
-                  </div>
-                  
-                  <div class="form-group">
-                    <label for="characterPersonality">Personality:</label>
-                    <input type="text" id="characterPersonality" placeholder="e.g., confident, mysterious, cheerful...">
-                  </div>
-                  
-                  <div class="form-group">
-                    <label for="characterGenitals">Genitals:</label>
-                    <input type="text" id="characterGenitals" placeholder="e.g., penis, vagina, both, none...">
-                  </div>
-                  
-                  <div class="form-group">
-                    <label for="characterTags">Tags:</label>
-                    <input type="text" id="characterTags" placeholder="e.g., warrior, mage, engineer (comma separated)">
-                  </div>
-                </div>
-                
-                <div class="form-group">
-                  <label>Reference Images:</label>
-              <div class="character-image-sections">
-                <div class="character-image-section">
-                  <div class="character-image-preview" id="characterImagePreview1"></div>
-                  <input type="file" id="characterImage1" accept="image/*" style="display: none;">
-                  <div class="image-section-buttons">
-                    <button type="button" id="characterImageBtn1" class="character-image-btn">Choose Image 1</button>
-                    <button type="button" id="removeImageBtn1" class="character-image-remove" style="display: none;">Remove</button>
-                    <button type="button" id="updateImageBtn1" class="character-image-btn">Update</button>
-                  </div>
-                </div>
-                <div class="character-image-section">
-                  <div class="character-image-preview" id="characterImagePreview2"></div>
-                  <input type="file" id="characterImage2" accept="image/*" style="display: none;">
-                  <div class="image-section-buttons">
-                    <button type="button" id="characterImageBtn2" class="character-image-btn">Choose Image 2</button>
-                    <button type="button" id="removeImageBtn2" class="character-image-remove" style="display: none;">Remove</button>
-                    <button type="button" id="updateImageBtn2" class="character-image-btn">Update</button>
-                  </div>
-                </div>
-              </div>
-                </div>
-                
-                <!-- Character Preview Section -->
-                <div class="character-preview-section">
-                  <h4>Preview:</h4>
-                  <div id="characterPreview" class="character-preview-text">
-                    <!-- Generated character description will appear here -->
-                  </div>
-                  <div class="preview-actions">
-                    <button id="copyToClipboardBtn" class="character-builder-btn character-builder-btn-info">Copy to Clipboard</button>
-                    <button id="exportMarkdownBtn" class="character-builder-btn character-builder-btn-warning">Export Markdown</button>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="character-builder-actions">
-                <div class="image-controls">
-                  <!-- Update buttons moved to individual image sections -->
-                </div>
-                <div class="main-actions">
-            <button id="saveCharacterBtn" class="character-builder-btn character-builder-btn-primary">Add Character</button>
-            <button id="updateCharacterBtn" class="character-builder-btn character-builder-btn-secondary">Update Character</button>
-                  <button id="clearCharacterBtn" class="character-builder-btn character-builder-btn-warning">Clear</button>
-                  <button id="addToBoardBtn" class="character-builder-btn character-builder-btn-success">Add to Board</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-      <!-- Edit Snippet Modal -->
-    <div id="editSnippetModal" class="modal" style="display: none">
-      <div class="modal-content">
-        <h3>Edit Snippet</h3>
-        <label for="editSnippetTextInput">Snippet Text:</label>
-        <textarea
-          id="editSnippetTextInput"
-          placeholder="Enter your snippet text here..."
-          rows="6"
-        ></textarea>
-        <label for="editSnippetTagsInput">Tags:</label>
-        <input id="editSnippetTagsInput" placeholder="comma, separated, tags" />
-        <div class="modal-buttons">
-          <button id="saveEditedSnippetBtn">Save</button>
-          <button id="cancelEditSnippetBtn">Cancel</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Board Modal -->
-    <div id="boardModal" class="modal" style="display: none">
-      <div class="modal-content">
-        <h3 id="boardModalTitle">Create Board</h3>
-        <label for="boardNameInput">Board Name:</label>
-        <input id="boardNameInput" placeholder="Enter board name..." />
-        <label for="boardTagsInput">Tags:</label>
-        <input id="boardTagsInput" placeholder="comma, separated, tags" />
-        <label for="boardFolderSelect">Folder:</label>
-        <div class="folder-selector-container">
-          <select id="boardFolderSelect"></select>
-          <button
-            type="button"
-            id="newFolderFromBoardBtn"
-            class="small-button"
-            title="Create new folder"
-          >
-            <i data-feather="folder-plus"></i>
-          </button>
-        </div>
-
-        <div class="modal-buttons">
-          <button id="createBoardConfirmBtn">Create</button>
-          <button id="cancelBoardBtn">Cancel</button>
-        </div>
-      </div>
-    </div>
-
-
-    <!-- Color Picker Modal -->
-    <div id="colorPickerModal" class="color-picker-modal">
-      <div class="color-picker-content">
-        <h3>Choose Board Background Color</h3>
-
-        <!-- Preset Colors Section -->
-        <div class="preset-colors-section">
-          <h4>Eye-Friendly Background Colors</h4>
-          <div class="preset-colors-grid">
-            <div class="preset-color" data-color="#2F3136" title="Default">
-              <div
-                class="preset-color-swatch"
-                style="background: #2f3136"
-              ></div>
-              <span>Default</span>
-            </div>
-            <div class="preset-color" data-color="#FFFDF8" title="Paper White">
-              <div
-                class="preset-color-swatch"
-                style="background: #FFFDF8; border: 1px solid #ddd"
-              ></div>
-              <span>Paper White</span>
-            </div>
-            <div class="preset-color" data-color="#F7F7F7" title="Soft Gray">
-              <div
-                class="preset-color-swatch"
-                style="background: #F7F7F7; border: 1px solid #ddd"
-              ></div>
-              <span>Soft Gray</span>
-            </div>
-            <div class="preset-color" data-color="#F4F1EC" title="Warm Gray">
-              <div
-                class="preset-color-swatch"
-                style="background: #F4F1EC; border: 1px solid #ddd"
-              ></div>
-              <span>Warm Gray</span>
-            </div>
-            <div class="preset-color" data-color="#FFF8E7" title="Ivory">
-              <div
-                class="preset-color-swatch"
-                style="background: #FFF8E7; border: 1px solid #ddd"
-              ></div>
-              <span>Ivory</span>
-            </div>
-            <div class="preset-color" data-color="#F2F4F7" title="Cool Gray">
-              <div
-                class="preset-color-swatch"
-                style="background: #F2F4F7; border: 1px solid #ddd"
-              ></div>
-              <span>Cool Gray</span>
-            </div>
-            <div class="preset-color" data-color="#F5FBF7" title="Mint Mist">
-              <div
-                class="preset-color-swatch"
-                style="background: #F5FBF7; border: 1px solid #ddd"
-              ></div>
-              <span>Mint Mist</span>
-            </div>
-            <div class="preset-color" data-color="#F6FAFF" title="Blue Fog">
-              <div
-                class="preset-color-swatch"
-                style="background: #F6FAFF; border: 1px solid #ddd"
-              ></div>
-              <span>Blue Fog</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Custom Color Section -->
-        <div class="custom-color-section">
-          <h4>Custom Color</h4>
-          <div class="color-picker-wheel" id="colorWheel">
-            <div class="color-picker-pointer" id="colorPointer"></div>
-          </div>
-          <div class="color-picker-preview">
-            <div class="color-preview-box" id="colorPreview"></div>
-            <input
-              type="text"
-              class="color-hex-input"
-              id="colorHexInput"
-              placeholder="#FF0000"
-              maxlength="7"
-            />
-          </div>
-        </div>
-
-        <div class="color-picker-buttons">
-          <button class="reset-btn" id="colorPickerReset">
-            Reset to Default
-          </button>
-          <button class="cancel-btn" id="colorPickerCancel">Cancel</button>
-          <button class="apply-btn" id="colorPickerApply">Apply</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Update Notification Modal -->
-    <div id="updateModal" class="modal" style="display: none">
-      <div class="modal-content update-modal-content">
-        <div class="update-header">
-          <h3>🔄 Update Available</h3>
-          <button id="closeUpdateModal" class="close-btn" title="Close">
+        <div class="search-container">
+          <input type="text" id="tagSearchInput" placeholder="Search by tags..." />
+          <button id="clearSearchBtn" class="search-clear-btn" title="Clear search">
             <i data-feather="x"></i>
           </button>
         </div>
-        <div class="update-info">
-          <div class="version-comparison">
-            <div class="current-version">
-              <span class="version-label">Current Version:</span>
-              <span class="version-number" id="currentVersionDisplay"></span>
-            </div>
-            <div class="latest-version">
-              <span class="version-label">Latest Version:</span>
-              <span class="version-number" id="latestVersionDisplay"></span>
-            </div>
-          </div>
-          <div class="release-info">
-            <h4 id="releaseName"></h4>
-            <p id="releaseDate"></p>
-          </div>
+      </div>
+      <div id="rootDropZone" class="root-drop-zone" title="Drop here to move to root level">
+        <div class="root-drop-content">
+          <i data-feather="folder"></i>
+          <span>Drop here to move to root</span>
         </div>
-        <div class="changelog-container">
-          <h4>📋 What's New</h4>
-          <div id="changelogContent" class="changelog-content"></div>
-        </div>
-        <div class="update-actions">
-          <button id="downloadUpdateBtn" class="primary-btn">
-            <i data-feather="download"></i>
-            Download Update
+      </div>
+      <button id="sidebarExpandBtn" class="sidebar-expand-btn" title="Expand/Collapse Sidebar">
+        <i data-feather="chevron-right"></i>
+      </button>
+      <div id="inlineFolderCreation" class="inline-folder-creation" style="display: none">
+        <label for="newFolderNameInput">New Folder Name:</label>
+        <div class="inline-folder-input-container">
+          <input type="text" id="newFolderNameInput" placeholder="Enter folder name..." />
+          <button type="button" id="createInlineFolderBtn" class="small-button" title="Create folder">
+            <i data-feather="check"></i>
           </button>
-          <button id="remindLaterBtn" class="secondary-btn">
-            <i data-feather="clock"></i>
-            Remind Me Later
+          <button type="button" id="cancelInlineFolderBtn" class="small-button secondary" title="Cancel">
+            <i data-feather="x"></i>
           </button>
         </div>
       </div>
-    </div>
+      <div id="foldersContainer"></div>
+    </aside>
+    <main class="main-content">
+      <div id="currentBoardInfo" class="current-board-info"></div>
+      <div class="board-header">
+        <div class="header-container">
+          <!-- Board Management Section -->
+          <div class="board-section">
+            <div class="section-label">Board</div>
+            <div class="section-controls">
+              <div class="control-group">
+                <button id="newBoardBtn" class="control-btn primary" title="Create a new board">
+                  <i data-feather="plus"></i>
+                  <span>New</span>
+                </button>
+                <div class="control-description">
+                  Create a new empty board
+                </div>
+              </div>
+              <div class="control-group">
+                <select id="boardSelect" class="board-select" title="Select an existing board">
+                  <option value="">Select Board...</option>
+                </select>
+                <div class="control-description">
+                  Switch to an existing board
+                </div>
+              </div>
+              <div class="control-group">
+                <button id="clearBoardBtn" class="control-btn secondary" title="Remove all cards from current board">
+                  <i data-feather="trash-2"></i>
+                  <span>Clear</span>
+                </button>
+                <div class="control-description">
+                  Remove all cards from current board
+                </div>
+              </div>
+              <div class="control-group">
+                <button id="openCharacterBuilderBtn" class="control-btn" title="Open Character Builder">
+                  <i data-feather="user-plus"></i>
+                  <span>Character Builder</span>
+                </button>
+                <div class="control-description">
+                  Create and manage character descriptions
+                </div>
+              </div>
+              <div class="control-group">
+                <button id="openWildcardStudioBtn" class="control-btn" title="Open Wildcard Studio">
+                  <i data-feather="shuffle"></i>
+                  <span>Wildcard Studio</span>
+                </button>
+                <div class="control-description">
+                  Create and manage wildcard collections
+                </div>
+              </div>
+            </div>
+          </div>
 
-    <!-- Tutorial Overlay -->
-    <div id="tutorialOverlay" class="tutorial-overlay" style="display: none">
-      <div class="tutorial-backdrop"></div>
-      <div class="tutorial-container">
-        <div class="tutorial-header">
-          <h2 id="tutorialTitle">Welcome to PromptWaffle!</h2>
-          <button id="tutorialSkipBtn" class="tutorial-skip-btn">
-            Skip Tutorial
-          </button>
-        </div>
-        <div class="tutorial-content">
-          <div id="tutorialStep" class="tutorial-step">
-            <div class="tutorial-image">
-              <img id="tutorialImage" src="" alt="Tutorial step" />
+          <!-- Content Section -->
+          <div class="board-section">
+            <div class="section-label">Content</div>
+            <div class="section-controls">
+              <div class="control-group">
+                <button id="addImageBtn" class="control-btn" title="Add reference image to board">
+                  <i data-feather="image"></i>
+                  <span>Images</span>
+                </button>
+                <div class="control-description">
+                  Add reference images to your board (max 6)
+                </div>
+              </div>
+              <div class="control-group">
+                <button id="setFolderBtn" class="control-btn" title="Set folder to monitor">
+                  <i data-feather="folder"></i>
+                  <span>Monitor</span>
+                </button>
+                <div class="control-description">
+                  Monitor a folder for new AI-generated images
+                </div>
+              </div>
             </div>
-            <div class="tutorial-text">
-              <p id="tutorialDescription"></p>
+
+            <!-- Live Preview Area -->
+            <div id="livePreviewContainer" class="live-preview-container"></div>
+          </div>
+
+          <!-- Reference Images Section -->
+          <div class="board-section reference-images-section">
+            <div class="section-label">Reference Images</div>
+            <div id="referenceImagesContainer" class="reference-images-container"></div>
+
+            <!-- Character Images Display -->
+            <div id="characterImagesDisplay" class="character-images-display" style="display: none;">
+              <div class="character-images-header">
+                <span class="character-images-title">Active Character</span>
+                <button id="closeCharacterImagesBtn" class="close-character-images-btn" title="Close character images">
+                  <i data-feather="x"></i>
+                </button>
+              </div>
+              <div id="characterImagesContainer" class="character-images-container">
+                <!-- Character images will be displayed here -->
+              </div>
             </div>
           </div>
-        </div>
-        <div class="tutorial-footer">
-          <div class="tutorial-progress">
-            <span id="tutorialProgress">Step 1 of 8</span>
+
+          <!-- Appearance Section -->
+          <div class="board-section">
+            <div class="section-label">Appearance</div>
+            <div class="section-controls">
+              <div class="control-group">
+                <button id="toggleSnippetColorsBtn" class="control-btn" title="Toggle snippet colors on board">
+                  <i data-feather="droplet"></i>
+                  <span>Colors</span>
+                </button>
+                <div class="control-description">
+                  Toggle snippet colors on board
+                </div>
+              </div>
+              <div class="control-group">
+                <button id="backgroundColorBtn" class="control-btn" title="Set board background color">
+                  <i data-feather="square"></i>
+                  <span>Background</span>
+                </button>
+                <div class="control-description">
+                  Set board background color
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="tutorial-buttons">
-            <button id="tutorialPrevBtn" class="tutorial-btn secondary">
-              Previous
+
+          <!-- Board Tags -->
+          <div id="boardTagsDisplay" class="board-tags-display"> </div>
+        </div>
+      </div>
+
+
+      <div class="board-container">
+        <div class="board-layout">
+          <div id="promptBoard" class="prompt-board">
+            <div class="board-placeholder">
+              Drag snippets here to build your prompt
+            </div>
+          </div>
+          <div class="metadata-panel">
+            <button id="toggleMetadataBtn" class="metadata-toggle-btn" title="Toggle metadata panel">
+              <i data-feather="chevron-left"></i>
             </button>
-            <button id="tutorialNextBtn" class="tutorial-btn primary">
-              Next
-            </button>
+            <div class="metadata-header">
+              <h3>Image Metadata</h3>
+              <div class="metadata-header-controls">
+                <button id="lockMetadataBtn" class="metadata-lock-btn" title="Lock metadata fields (prevent editing)">
+                  <i data-feather="unlock"></i>
+                </button>
+              </div>
+            </div>
+            <div class="metadata-content">
+              <div class="metadata-field">
+                <label for="checkpointInput">Checkpoint:</label>
+                <input type="text" id="checkpointInput" placeholder="e.g., realisticVisionV51" />
+              </div>
+              <div class="metadata-field">
+                <label for="cfgInput">CFG Scale:</label>
+                <input type="number" id="cfgInput" placeholder="7" min="1" max="30" step="0.5" />
+              </div>
+              <div class="metadata-field">
+                <label for="seedInput">Seed:</label>
+                <input type="number" id="seedInput" placeholder="123456789" />
+              </div>
+              <div class="metadata-field">
+                <label for="stepsInput">Steps:</label>
+                <input type="number" id="stepsInput" placeholder="20" min="1" max="150" />
+              </div>
+              <div class="metadata-field">
+                <label for="samplerInput">Sampler:</label>
+                <select id="samplerInput">
+                  <option value="">Select sampler...</option>
+                  <option value="Euler a">Euler a</option>
+                  <option value="Euler">Euler</option>
+                  <option value="LMS">LMS</option>
+                  <option value="Heun">Heun</option>
+                  <option value="DPM2">DPM2</option>
+                  <option value="DPM2 a">DPM2 a</option>
+                  <option value="DPM++ 2S a">DPM++ 2S a</option>
+                  <option value="DPM++ 2M">DPM++ 2M</option>
+                  <option value="DPM++ SDE">DPM++ SDE</option>
+                  <option value="DPM fast">DPM fast</option>
+                  <option value="DPM adaptive">DPM adaptive</option>
+                  <option value="LMS Karras">LMS Karras</option>
+                  <option value="DPM2 Karras">DPM2 Karras</option>
+                  <option value="DPM2 a Karras">DPM2 a Karras</option>
+                  <option value="DPM++ 2S a Karras">DPM++ 2S a Karras</option>
+                  <option value="DPM++ 2M Karras">DPM++ 2M Karras</option>
+                  <option value="DPM++ SDE Karras">DPM++ SDE Karras</option>
+                  <option value="DDIM">DDIM</option>
+                  <option value="PLMS">PLMS</option>
+                </select>
+              </div>
+              <div class="metadata-field">
+                <label for="schedulerInput">Scheduler:</label>
+                <select id="schedulerInput">
+                  <option value="">Select scheduler...</option>
+                  <option value="simple">Simple</option>
+                  <option value="sgm_uniform">SGM Uniform</option>
+                  <option value="karras">Karras</option>
+                  <option value="exponential">Exponential</option>
+                  <option value="ddim_uniform">DDIM Uniform</option>
+                  <option value="beta">Beta</option>
+                  <option value="normal">Normal</option>
+                  <option value="linear_quadratic">Linear Quadratic</option>
+                  <option value="kl_optimal">KL Optimal</option>
+                  <option value="UniPC">UniPC</option>
+                  <option value="Linear">Linear</option>
+                  <option value="Cosine">Cosine</option>
+                  <option value="Cosine with Restarts">Cosine with Restarts</option>
+                  <option value="Polynomial">Polynomial</option>
+                  <option value="Constant">Constant</option>
+                  <option value="SGDR">SGDR</option>
+                  <option value="Inverse">Inverse</option>
+                  <option value="Inverse Sqrt">Inverse Sqrt</option>
+                  <option value="Cosine Annealing">Cosine Annealing</option>
+                  <option value="Cosine Annealing Warm Restarts">Cosine Annealing Warm Restarts</option>
+                </select>
+              </div>
+              <div class="metadata-field">
+                <label for="clipskipInput">Clip Skip:</label>
+                <input type="number" id="clipskipInput" placeholder="1" min="1" max="12" />
+              </div>
+              <div class="metadata-field">
+                <label for="sizeInput">Size:</label>
+                <input type="text" id="sizeInput" placeholder="512x768" />
+              </div>
+              <div class="metadata-field">
+                <label for="negativePromptInput">Negative Prompt:</label>
+                <textarea id="negativePromptInput" placeholder="Enter negative prompt..." rows="3"></textarea>
+              </div>
+              <div class="metadata-actions">
+                <button id="pasteMetadataBtn" class="metadata-btn primary">
+                  <i data-feather="clipboard"></i>
+                  Paste
+                </button>
+                <button id="clearMetadataBtn" class="metadata-btn secondary">
+                  <i data-feather="trash-2"></i>
+                  Clear
+                </button>
+                <button id="copyMetadataBtn" class="metadata-btn secondary">
+                  <i data-feather="copy"></i>
+                  Copy
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="compiled-prompt">
+        <div class="compiled-prompt-header">
+          <h3>Compiled Prompt:</h3>
+          <button id="expandCompiledBtn" class="expand-button" title="Expand/Collapse">
+            <i data-feather="chevron-up"></i>
+          </button>
+        </div>
+        <div id="compiledPrompt" class="compiled-prompt-output"></div>
+        <div class="compiled-prompt-buttons">
+          <button id="copyCompiledBtn" title="Copy compiled prompt to clipboard">
+            Copy to Clipboard
+          </button>
+          <button id="toggleColorBtn" title="Show/hide card colors in compiled prompt">
+            Toggle Colors
+          </button>
+          <button id="saveCompiledBtn" title="Save compiled prompt as a new snippet">
+            Save as Snippet
+          </button>
+          <button id="exportToObsidianBtn" title="Export to Markdown file for Obsidian">
+            <i data-feather="file-text"></i>
+            Export to Markdown
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <input type="file" id="referenceImageUpload" accept="image/*" style="display: none" multiple />
+
+  <!-- Text Selection Toolbar -->
+  <div id="textSelectionToolbar" class="text-selection-toolbar">
+    <button id="splitTextBtn">
+      <i data-feather="scissors"></i>
+      Split into new snippet
+    </button>
+  </div>
+
+  <!-- Folder Modal -->
+  <div id="folderModal" class="modal" style="display: none">
+    <div class="modal-content">
+      <h3>Create Folder</h3>
+      <input id="folderNameInput" placeholder="Folder name" />
+      <button id="createFolderConfirmBtn">Create</button>
+      <button id="cancelFolderBtn">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Snippet Modal -->
+  <div id="snippetModal" class="modal" style="display: none">
+    <div class="modal-content">
+      <h3 id="snippetModalTitle">Create Snippet</h3>
+      <label for="snippetTextInput">Snippet Text:</label>
+      <textarea id="snippetTextInput" placeholder="Enter your snippet text here..." rows="6"></textarea>
+      <label for="snippetTagsInput">Tags:</label>
+      <input id="snippetTagsInput" placeholder="comma, separated, tags" />
+      <label for="snippetFolderSelect">Folder:</label>
+      <div class="folder-selector-container">
+        <select id="snippetFolderSelect"></select>
+        <button type="button" id="newFolderFromSnippetBtn" class="small-button" title="Create new folder">
+          <i data-feather="folder-plus"></i>
+        </button>
+      </div>
+
+      <!-- Inline folder creation -->
+      <div id="inlineFolderCreation" class="inline-folder-creation" style="display: none">
+        <label for="newFolderNameInput">New Folder Name:</label>
+        <div class="inline-folder-input-container">
+          <input type="text" id="newFolderNameInput" placeholder="Enter folder name..." />
+          <button type="button" id="createInlineFolderBtn" class="small-button" title="Create folder">
+            <i data-feather="check"></i>
+          </button>
+          <button type="button" id="cancelInlineFolderBtn" class="small-button secondary" title="Cancel">
+            <i data-feather="x"></i>
+          </button>
+        </div>
+      </div>
+      <div class="modal-buttons">
+        <button id="createSnippetConfirmBtn">Create</button>
+        <button id="cancelSnippetBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PromptKit Modal -->
+  <div id="promptKitModal" class="promptkit-modal">
+    <div class="promptkit-modal-content">
+      <div class="promptkit-header">
+        <h2>Wildcard Studio - Build Prompts with Wildcards</h2>
+      </div>
+
+      <div class="promptkit-left">
+        <!-- Profile Selection Section -->
+        <div class="promptkit-section promptkit-profiles">
+          <h3>Profile Selection</h3>
+          <select id="promptKitProfileSelect">
+            <option value="">Select a profile...</option>
+          </select>
+        </div>
+
+        <!-- Wildcard Categories Section -->
+        <div class="promptkit-section">
+          <h3>Wildcard Categories</h3>
+          <div id="promptKitWildcardCategories" class="promptkit-wildcard-categories">
+            <!-- Wildcard categories will be populated here -->
+          </div>
+        </div>
+
+        <!-- Profile Creation Section -->
+        <div class="promptkit-section promptkit-profile-creator">
+          <h3>Create New Profile</h3>
+          <div class="profile-creator-form">
+            <div class="form-group">
+              <label for="newProfileName">Profile Name:</label>
+              <input type="text" id="newProfileName" placeholder="Enter profile name...">
+            </div>
+            <div class="form-group">
+              <label for="newProfileDescription">Description:</label>
+              <input type="text" id="newProfileDescription" placeholder="Brief description...">
+            </div>
+            <div class="form-group">
+              <label for="newProfilePositive">Positive Prompts:</label>
+              <textarea id="newProfilePositive" placeholder="Enter positive prompts (comma separated)..."></textarea>
+            </div>
+            <div class="profile-creator-actions">
+              <button id="createProfileBtn" class="promptkit-btn promptkit-btn-primary">Create Profile</button>
+              <button id="clearProfileFormBtn" class="promptkit-btn promptkit-btn-secondary">Clear Form</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="promptkit-right">
+        <!-- Generated Prompt Section -->
+        <div class="promptkit-section promptkit-output">
+          <h3>Generated Prompt</h3>
+          <div class="promptkit-prompt-sections">
+            <div class="promptkit-section-group">
+              <label>Top Section (Profile Terms)</label>
+              <textarea id="promptKitTopSection" placeholder="Profile terms will appear here..." readonly></textarea>
+            </div>
+            <div class="promptkit-section-group">
+              <label>Middle Section (Wildcards)</label>
+              <textarea id="promptKitMiddleSection" placeholder="Wildcard selections will appear here..."
+                readonly></textarea>
+            </div>
+            <div class="promptkit-section-group">
+              <label>Bottom Section (Additional)</label>
+              <textarea id="promptKitBottomSection" placeholder="Additional terms can be added here..."
+                readonly></textarea>
+            </div>
+            <div class="promptkit-section-group">
+              <label>Final Combined Prompt</label>
+              <textarea id="promptKitPositiveOutput" placeholder="Your final prompt will appear here..."
+                readonly></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Save Options Section -->
+        <div class="promptkit-section promptkit-save-options">
+          <h3>Save Options</h3>
+          <label for="promptKitSnippetName">Snippet Name:</label>
+          <input type="text" id="promptKitSnippetName" placeholder="Enter snippet name...">
+
+          <label for="promptKitSnippetTags">Tags:</label>
+          <input type="text" id="promptKitSnippetTags" placeholder="comma, separated, tags">
+
+          <label for="promptKitSnippetFolder">Folder:</label>
+          <select id="promptKitSnippetFolder">
+            <option value="">Root folder</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="promptkit-actions">
+        <button id="promptKitClearBtn" class="promptkit-btn promptkit-btn-danger">Clear All</button>
+        <button id="promptKitCancelBtn" class="promptkit-btn promptkit-btn-secondary">Cancel</button>
+        <button id="promptKitSaveBtn" class="promptkit-btn promptkit-btn-primary">Save Snippet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Character Builder Modal -->
+  <div id="characterBuilderModal" class="character-builder-modal">
+    <div class="character-builder-modal-content">
+      <div class="character-builder-header">
+        <h2>Character Builder</h2>
+        <button class="close-btn" id="closeCharacterBuilder">&times;</button>
+      </div>
+
+      <div class="character-builder-body">
+        <div class="character-builder-left">
+          <!-- Character Library Section -->
+          <div class="character-builder-section">
+            <h3>Character Library</h3>
+            <div id="characterLibrary" class="character-library">
+              <!-- Saved characters will be populated here -->
+            </div>
+          </div>
+        </div>
+
+        <div class="character-builder-right">
+          <!-- Character Editor Section -->
+          <div class="character-builder-section">
+            <h3>Character Editor</h3>
+            <div id="characterEditor" class="character-editor">
+              <div class="character-form-section">
+                <div class="form-group">
+                  <label for="characterName">Character Name:</label>
+                  <input type="text" id="characterName" placeholder="Enter character name...">
+                </div>
+
+                <div class="form-group">
+                  <label for="characterGender">Gender:</label>
+                  <input type="text" id="characterGender" placeholder="e.g., male, female, non-binary...">
+                </div>
+
+                <div class="form-group">
+                  <label for="characterAge">Age:</label>
+                  <input type="text" id="characterAge" placeholder="e.g., young adult, middle-aged, elderly...">
+                </div>
+
+                <div class="form-group">
+                  <label for="characterHair">Hair:</label>
+                  <input type="text" id="characterHair" placeholder="e.g., long blonde hair, short black hair...">
+                </div>
+
+                <div class="form-group">
+                  <label for="characterEyes">Eyes:</label>
+                  <input type="text" id="characterEyes" placeholder="e.g., blue eyes, cybernetic eyes...">
+                </div>
+
+                <div class="form-group">
+                  <label for="characterClothing">Clothing:</label>
+                  <input type="text" id="characterClothing" placeholder="e.g., leather jacket, formal suit...">
+                </div>
+
+                <div class="form-group">
+                  <label for="characterStyle">Style/Theme:</label>
+                  <input type="text" id="characterStyle" placeholder="e.g., cyberpunk, medieval, modern...">
+                </div>
+
+                <div class="form-group">
+                  <label for="characterPersonality">Personality:</label>
+                  <input type="text" id="characterPersonality" placeholder="e.g., confident, mysterious, cheerful...">
+                </div>
+
+                <div class="form-group">
+                  <label for="characterGenitals">Genitals:</label>
+                  <input type="text" id="characterGenitals" placeholder="e.g., penis, vagina, both, none...">
+                </div>
+
+                <div class="form-group">
+                  <label for="characterTags">Tags:</label>
+                  <input type="text" id="characterTags" placeholder="e.g., warrior, mage, engineer (comma separated)">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Reference Images:</label>
+                <div class="character-image-sections">
+                  <div class="character-image-section">
+                    <div class="character-image-preview" id="characterImagePreview1"></div>
+                    <input type="file" id="characterImage1" accept="image/*" style="display: none;">
+                    <div class="image-section-buttons">
+                      <button type="button" id="characterImageBtn1" class="character-image-btn">Choose Image 1</button>
+                      <button type="button" id="removeImageBtn1" class="character-image-remove"
+                        style="display: none;">Remove</button>
+                      <button type="button" id="updateImageBtn1" class="character-image-btn">Update</button>
+                    </div>
+                  </div>
+                  <div class="character-image-section">
+                    <div class="character-image-preview" id="characterImagePreview2"></div>
+                    <input type="file" id="characterImage2" accept="image/*" style="display: none;">
+                    <div class="image-section-buttons">
+                      <button type="button" id="characterImageBtn2" class="character-image-btn">Choose Image 2</button>
+                      <button type="button" id="removeImageBtn2" class="character-image-remove"
+                        style="display: none;">Remove</button>
+                      <button type="button" id="updateImageBtn2" class="character-image-btn">Update</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Character Preview Section -->
+              <div class="character-preview-section">
+                <h4>Preview:</h4>
+                <div id="characterPreview" class="character-preview-text">
+                  <!-- Generated character description will appear here -->
+                </div>
+                <div class="preview-actions">
+                  <button id="copyToClipboardBtn" class="character-builder-btn character-builder-btn-info">Copy to
+                    Clipboard</button>
+                  <button id="exportMarkdownBtn" class="character-builder-btn character-builder-btn-warning">Export
+                    Markdown</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="character-builder-actions">
+              <div class="image-controls">
+                <!-- Update buttons moved to individual image sections -->
+              </div>
+              <div class="main-actions">
+                <button id="saveCharacterBtn" class="character-builder-btn character-builder-btn-primary">Add
+                  Character</button>
+                <button id="updateCharacterBtn" class="character-builder-btn character-builder-btn-secondary">Update
+                  Character</button>
+                <button id="clearCharacterBtn"
+                  class="character-builder-btn character-builder-btn-warning">Clear</button>
+                <button id="addToBoardBtn" class="character-builder-btn character-builder-btn-success">Add to
+                  Board</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    </div>
+  </div>
 
-    <script src="https://unpkg.com/exifreader@4.21.0/dist/exif-reader.js"></script>
-    <script type="module" src="app.js"></script>
-    <!-- Confirmation Modal -->
-    <div id="confirmationModal" class="modal" style="display: none;">
-      <div class="modal-content">
-        <h3 id="confirmationTitle">Confirm Action</h3>
-        <p id="confirmationMessage">Are you sure you want to proceed?</p>
-        <div class="modal-buttons">
-          <button id="confirmationCancel" class="character-builder-btn character-builder-btn-secondary">Cancel</button>
-          <button id="confirmationConfirm" class="character-builder-btn character-builder-btn-danger">Confirm</button>
+  <!-- Edit Snippet Modal -->
+  <div id="editSnippetModal" class="modal" style="display: none">
+    <div class="modal-content">
+      <h3>Edit Snippet</h3>
+      <label for="editSnippetTextInput">Snippet Text:</label>
+      <textarea id="editSnippetTextInput" placeholder="Enter your snippet text here..." rows="6"></textarea>
+      <label for="editSnippetTagsInput">Tags:</label>
+      <input id="editSnippetTagsInput" placeholder="comma, separated, tags" />
+      <div class="modal-buttons">
+        <button id="saveEditedSnippetBtn">Save</button>
+        <button id="cancelEditSnippetBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Board Modal -->
+  <div id="boardModal" class="modal" style="display: none">
+    <div class="modal-content">
+      <h3 id="boardModalTitle">Create Board</h3>
+      <label for="boardNameInput">Board Name:</label>
+      <input id="boardNameInput" placeholder="Enter board name..." />
+      <label for="boardTagsInput">Tags:</label>
+      <input id="boardTagsInput" placeholder="comma, separated, tags" />
+      <label for="boardFolderSelect">Folder:</label>
+      <div class="folder-selector-container">
+        <select id="boardFolderSelect"></select>
+        <button type="button" id="newFolderFromBoardBtn" class="small-button" title="Create new folder">
+          <i data-feather="folder-plus"></i>
+        </button>
+      </div>
+
+      <div class="modal-buttons">
+        <button id="createBoardConfirmBtn">Create</button>
+        <button id="cancelBoardBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Color Picker Modal -->
+  <div id="colorPickerModal" class="color-picker-modal">
+    <div class="color-picker-content">
+      <h3>Choose Board Background Color</h3>
+
+      <!-- Preset Colors Section -->
+      <div class="preset-colors-section">
+        <h4>Eye-Friendly Background Colors</h4>
+        <div class="preset-colors-grid">
+          <div class="preset-color" data-color="#2F3136" title="Default">
+            <div class="preset-color-swatch" style="background: #2f3136"></div>
+            <span>Default</span>
+          </div>
+          <div class="preset-color" data-color="#FFFDF8" title="Paper White">
+            <div class="preset-color-swatch" style="background: #FFFDF8; border: 1px solid #ddd"></div>
+            <span>Paper White</span>
+          </div>
+          <div class="preset-color" data-color="#F7F7F7" title="Soft Gray">
+            <div class="preset-color-swatch" style="background: #F7F7F7; border: 1px solid #ddd"></div>
+            <span>Soft Gray</span>
+          </div>
+          <div class="preset-color" data-color="#F4F1EC" title="Warm Gray">
+            <div class="preset-color-swatch" style="background: #F4F1EC; border: 1px solid #ddd"></div>
+            <span>Warm Gray</span>
+          </div>
+          <div class="preset-color" data-color="#FFF8E7" title="Ivory">
+            <div class="preset-color-swatch" style="background: #FFF8E7; border: 1px solid #ddd"></div>
+            <span>Ivory</span>
+          </div>
+          <div class="preset-color" data-color="#F2F4F7" title="Cool Gray">
+            <div class="preset-color-swatch" style="background: #F2F4F7; border: 1px solid #ddd"></div>
+            <span>Cool Gray</span>
+          </div>
+          <div class="preset-color" data-color="#F5FBF7" title="Mint Mist">
+            <div class="preset-color-swatch" style="background: #F5FBF7; border: 1px solid #ddd"></div>
+            <span>Mint Mist</span>
+          </div>
+          <div class="preset-color" data-color="#F6FAFF" title="Blue Fog">
+            <div class="preset-color-swatch" style="background: #F6FAFF; border: 1px solid #ddd"></div>
+            <span>Blue Fog</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Custom Color Section -->
+      <div class="custom-color-section">
+        <h4>Custom Color</h4>
+        <div class="color-picker-wheel" id="colorWheel">
+          <div class="color-picker-pointer" id="colorPointer"></div>
+        </div>
+        <div class="color-picker-preview">
+          <div class="color-preview-box" id="colorPreview"></div>
+          <input type="text" class="color-hex-input" id="colorHexInput" placeholder="#FF0000" maxlength="7" />
+        </div>
+      </div>
+
+      <div class="color-picker-buttons">
+        <button class="reset-btn" id="colorPickerReset">
+          Reset to Default
+        </button>
+        <button class="cancel-btn" id="colorPickerCancel">Cancel</button>
+        <button class="apply-btn" id="colorPickerApply">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Update Notification Modal -->
+  <div id="updateModal" class="modal" style="display: none">
+    <div class="modal-content update-modal-content">
+      <div class="update-header">
+        <h3>🔄 Update Available</h3>
+        <button id="closeUpdateModal" class="close-btn" title="Close">
+          <i data-feather="x"></i>
+        </button>
+      </div>
+      <div class="update-info">
+        <div class="version-comparison">
+          <div class="current-version">
+            <span class="version-label">Current Version:</span>
+            <span class="version-number" id="currentVersionDisplay"></span>
+          </div>
+          <div class="latest-version">
+            <span class="version-label">Latest Version:</span>
+            <span class="version-number" id="latestVersionDisplay"></span>
+          </div>
+        </div>
+        <div class="release-info">
+          <h4 id="releaseName"></h4>
+          <p id="releaseDate"></p>
+        </div>
+      </div>
+      <div class="changelog-container">
+        <h4>📋 What's New</h4>
+        <div id="changelogContent" class="changelog-content"></div>
+      </div>
+      <div class="update-actions">
+        <button id="downloadUpdateBtn" class="primary-btn">
+          <i data-feather="download"></i>
+          Download Update
+        </button>
+        <button id="remindLaterBtn" class="secondary-btn">
+          <i data-feather="clock"></i>
+          Remind Me Later
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tutorial Overlay -->
+  <div id="tutorialOverlay" class="tutorial-overlay" style="display: none">
+    <div class="tutorial-backdrop"></div>
+    <div class="tutorial-container">
+      <div class="tutorial-header">
+        <h2 id="tutorialTitle">Welcome to PromptWaffle!</h2>
+        <button id="tutorialSkipBtn" class="tutorial-skip-btn">
+          Skip Tutorial
+        </button>
+      </div>
+      <div class="tutorial-content">
+        <div id="tutorialStep" class="tutorial-step">
+          <div class="tutorial-image">
+            <img id="tutorialImage" src="" alt="Tutorial step" />
+          </div>
+          <div class="tutorial-text">
+            <p id="tutorialDescription"></p>
+          </div>
+        </div>
+      </div>
+      <div class="tutorial-footer">
+        <div class="tutorial-progress">
+          <span id="tutorialProgress">Step 1 of 8</span>
+        </div>
+        <div class="tutorial-buttons">
+          <button id="tutorialPrevBtn" class="tutorial-btn secondary">
+            Previous
+          </button>
+          <button id="tutorialNextBtn" class="tutorial-btn primary">
+            Next
+          </button>
         </div>
       </div>
     </div>
+  </div>
+  </div>
 
-    <script type="module" src="utils/characterBuilder.js"></script>
-  </body>
+  <script src="https://unpkg.com/exifreader@4.21.0/dist/exif-reader.js"></script>
+  <script type="module" src="app.js"></script>
+  <!-- Confirmation Modal -->
+  <div id="confirmationModal" class="modal" style="display: none;">
+    <div class="modal-content">
+      <h3 id="confirmationTitle">Confirm Action</h3>
+      <p id="confirmationMessage">Are you sure you want to proceed?</p>
+      <div class="modal-buttons">
+        <button id="confirmationCancel" class="character-builder-btn character-builder-btn-secondary">Cancel</button>
+        <button id="confirmationConfirm" class="character-builder-btn character-builder-btn-danger">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="utils/characterBuilder.js"></script>
+</body>
+
 </html>

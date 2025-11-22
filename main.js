@@ -1,3 +1,17 @@
+/**
+ * KNOWN ISSUE: Electron v37 + Node.js v22 Compatibility Problem
+ * 
+ * The require('electron') call returns the path to electron.exe instead of the API object.
+ * This appears to be a bug in how Electron v37 handles module requires with Node v22.
+ * 
+ * SOLUTIONS:
+ * 1. Downgrade Node.js to v20 LTS (recommended)
+ * 2. Wait for Electron v37.x patch that fixes this
+ * 3. Downgrade to Electron v36 or earlier
+ * 
+ * For more details, see: GitHub issue #[to be filed]
+ */
+
 const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const fs = require('fs').promises;
@@ -8,6 +22,7 @@ console.log('[Main] Starting application...');
 console.log('[Main] Electron version:', process.versions.electron);
 console.log('[Main] Node version:', process.versions.node);
 console.log('[Main] Platform:', process.platform);
+console.log('[Main] App object check:', typeof app, app ? 'OK' : 'UNDEFINED');
 
 // Security utilities
 console.log('[Main] Loading security utilities...');
@@ -658,7 +673,7 @@ async function buildSidebarTree(dirPath, relativePath = '') {
               });
             }
           } catch (error) {
-            console.error(`Error reading snippet file ${itemPath}:`, error);
+            console.error(`Error reading snippet file ${itemPath}: `, error);
           }
         } else if (item.name.endsWith('.json')) {
           // Try to detect if this is a board file (has id, name, cards, tags)
@@ -704,7 +719,7 @@ async function buildSidebarTree(dirPath, relativePath = '') {
               });
             }
           } catch (error) {
-            console.error(`Error reading JSON file ${itemPath}:`, error);
+            console.error(`Error reading JSON file ${itemPath}: `, error);
           }
         }
       }

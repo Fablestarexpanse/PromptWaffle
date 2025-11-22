@@ -4,28 +4,7 @@
   "tags": [
     "test board"
   ],
-  "cards": [
-    {
-      "id": "card-1763619347666",
-      "snippetPath": "Start Here/default_space.json",
-      "x": 79,
-      "y": 92.859375,
-      "width": 482,
-      "height": 287,
-      "locked": false,
-      "color": "#E74C3C"
-    },
-    {
-      "id": "card-1763619348747",
-      "snippetPath": "Start Here/default_cyberpunk.json",
-      "x": 96,
-      "y": 463.859375,
-      "width": 622,
-      "height": 167,
-      "locked": false,
-      "color": "#3498DB"
-    }
-  ],
+  "cards": [],
   "groups": [],
   "images": [],
   "createdAt": "2025-07-24T00:11:38.800Z",
