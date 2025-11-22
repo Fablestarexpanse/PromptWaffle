@@ -380,9 +380,16 @@ electron-builder.json.local
 !settings.example.*
 !preferences.example.*
 
-# Keep user content folders
+# Keep user content folders but ignore contents by default
 !snippets/
+snippets/*
+!snippets/Start Here/
+!snippets/Start Here/*.json
+!snippets/Start Here/README.md
 !boards/
+boards/*
+!boards/Default Board.json
+!boards/boards.json
 
 # Keep documentation
 !README.md
@@ -410,3 +417,9 @@ electron-builder.json.local
 !**/*.spec.js
 !**/*.test.ts
 !**/*.spec.ts
+
+# ===========================================
+# USER GENERATED CONTENT
+# ===========================================
+exports/
+
