@@ -431,6 +431,10 @@ Found a bug or have a suggestion?
 
 PromptWaffle can seamlessly integrate with ComfyUI workflows using a simple file-based approach.
 
+![ComfyUI Integration](screenshots/comfyui-integration.png)
+
+*Example ComfyUI workflow showing the "Text Load Line From File" node connected to CR Text Replace and Show Any nodes for prompt processing.*
+
 ### How It Works
 
 1. **In PromptWaffle**: Compile your prompt on a board and click "Send to ComfyUI"
