@@ -1244,6 +1244,33 @@ body {
   /* Ensure content stays within boundaries */
   box-sizing: border-box;
   background: var(--bg-panel);
+  /* Optimize for smooth dragging */
+  will-change: transform;
+}
+
+/* Disable transitions during drag for smooth performance */
+.board-card.dragging {
+  transition: none !important;
+  z-index: 1000;
+  cursor: grabbing !important;
+  user-select: none;
+  pointer-events: none;
+  /* Force GPU acceleration and prevent layout shifts */
+  will-change: transform;
+  /* Disable all animations and transitions */
+  animation: none !important;
+  /* Optimize rendering */
+  backface-visibility: hidden;
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.board-card.dragging * {
+  pointer-events: none;
+  user-select: none;
+  /* Disable transitions on all child elements too */
+  transition: none !important;
+  animation: none !important;
 }
 
 .board-card:hover {

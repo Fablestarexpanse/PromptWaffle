@@ -427,6 +427,93 @@ Found a bug or have a suggestion?
 7. **Customize Layout**: Resize, color-code, and arrange cards as needed
 8. **Export Results**: Copy the compiled prompt or save it as a new snippet
 
+## 🔗 ComfyUI Integration
+
+PromptWaffle can seamlessly integrate with ComfyUI workflows using a simple file-based approach.
+
+### How It Works
+
+1. **In PromptWaffle**: Compile your prompt on a board and click "Send to ComfyUI"
+2. **File Saving**: The prompt is automatically saved to `PromptWaffle/comfyui/promptwaffle_prompt.txt`
+3. **In ComfyUI**: Use a file-reading node to load the prompt into your workflow
+
+### Setup Instructions
+
+#### Step 1: Save Prompt from PromptWaffle
+
+1. Compile your prompt on a board in PromptWaffle
+2. Click the **"Send to ComfyUI"** button in the Compiled Prompt section
+3. The prompt will be saved to: `PromptWaffle/comfyui/promptwaffle_prompt.txt`
+   - This folder is created automatically on first use
+   - Each time you click "Send to ComfyUI", the file is overwritten with the new prompt
+
+#### Step 2: Connect in ComfyUI
+
+Use any ComfyUI node that can read text files. Here are recommended options:
+
+**Option A: Using "Text Load Line From File" Node (Recommended)**
+1. Add a **"Text Load Line From File"** node to your ComfyUI workflow
+2. In the file path field, enter the full path to the prompt file:
+   - Example: `F:\PromptWaffel\comfyui\promptwaffle_prompt.txt`
+   - **Important**: Adjust the drive letter/path to match your PromptWaffle installation location
+   - You can find your PromptWaffle folder path by checking where you installed/cloned the application
+3. Set the `index` parameter to `0` to read the first (and only) line
+4. Set the `mode` parameter to `automatic` (or as needed for your workflow)
+5. **Connect the output**:
+   - Connect the `line_text` output from "Text Load Line From File" to your prompt processing nodes
+   - Common connections:
+     - **CR-Prompt list** node (from ComfyUI-Impact-Pack) - Connect to the `positive` input
+     - **CR Text Replace** node - For text processing/cleaning
+     - **CLIP Text Encode** node - Direct encoding for Stable Diffusion
+     - **Show Any** node - For debugging/displaying the prompt
+6. Click the refresh button (🔄) on the "Text Load Line From File" node to reload the file when you update the prompt in PromptWaffle
+
+**Option B: Using Other File Reading Nodes**
+- Any ComfyUI node that can read text files will work
+- Simply point it to: `PromptWaffle/comfyui/promptwaffle_prompt.txt`
+- Use the full absolute path for best results
+- Connect the text output to your desired prompt processing nodes
+
+### Workflow Example
+
+```
+PromptWaffle → [Save to File] → promptwaffle_prompt.txt
+                                    ↓
+ComfyUI → [Text Load Line From File] → [CR Text Replace] → [CR-Prompt list] → [Your Workflow]
+                                                              or
+                                                          [CLIP Text Encode] → [Your Workflow]
+```
+
+### Detailed Node Connection Guide
+
+**Connecting to CR-Prompt list (ComfyUI-Impact-Pack):**
+1. Add "Text Load Line From File" node and configure it as described above
+2. Add a **"CR-Prompt list"** node (from ComfyUI-Impact-Pack)
+3. Connect the `line_text` output from "Text Load Line From File" to the `positive` input of "CR-Prompt list"
+4. The CR-Prompt list node will handle the prompt and connect to your image generation workflow
+
+**Connecting to CLIP Text Encode:**
+1. Add "Text Load Line From File" node and configure it
+2. Add a **"CLIP Text Encode"** node
+3. Connect the `line_text` output to the `text` input of CLIP Text Encode
+4. Connect CLIP Text Encode to your image generation nodes
+
+**Connecting to Show Any (for debugging):**
+1. Add "Text Load Line From File" node and configure it
+2. Add a **"Show Any"** node (from comfyui-easy-use or similar)
+3. Connect the `line_text` output to the `anything` input of Show Any
+4. This will display the prompt text in the node for verification
+
+### Tips
+
+- **File Location**: The file is saved in `PromptWaffle/comfyui/` folder (created automatically)
+- **Auto-Update**: Each time you click "Send to ComfyUI" in PromptWaffle, the file is overwritten with the latest prompt
+- **Refresh in ComfyUI**: Use the refresh button (🔄) on your file-reading node to reload the latest prompt after updating in PromptWaffle
+- **Full Path**: For best results, use the full absolute path in ComfyUI (e.g., `F:\PromptWaffel\comfyui\promptwaffle_prompt.txt`)
+- **Finding Your Path**: To find your PromptWaffle installation path, check where you cloned/downloaded the repository
+- **No Custom Node Required**: This approach uses standard ComfyUI nodes, no custom installation needed
+- **Workflow Persistence**: Once configured, your ComfyUI workflow will remember the file path, so you only need to set it up once
+
 ### Workflow Example
 
 1. **Create Characters**: Use the Character Builder to create detailed character profiles with reference images

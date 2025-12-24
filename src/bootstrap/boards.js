@@ -19,7 +19,12 @@ import { showColorPicker } from '../ui/menus/color.js';
 let activeCard = null;
 let offsetX, offsetY;
 let lastCompiledUpdate = 0;
-const COMPILED_UPDATE_THROTTLE = 100; // Update compiled prompt at most every 100ms
+let dragAnimationFrame = null;
+let cachedBoardRect = null;
+let cachedCardDimensions = null;
+let originalCardPosition = null; // Store original left/top for transform calculation
+const COMPILED_UPDATE_THROTTLE = 100; // Update compiled prompt at most every 100ms (faster updates)
+
 function startDrag(e, cardId) {
   e.preventDefault();
   const board = document.getElementById('promptBoard');
@@ -28,70 +33,198 @@ function startDrag(e, cardId) {
     console.error('Card element or board not found for cardId:', cardId);
     return;
   }
+  
+  // Get card data from model to ensure we have the correct position
+  const currentBoard = getActiveBoard();
+  if (!currentBoard) {
+    console.error('No active board found');
+    return;
+  }
+  const cardData = currentBoard.cards.find(c => c.id === cardId);
+  if (!cardData) {
+    console.error('Card data not found for cardId:', cardId);
+    return;
+  }
+  
   activeCard = {
     id: cardId,
     element: cardElement,
-    isLocked: cardElement.classList.contains('locked')
+    isLocked: cardElement.classList.contains('locked'),
+    cardData: cardData // Store reference to card data
   };
   if (activeCard.isLocked) {
     activeCard = null;
     return;
   }
-  const boardRect = board.getBoundingClientRect();
+  
+  // Cache board rect and card dimensions once at start
+  cachedBoardRect = board.getBoundingClientRect();
   const cardRect = cardElement.getBoundingClientRect();
+  cachedCardDimensions = {
+    width: cardElement.offsetWidth,
+    height: cardElement.offsetHeight
+  };
+  
+  // Store original position from card data model (more reliable than style attribute)
+  originalCardPosition = {
+    left: cardData.x || parseInt(cardElement.style.left) || 0,
+    top: cardData.y || parseInt(cardElement.style.top) || 0
+  };
+  
   offsetX = e.clientX - cardRect.left;
   offsetY = e.clientY - cardRect.top;
-  document.addEventListener('mousemove', drag);
-  document.addEventListener('mouseup', stopDrag);
+  
+  // Add dragging class for visual feedback and disable transitions
+  cardElement.classList.add('dragging');
+  
+  // Force a reflow to ensure dragging class is applied before we start dragging
+  cardElement.offsetHeight;
+  
+  // Use passive: false to allow preventDefault if needed
+  // Capture phase for faster response
+  document.addEventListener('mousemove', drag, { passive: false, capture: true });
+  document.addEventListener('mouseup', stopDrag, { capture: true });
 }
+
 function drag(e) {
   if (!activeCard) return;
-  const board = document.getElementById('promptBoard');
-  const boardRect = board.getBoundingClientRect();
-  let x = e.clientX - boardRect.left - offsetX;
-  let y = e.clientY - boardRect.top - offsetY;
-  // Constrain to board boundaries
-  x = Math.max(
-    0,
-    Math.min(x, boardRect.width - activeCard.element.offsetWidth)
-  );
-  y = Math.max(
-    0,
-    Math.min(y, boardRect.height - activeCard.element.offsetHeight)
-  );
-  activeCard.element.style.left = `${x}px`;
-  activeCard.element.style.top = `${y}px`;
-  // Update the card's position in the data model for real-time compiled prompt updates
-  const currentBoard = getActiveBoard();
-  if (currentBoard) {
-    const card = currentBoard.cards.find(c => c.id === activeCard.id);
-    if (card) {
-      card.x = x;
-      card.y = y;
-      // Update compiled prompt in real-time with throttling
-      const now = Date.now();
-      if (now - lastCompiledUpdate > COMPILED_UPDATE_THROTTLE) {
-        updateCompiledPrompt();
-        lastCompiledUpdate = now;
+  e.preventDefault(); // Prevent text selection during drag
+  
+  // Store the current mouse position for use in RAF
+  const mouseX = e.clientX;
+  const mouseY = e.clientY;
+  
+  // Cancel any pending animation frame
+  if (dragAnimationFrame) {
+    cancelAnimationFrame(dragAnimationFrame);
+  }
+  
+  // Use requestAnimationFrame for smooth updates
+  dragAnimationFrame = requestAnimationFrame(() => {
+    if (!activeCard) return;
+    
+    // Use cached board rect - only recalculate if absolutely necessary
+    let boardRect = cachedBoardRect;
+    const board = document.getElementById('promptBoard');
+    if (!board) return;
+    
+    // Only recalculate if board size actually changed (rare during drag)
+    if (!boardRect) {
+      boardRect = board.getBoundingClientRect();
+      cachedBoardRect = boardRect;
+    }
+    
+    let x = mouseX - boardRect.left - offsetX;
+    let y = mouseY - boardRect.top - offsetY;
+    
+    // Constrain to board boundaries using cached dimensions
+    x = Math.max(0, Math.min(x, boardRect.width - cachedCardDimensions.width));
+    y = Math.max(0, Math.min(y, boardRect.height - cachedCardDimensions.height));
+    
+    // Use CSS transform for better performance (GPU accelerated)
+    // Calculate transform relative to original position
+    const deltaX = x - originalCardPosition.left;
+    const deltaY = y - originalCardPosition.top;
+    activeCard.element.style.transform = `translate3d(${deltaX}px, ${deltaY}px, 0)`;
+    
+    // Store the current position for final save (always update, not throttled)
+    activeCard.currentX = x;
+    activeCard.currentY = y;
+    
+    // Update data model position immediately for accurate sorting
+    // But throttle the expensive compiled prompt update
+    const currentBoard = getActiveBoard();
+    if (currentBoard) {
+      const card = currentBoard.cards.find(c => c.id === activeCard.id);
+      if (card) {
+        // Update position immediately (no throttling for position)
+        card.x = x;
+        card.y = y;
+        
+        // Throttle only the compiled prompt update (expensive operation)
+        const now = Date.now();
+        if (now - lastCompiledUpdate > COMPILED_UPDATE_THROTTLE) {
+          // Use requestIdleCallback if available, otherwise just update
+          if (window.requestIdleCallback) {
+            requestIdleCallback(() => {
+              updateCompiledPrompt(true);
+            }, { timeout: 50 });
+          } else {
+            // Fallback: update in next frame
+            requestAnimationFrame(() => {
+              updateCompiledPrompt(true);
+            });
+          }
+          lastCompiledUpdate = now;
+        }
+      }
+    }
+  });
+}
+
+async function stopDrag() {
+  if (!activeCard) return;
+  
+  // Cancel any pending animation frame
+  if (dragAnimationFrame) {
+    cancelAnimationFrame(dragAnimationFrame);
+    dragAnimationFrame = null;
+  }
+  
+  // Use the stored current position (most accurate)
+  // Fallback to calculating from transform if current position not available
+  let finalX = activeCard.currentX !== undefined ? activeCard.currentX : originalCardPosition.left;
+  let finalY = activeCard.currentY !== undefined ? activeCard.currentY : originalCardPosition.top;
+  
+  // If we don't have current position, try to get it from transform
+  if (activeCard.currentX === undefined || activeCard.currentY === undefined) {
+    const transform = activeCard.element.style.transform;
+    if (transform) {
+      // Match both translate() and translate3d()
+      const match = transform.match(/translate(?:3d)?\((-?\d+)px,\s*(-?\d+)px/);
+      if (match) {
+        finalX = originalCardPosition.left + parseInt(match[1], 10);
+        finalY = originalCardPosition.top + parseInt(match[2], 10);
       }
     }
   }
-}
-async function stopDrag() {
-  if (!activeCard) return;
+  
+  // Ensure we have valid numbers
+  finalX = isNaN(finalX) ? originalCardPosition.left : Math.round(finalX);
+  finalY = isNaN(finalY) ? originalCardPosition.top : Math.round(finalY);
+  
+  // Convert transform back to left/top for persistence
+  activeCard.element.style.left = `${finalX}px`;
+  activeCard.element.style.top = `${finalY}px`;
+  activeCard.element.style.transform = '';
+  activeCard.element.classList.remove('dragging');
+  
+  // Update data model with final position - ensure it's saved
   const currentBoard = getActiveBoard();
   if (currentBoard) {
     const card = currentBoard.cards.find(c => c.id === activeCard.id);
     if (card) {
-      // Position is already updated during drag, just save it
-      // Ensure compiled prompt is updated with final position
-      updateCompiledPrompt();
-      await saveBoards();
-      triggerAutosave();
+      // Always update the position, even if it seems the same
+      card.x = finalX;
+      card.y = finalY;
     }
   }
-  document.removeEventListener('mousemove', drag);
-  document.removeEventListener('mouseup', stopDrag);
+  
+  // Remove event listeners first to prevent any race conditions
+  document.removeEventListener('mousemove', drag, { capture: true });
+  document.removeEventListener('mouseup', stopDrag, { capture: true });
+  
+  // Save the position before updating UI to prevent snap-back
+  await saveBoards();
+  
+  // Update compiled prompt with final position (after save)
+  updateCompiledPrompt();
+  triggerAutosave();
+  
+  // Clear caches
+  cachedBoardRect = null;
+  cachedCardDimensions = null;
+  originalCardPosition = null;
   activeCard = null;
 }
 let resizeData = null;
@@ -149,11 +282,21 @@ function generateCacheKey(board, showColors) {
   return `${board.id}-${showColors}-${JSON.stringify(cardData)}`;
 }
 function generateCompiledPrompt(activeBoard) {
+  // Sort cards by position: top-to-bottom, then left-to-right
+  // Use a tolerance of 30px for "same row" detection
   const sortedCards = activeBoard.cards.slice().sort((a, b) => {
-    const yDifference = a.y - b.y;
+    // Ensure we have valid positions
+    const aY = (a.y !== undefined && a.y !== null) ? a.y : 0;
+    const bY = (b.y !== undefined && b.y !== null) ? b.y : 0;
+    const aX = (a.x !== undefined && a.x !== null) ? a.x : 0;
+    const bX = (b.x !== undefined && b.x !== null) ? b.x : 0;
+    
+    const yDifference = aY - bY;
+    // If cards are within 30px vertically, sort by x position (left to right)
     if (Math.abs(yDifference) < 30) {
-      return a.x - b.x;
+      return aX - bX;
     }
+    // Otherwise sort by y position (top to bottom)
     return yDifference;
   });
   const snippets = AppState.getSnippets();
@@ -174,7 +317,7 @@ function generateCompiledPrompt(activeBoard) {
     .join(',');
   return compiledHtml;
 }
-export function updateCompiledPrompt() {
+export function updateCompiledPrompt(forceUpdate = false) {
   const container = document.getElementById('compiledPrompt');
   if (!container) return;
   const activeBoard = getActiveBoard();
@@ -184,10 +327,13 @@ export function updateCompiledPrompt() {
   }
   const showCompiledColors = AppState.getShowCompiledColors();
   const cacheKey = generateCacheKey(activeBoard, showCompiledColors);
-  if (compiledCache.has(cacheKey)) {
+  
+  // If forceUpdate is true, skip cache and regenerate
+  if (!forceUpdate && compiledCache.has(cacheKey)) {
     container.innerHTML = compiledCache.get(cacheKey);
     return;
   }
+  
   const compiledHtml = generateCompiledPrompt(activeBoard);
   if (compiledCache.size > 50) {
     const oldestKey = compiledCache.keys().next().value;

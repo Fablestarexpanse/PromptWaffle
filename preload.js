@@ -40,6 +40,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.invoke('fs-rm', path, { recursive: true, force: true }),
   openImageDialog: () => ipcRenderer.invoke('open-image-dialog'),
   openFolderDialog: () => ipcRenderer.invoke('open-folder-dialog'),
+  selectFolder: () => ipcRenderer.invoke('select-folder'),
   // Image viewer window APIs
   openImageViewer: imageData =>
     ipcRenderer.invoke('open-image-viewer', imageData),
@@ -54,7 +55,15 @@ contextBridge.exposeInMainWorld('electronAPI', {
   moveImageViewer: (deltaX, deltaY) =>
     ipcRenderer.invoke('move-image-viewer', deltaX, deltaY),
   fetchLatestRelease: (repoOwner, repoName) =>
-    ipcRenderer.invoke('fetchLatestRelease', repoOwner, repoName)
+    ipcRenderer.invoke('fetchLatestRelease', repoOwner, repoName),
+  // ComfyUI integration
+  sendToComfyUI: (prompt, nodeId, comfyuiUrl) =>
+    ipcRenderer.invoke('send-to-comfyui', prompt, nodeId, comfyuiUrl),
+  savePromptToFile: (prompt, folderPath, filename) =>
+    ipcRenderer.invoke('save-prompt-to-file', prompt, folderPath, filename),
+  selectFolderAndSavePrompt: (prompt) =>
+    ipcRenderer.invoke('select-folder-and-save-prompt', prompt),
+  getComfyUIFolder: () => ipcRenderer.invoke('get-comfyui-folder')
 });
 
 // Auto-updater IPC bridge

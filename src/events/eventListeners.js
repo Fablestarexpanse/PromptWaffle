@@ -474,6 +474,16 @@ export function setupEventListeners() {
           showToast('Export failed. Please try again.', 'error');
         }
       },
+      sendToComfyUIBtn: async () => {
+        try {
+          const { savePromptToComfyUI } = await import('../utils/comfyui-integration.js');
+          await savePromptToComfyUI();
+        } catch (error) {
+          console.error('Error saving prompt to ComfyUI:', error);
+          const { showToast } = await import('../utils/index.js');
+          showToast('Failed to save prompt for ComfyUI', 'error');
+        }
+      },
       checkForUpdatesBtn: async () => {
         const btn = document.getElementById('checkForUpdatesBtn');
         if (btn) {

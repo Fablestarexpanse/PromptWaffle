@@ -362,7 +362,7 @@ function getCurrentBoard() {
   return null;
 }
 
-function getCompiledPrompt() {
+export function getCompiledPrompt() {
   const compiledPromptElement = document.getElementById('compiledPrompt');
   return compiledPromptElement ? compiledPromptElement.textContent.trim() : '';
 }
