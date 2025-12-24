@@ -495,9 +495,17 @@ function openSnippetModal(path) {
     if (input) input.focus();
   }
 }
-function openBoardModalInFolder(path) {
-  // TODO: Implement board modal in folder functionality
-  console.log('Board modal in folder not yet implemented for path:', path);
+async function openBoardModalInFolder(path) {
+  try {
+    // Import the board modal function
+    const { openNewBoardModal } = await import('./boards.js');
+    // Open the board modal with the folder path as parent
+    await openNewBoardModal(path);
+  } catch (error) {
+    console.error('Error opening board modal in folder:', error);
+    const { showToast } = await import('../utils/index.js');
+    showToast('Error opening board creation dialog', 'error');
+  }
 }
 async function deleteFolder(path) {
   const confirmed = await showDeleteConfirmation(path, 'folder');

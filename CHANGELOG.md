@@ -2,6 +2,21 @@
 
 All notable changes to PromptWaffle will be documented in this file.
 
+## [1.5.1] - 2025-12-23
+
+### Fixed
+
+- **Build Configuration**: Removed non-existent `launcher.js` reference from build files
+- **Security**: Removed debug comments that disabled security validation in IPC handlers
+- **Version Display**: Updated version displays in README and UI to match current version (1.5.1)
+- **Feature Implementation**: Implemented board modal in folder functionality (previously TODO)
+
+### Changed
+
+- **Dependencies**: Downgraded Electron from 37.4.0 to 33.2.1 for better stability
+- **Project Cleanup**: Removed experimental ComfyUI extension and browser version
+- **Repository**: Updated .gitignore to reflect removed projects
+
 ## [1.3.1] - 2024-12-30
 
 ### Changed

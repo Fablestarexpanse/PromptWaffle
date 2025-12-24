@@ -423,3 +423,6 @@ boards/*
 # ===========================================
 exports/
 
+# Separate projects / tools
+# (removed: comfyui-prompt-manager/ - no longer exists)
+

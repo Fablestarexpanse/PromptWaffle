@@ -231,7 +231,6 @@ console.log('[Main] Registering IPC handlers...');
 
 ipcMain.handle('fs-rm', async (event, filePath, options = {}) => {
   try {
-    // Temporarily disable security validation for debugging
     const sanitizedPath = validateAndSanitizePath(filePath);
     if (!sanitizedPath) {
       logSecurityEvent('invalid_file_path', { filePath, operation: 'fs-rm' });
@@ -243,7 +242,6 @@ ipcMain.handle('fs-rm', async (event, filePath, options = {}) => {
     // Ensure path is within app directory
     const appDir = path.resolve(__dirname);
     if (!fullPath.startsWith(appDir)) {
-      // Temporarily disable security logging for debugging
       logSecurityEvent('path_traversal_attempt', { filePath: filePath, operation: 'fs-rm' });
       throw new Error('Access denied: Path outside application directory');
     }
@@ -546,7 +544,6 @@ async function ensureCharactersDir() {
 // Handle app state and boards file operations
 ipcMain.handle('fs-readFile', async (event, filePath) => {
   try {
-    // Temporarily disable security validation for debugging
     const sanitizedPath = validateAndSanitizePath(filePath);
     if (!sanitizedPath) {
       logSecurityEvent('invalid_file_path', { filePath, operation: 'fs-readFile' });
@@ -579,7 +576,6 @@ ipcMain.handle('fs-writeFile', async (event, filePath, content) => {
       allowedExtensions = ['txt', 'json', 'png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp'];
     }
 
-    // Temporarily disable security validation for debugging
     const sanitizedPath = validateAndSanitizePath(filePath, allowedExtensions);
     if (!sanitizedPath) {
       logSecurityEvent('invalid_file_path', { filePath, operation: 'fs-writeFile' });
