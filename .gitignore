@@ -426,3 +426,10 @@ exports/
 # Separate projects / tools
 # (removed: comfyui-prompt-manager/ - no longer exists)
 
+# Audit and development documentation (local only)
+PROJECT_AUDIT_REPORT.md
+KNOWN_ISSUES.md
+FIXES_APPLIED.md
+AUDIT_SUMMARY.md
+COMMIT_INSTRUCTIONS.md
+
