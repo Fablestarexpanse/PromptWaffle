@@ -283,8 +283,13 @@ export async function exportToObsidian() {
     const exportData = gatherExportData();
     const formattedContent = formatForObsidian(exportData);
     
-    // Create export folder and save file
-    const { filePath, exportFolder } = await saveExportToFile(exportData, formattedContent);
+    // Create export folder and save file (with save dialog)
+    const { filePath, cancelled } = await saveExportToFile(exportData, formattedContent);
+    
+    if (cancelled) {
+      // User cancelled the save dialog
+      return;
+    }
     
     // Also copy to clipboard for convenience
     await navigator.clipboard.writeText(formattedContent);
@@ -303,20 +308,38 @@ export async function exportToObsidian() {
 }
 
 async function saveExportToFile(exportData, formattedContent) {
-  // Ensure export folder exists
-  const exportFolder = 'exports';
-  await ensureDirectoryExists(exportFolder);
-  
   // Create the markdown file with board name
   const boardName = exportData.boardName.replace(/[^a-zA-Z0-9\s-]/g, '').trim();
   const safeBoardName = boardName || 'Untitled';
-  const filename = `${safeBoardName}.md`;
-  const filePath = `${exportFolder}/${filename}`;
+  const defaultFilename = `${safeBoardName}.md`;
   
-  // Save the file
-  await safeElectronAPICall('writeFile', filePath, formattedContent);
-  
-  return { filePath, exportFolder };
+  // Show save dialog to let user choose location
+  if (window.electronAPI && typeof window.electronAPI.showSaveDialog === 'function') {
+    const result = await window.electronAPI.showSaveDialog({
+      title: 'Export Markdown File',
+      defaultPath: defaultFilename,
+      filters: [
+        { name: 'Markdown Files', extensions: ['md'] },
+        { name: 'All Files', extensions: ['*'] }
+      ]
+    });
+    
+    if (result.canceled || result.cancelled || !result.filePath) {
+      return { filePath: null, exportFolder: null, cancelled: true };
+    }
+    
+    // Save the file to the chosen location
+    await safeElectronAPICall('writeFile', result.filePath, formattedContent);
+    
+    return { filePath: result.filePath, exportFolder: null, cancelled: false };
+  } else {
+    // Fallback: use default export folder if dialog not available
+    const exportFolder = 'exports';
+    await ensureDirectoryExists(exportFolder);
+    const filePath = `${exportFolder}/${defaultFilename}`;
+    await safeElectronAPICall('writeFile', filePath, formattedContent);
+    return { filePath, exportFolder, cancelled: false };
+  }
 }
 
 

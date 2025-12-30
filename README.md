@@ -1,6 +1,6 @@
 # PromptWaffle
 
-![Version](https://img.shields.io/badge/version-1.5.1-blue.svg)
+![Version](https://img.shields.io/badge/version-1.5.2-blue.svg)
 ![License](https://img.shields.io/badge/license-AGPL--3.0-green.svg)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)
 
@@ -233,7 +233,21 @@ For more detailed connection instructions, see the [ComfyUI Integration](#-comfy
 
 ## Release Notes
 
-### Version 1.5.1 (Current)
+### Version 1.5.2 (Current)
+
+#### Bug Fixes & Improvements
+- **Character Update Fix**: Fixed issue where updating a character in the character builder would create duplicate snippet cards instead of updating the existing one
+- **Path Normalization**: Improved path matching logic to handle both forward and backslashes for better cross-platform compatibility
+- **Board Name Display**: Board name now displays on the canvas for better visual identification
+- **Reference Image Persistence**: Reference images now persist with their boards across program restarts
+- **Board Select Dropdown**: Fixed dropdown to properly show and load all available boards
+- **Live Preview Expand**: Fixed expand functionality for live preview images
+- **Export Markdown**: Added save dialog to choose export location for markdown files
+- **Card Resizing Performance**: Optimized card resizing with requestAnimationFrame and GPU acceleration hints
+- **Optimal Card Sizing**: New cards now open at optimal size based on content for better readability
+- **Character Update Synchronization**: Character updates now immediately reflect on the board without requiring a reload
+
+### Version 1.5.1
 
 #### Major UI Overhaul
 - **Premium Dark Theme**: Complete visual refresh with a modern, cohesive dark color palette.

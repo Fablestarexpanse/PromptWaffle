@@ -21,17 +21,32 @@ const https = require('https');
 const { URL } = require('url');
 const WebSocket = require('ws');
 
+// Production logging setup
+const electronLog = require('electron-log');
+const isDev = process.argv.includes('--dev');
+
+// Configure electron-log for production
+if (!isDev) {
+  electronLog.transports.file.level = 'info';
+  electronLog.transports.console.level = false; // Disable console in production
+}
+
+// Create logger helper - use console in dev, electron-log in production
+const logger = isDev 
+  ? { log: console.log, error: console.error, warn: console.warn, info: console.info, debug: console.debug }
+  : electronLog;
+
 // Add comprehensive error logging
-console.log('[Main] Starting application...');
-console.log('[Main] Electron version:', process.versions.electron);
-console.log('[Main] Node version:', process.versions.node);
-console.log('[Main] Platform:', process.platform);
-console.log('[Main] App object check:', typeof app, app ? 'OK' : 'UNDEFINED');
+logger.info('[Main] Starting application...');
+logger.info('[Main] Electron version:', process.versions.electron);
+logger.info('[Main] Node version:', process.versions.node);
+logger.info('[Main] Platform:', process.platform);
+logger.info('[Main] App object check:', typeof app, app ? 'OK' : 'UNDEFINED');
 
 // Security utilities
-console.log('[Main] Loading security utilities...');
+logger.info('[Main] Loading security utilities...');
 const { validateAndSanitizePath, validateFileSize, logSecurityEvent } = require('./src/utils/security.js');
-console.log('[Main] Security utilities loaded successfully');
+logger.info('[Main] Security utilities loaded successfully');
 
 let mainWindow;
 let imageViewerWindow = null;
@@ -458,6 +473,67 @@ ipcMain.handle(
     return true;
   }
 );
+
+// Board image handling - save to app directory for portability
+ipcMain.handle('save-board-image', async (event, boardId, imageBuffer, filename) => {
+  try {
+    // imageBuffer is an array from renderer, convert to Buffer
+    const buffer = Buffer.from(imageBuffer);
+    logger.info('[Main] save-board-image called with:', { boardId, filename, bufferSize: buffer.length });
+
+    // Create the board images directory if it doesn't exist
+    const imagesDir = path.join(__dirname, 'snippets', 'boards', 'images', boardId);
+    logger.info('[Main] Board images directory path:', imagesDir);
+
+    await fs.mkdir(imagesDir, { recursive: true });
+    logger.info('[Main] Board images directory created/verified');
+
+    // Create the full file path
+    const fullPath = path.join(imagesDir, filename);
+    logger.info('[Main] Full file path:', fullPath);
+
+    // Write the image buffer to file
+    await fs.writeFile(fullPath, buffer);
+    logger.info('[Main] Board image saved successfully:', fullPath);
+
+    // Return relative path for storage in board JSON
+    const relativePath = `snippets/boards/images/${boardId}/${filename}`;
+    return { success: true, relativePath: relativePath, fullPath: fullPath };
+  } catch (error) {
+    logger.error('[Main] Error saving board image:', error);
+    throw error;
+  }
+});
+
+// Delete board image from app directory
+ipcMain.handle('delete-board-image', async (event, imagePath) => {
+  try {
+    // Handle both relative and absolute paths
+    const fullPath = path.isAbsolute(imagePath)
+      ? imagePath
+      : path.join(__dirname, imagePath);
+    
+    await fs.unlink(fullPath);
+    logger.info('[Main] Board image deleted successfully:', fullPath);
+    
+    // Try to remove empty parent directory
+    try {
+      const parentDir = path.dirname(fullPath);
+      const files = await fs.readdir(parentDir);
+      if (files.length === 0) {
+        await fs.rmdir(parentDir);
+        logger.info('[Main] Removed empty board images directory:', parentDir);
+      }
+    } catch (dirError) {
+      // Ignore errors when removing directory (may not be empty or may not exist)
+    }
+    
+    return true;
+  } catch (error) {
+    logger.error('[Main] Error deleting board image:', error);
+    return false;
+  }
+});
 
 ipcMain.handle('load-image', async (event, imagePath) => {
   try {
@@ -1122,6 +1198,28 @@ async function comfyuiRequest(urlObj, path, method = 'GET', data = null) {
   });
 }
 
+// Helper function to copy directory recursively
+async function copyDirectory(src, dest) {
+  try {
+    await fs.mkdir(dest, { recursive: true });
+    const entries = await fs.readdir(src, { withFileTypes: true });
+    
+    for (const entry of entries) {
+      const srcPath = path.join(src, entry.name);
+      const destPath = path.join(dest, entry.name);
+      
+      if (entry.isDirectory()) {
+        await copyDirectory(srcPath, destPath);
+      } else {
+        await fs.copyFile(srcPath, destPath);
+      }
+    }
+  } catch (error) {
+    logger.error(`[Main] Error copying directory ${src} to ${dest}:`, error);
+    throw error;
+  }
+}
+
 // Helper function to find PromptWafflePromptNode in a workflow
 function findPromptWaffleNode(workflow) {
   if (!workflow || typeof workflow !== 'object') {
@@ -1256,6 +1354,270 @@ ipcMain.handle('select-folder-and-save-prompt', async (event, prompt) => {
   }
 });
 
+// Export/Import handlers
+ipcMain.handle('export-data', async () => {
+  try {
+    const AdmZip = require('adm-zip');
+    const zip = new AdmZip();
+    
+    const appDir = __dirname;
+    const timestamp = new Date().toISOString().split('T')[0].replace(/-/g, '');
+    const zipFilename = `PromptWaffle_Backup_${timestamp}.zip`;
+    
+    // Add folders to ZIP
+    const foldersToExport = ['snippets', 'boards', 'profiles', 'wildcards'];
+    
+    for (const folder of foldersToExport) {
+      const folderPath = path.join(appDir, folder);
+      try {
+        await fs.access(folderPath);
+        zip.addLocalFolder(folderPath, folder);
+        logger.info(`[Export] Added folder: ${folder}`);
+      } catch (error) {
+        // Folder doesn't exist, skip it
+        logger.info(`[Export] Skipping non-existent folder: ${folder}`);
+      }
+    }
+    
+    // Create export manifest
+    const manifest = {
+      version: '1.0',
+      exportDate: new Date().toISOString(),
+      appVersion: app.getVersion(),
+      folders: foldersToExport.filter(async (f) => {
+        try {
+          await fs.access(path.join(appDir, f));
+          return true;
+        } catch {
+          return false;
+        }
+      })
+    };
+    
+    zip.addFile('export_manifest.json', Buffer.from(JSON.stringify(manifest, null, 2)));
+    
+    // Show save dialog
+    const result = await dialog.showSaveDialog({
+      title: 'Export PromptWaffle Data',
+      defaultPath: zipFilename,
+      filters: [{ name: 'ZIP Archive', extensions: ['zip'] }]
+    });
+    
+    if (result.canceled) {
+      return { success: false, cancelled: true };
+    }
+    
+    // Write ZIP file
+    zip.writeZip(result.filePath);
+    logger.info(`[Export] Data exported to: ${result.filePath}`);
+    
+    return {
+      success: true,
+      filePath: result.filePath,
+      filename: path.basename(result.filePath)
+    };
+  } catch (error) {
+    logger.error('[Export] Error exporting data:', error);
+    return { success: false, error: error.message || 'Failed to export data' };
+  }
+});
+
+ipcMain.handle('import-data', async () => {
+  try {
+    const AdmZip = require('adm-zip');
+    
+    // Show open dialog
+    const result = await dialog.showOpenDialog({
+      title: 'Import PromptWaffle Data',
+      filters: [{ name: 'ZIP Archive', extensions: ['zip'] }],
+      properties: ['openFile']
+    });
+    
+    if (result.canceled || !result.filePaths || result.filePaths.length === 0) {
+      return { success: false, cancelled: true };
+    }
+    
+    const zipPath = result.filePaths[0];
+    const zip = new AdmZip(zipPath);
+    const appDir = __dirname;
+    
+    // Extract ZIP entries
+    const zipEntries = zip.getEntries();
+    
+    // Validate manifest if present
+    const manifestEntry = zipEntries.find(e => e.entryName === 'export_manifest.json');
+    if (manifestEntry) {
+      try {
+        const manifest = JSON.parse(manifestEntry.getData().toString('utf8'));
+        logger.info('[Import] Importing backup from:', manifest.exportDate);
+      } catch (e) {
+        logger.warn('[Import] Could not parse manifest:', e);
+      }
+    }
+    
+    // Backup current data before import
+    const backupDir = path.join(appDir, 'backup_before_import_' + Date.now());
+    try {
+      await fs.mkdir(backupDir, { recursive: true });
+      const foldersToBackup = ['snippets', 'boards', 'profiles', 'wildcards'];
+      for (const folder of foldersToBackup) {
+        const folderPath = path.join(appDir, folder);
+        try {
+          await fs.access(folderPath);
+          // Copy folder recursively
+          await copyDirectory(folderPath, path.join(backupDir, folder));
+          logger.info(`[Import] Backed up: ${folder}`);
+        } catch (e) {
+          // Folder doesn't exist, skip
+          logger.info(`[Import] Skipping non-existent folder: ${folder}`);
+        }
+      }
+      logger.info(`[Import] Current data backed up to: ${backupDir}`);
+    } catch (backupError) {
+      logger.warn('[Import] Failed to backup current data:', backupError);
+    }
+    
+    // Extract ZIP to app directory
+    zip.extractAllTo(appDir, true); // Overwrite existing files
+    
+    logger.info('[Import] Data imported successfully');
+    
+    return {
+      success: true,
+      backupLocation: backupDir
+    };
+  } catch (error) {
+    logger.error('[Import] Error importing data:', error);
+    return { success: false, error: error.message || 'Failed to import data' };
+  }
+});
+
+ipcMain.handle('show-save-dialog', async (event, options) => {
+  try {
+    const result = await dialog.showSaveDialog({
+      title: options.title || 'Save File',
+      defaultPath: options.defaultPath || 'untitled',
+      filters: options.filters || [{ name: 'All Files', extensions: ['*'] }]
+    });
+    
+    return result;
+  } catch (error) {
+    logger.error('[Main] Error showing save dialog:', error);
+    return { canceled: true, error: error.message };
+  }
+});
+
+ipcMain.handle('open-backup-file-dialog', async () => {
+  try {
+    const result = await dialog.showOpenDialog({
+      title: 'Select Backup ZIP File to Verify',
+      filters: [{ name: 'ZIP Archive', extensions: ['zip'] }],
+      properties: ['openFile']
+    });
+    
+    if (result.canceled || !result.filePaths || result.filePaths.length === 0) {
+      return { cancelled: true };
+    }
+    
+    return { cancelled: false, filePath: result.filePaths[0] };
+  } catch (error) {
+    logger.error('[Main] Error opening backup file dialog:', error);
+    return { cancelled: true, error: error.message };
+  }
+});
+
+ipcMain.handle('verify-backup', async (event, zipPath) => {
+  try {
+    const AdmZip = require('adm-zip');
+    const zip = new AdmZip(zipPath);
+    const zipEntries = zip.getEntries();
+    
+    const issues = [];
+    const warnings = [];
+    const summary = {
+      snippets: 0,
+      boards: 0,
+      characters: 0,
+      characterImages: 0,
+      boardImages: 0,
+      profiles: 0,
+      wildcards: 0
+    };
+    
+    // Check for required folders
+    const requiredFolders = ['snippets', 'boards'];
+    const foundFolders = new Set();
+    
+    for (const entry of zipEntries) {
+      const entryPath = entry.entryName.split('/');
+      if (entryPath.length > 0) {
+        foundFolders.add(entryPath[0]);
+      }
+      
+      // Count files by type
+      if (entry.entryName.startsWith('snippets/') && entry.entryName.endsWith('.json')) {
+        summary.snippets++;
+        if (entry.entryName.includes('characters/') && !entry.entryName.includes('images/')) {
+          summary.characters++;
+        }
+      }
+      if (entry.entryName.startsWith('snippets/characters/images/')) {
+        summary.characterImages++;
+      }
+      if (entry.entryName.startsWith('snippets/boards/images/')) {
+        summary.boardImages++;
+      }
+      if (entry.entryName.startsWith('boards/') && entry.entryName.endsWith('.json')) {
+        summary.boards++;
+      }
+      if (entry.entryName.startsWith('profiles/') && entry.entryName.endsWith('.json')) {
+        summary.profiles++;
+      }
+      if (entry.entryName.startsWith('wildcards/') && entry.entryName.endsWith('.txt')) {
+        summary.wildcards++;
+      }
+      
+      // Validate JSON files
+      if (entry.entryName.endsWith('.json') && !entry.isDirectory) {
+        try {
+          const content = entry.getData().toString('utf8');
+          JSON.parse(content);
+        } catch (e) {
+          issues.push(`Invalid JSON: ${entry.entryName}`);
+        }
+      }
+    }
+    
+    // Check for required folders
+    for (const folder of requiredFolders) {
+      if (!foundFolders.has(folder)) {
+        issues.push(`Missing required folder: ${folder}`);
+      }
+    }
+    
+    // Check manifest
+    const manifestEntry = zipEntries.find(e => e.entryName === 'export_manifest.json');
+    if (!manifestEntry) {
+      warnings.push('No export manifest found (may be from older version)');
+    }
+    
+    return {
+      valid: issues.length === 0,
+      issues,
+      warnings,
+      summary
+    };
+  } catch (error) {
+    logger.error('[Verify] Error verifying backup:', error);
+    return {
+      valid: false,
+      issues: [`Verification error: ${error.message}`],
+      warnings: [],
+      summary: {}
+    };
+  }
+});
+
 ipcMain.handle('save-prompt-to-file', async (event, prompt, folderPath, filename = 'promptwaffle_prompt.txt') => {
   try {
     if (!prompt || typeof prompt !== 'string') {
@@ -1295,9 +1657,21 @@ ipcMain.handle('save-prompt-to-file', async (event, prompt, folderPath, filename
   }
 });
 
-// Legacy ComfyUI Integration Handler (kept for backward compatibility)
-// Attempts to update existing node in workflow, or creates new one if not found
+// ============================================================================
+// LEGACY COMFYUI INTEGRATION HANDLER - DEPRECATED
+// ============================================================================
+// This handler is DEPRECATED and will be removed in v2.0.0
+// 
+// Current implementation uses file-based approach (see 'save-prompt-to-file' handler)
+// This legacy code attempted WebSocket/HTTP API integration but proved unreliable
+// 
+// Migration: Use 'save-prompt-to-file' IPC handler instead
+// Frontend: Use savePromptToComfyUI() from comfyui-integration.js
+// ============================================================================
 ipcMain.handle('send-to-comfyui', async (event, prompt, nodeId = null, comfyuiUrl = 'http://127.0.0.1:8188') => {
+  // Deprecation warning
+  console.warn('[Main] DEPRECATED: send-to-comfyui handler is deprecated. Use file-based approach instead.');
+  console.warn('[Main] This handler will be removed in v2.0.0. Migrate to save-prompt-to-file.');
   try {
     console.log('[Main] Sending prompt to ComfyUI:', { prompt: prompt.substring(0, 50) + '...', nodeId, comfyuiUrl });
 

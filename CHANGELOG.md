@@ -2,6 +2,30 @@
 
 All notable changes to PromptWaffle will be documented in this file.
 
+## [1.5.2] - 2025-12-29
+
+### Fixed
+
+- **Character Update Duplicates**: Fixed issue where updating a character in the character builder would create duplicate snippet cards instead of updating the existing one
+- **Path Matching**: Improved path normalization to handle both forward and backslashes for better cross-platform compatibility when updating character snippets
+- **Board Select Dropdown**: Fixed dropdown to properly show and load all available boards (previously appeared empty)
+- **Live Preview Expand**: Fixed expand button functionality for live preview images (controls overlay now visible on hover)
+- **Export Markdown Dialog**: Added save dialog to choose export location for markdown files (previously saved to default folder)
+
+### Changed
+
+- **Board Name Display**: Board name now displays on the canvas in the top-left corner for better visual identification
+- **Reference Image Persistence**: Reference images now persist with their boards across program restarts (stored in app directory)
+- **Card Resizing Performance**: Optimized card resizing with requestAnimationFrame, GPU acceleration hints, and CSS transitions disabled during resize
+- **Optimal Card Sizing**: New cards now open at optimal size based on content length for better readability
+- **Character Update Synchronization**: Character updates now immediately reflect on the board without requiring a reload (cache updates and forced re-render)
+
+### Technical
+
+- **Path Normalization**: Added `normalizePath` utility function for consistent path comparison across platforms
+- **Sidebar Tree Updates**: Improved logic to update existing sidebar entries instead of creating duplicates
+- **AppState Cache**: Enhanced immediate cache updates for character snippets to ensure real-time board updates
+
 ## [1.5.1] - 2025-12-23
 
 ### Fixed

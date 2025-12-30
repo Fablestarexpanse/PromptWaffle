@@ -1,0 +1,24 @@
+[
+  {
+    "id": "board-default",
+    "name": "Default Board",
+    "tags": [],
+    "cards": [],
+    "groups": [],
+    "images": [],
+    "createdAt": "2025-12-24T02:15:05.248Z",
+    "modifiedAt": "2025-12-24T02:15:05.248Z",
+    "filePath": "Start Here\\default_board.json"
+  },
+  {
+    "id": "board-1767059575198",
+    "name": "Test me",
+    "tags": [],
+    "cards": [],
+    "groups": [],
+    "images": [],
+    "createdAt": "2025-12-30T01:52:55.198Z",
+    "modifiedAt": "2025-12-30T01:52:55.198Z",
+    "filePath": "boards\\test_me_1767059575198.json"
+  }
+]

@@ -453,14 +453,16 @@ export function setupEventListeners() {
       sortBtn: bootstrap.toggleSortMenu,
       collapseAllBtn: bootstrap.collapseAllFolders,
       newBoardBtn: () => bootstrap.openNewBoardModal(),
-      boardSelect: () => {
+      boardSelect: async () => {
         // Handle board selection from dropdown
         const boardSelect = document.getElementById('boardSelect');
         if (boardSelect && boardSelect.value) {
-          const { switchToBoard } = bootstrap;
-          switchToBoard(boardSelect.value);
-          // Reset selection to placeholder
-          boardSelect.value = '';
+          const { setCurrentBoard } = bootstrap;
+          await setCurrentBoard(boardSelect.value);
+          // Reset selection to placeholder after a short delay to allow render
+          setTimeout(() => {
+            boardSelect.value = '';
+          }, 100);
         }
       },
       copyCompiledBtn: bootstrap.copyCompiledPrompt,
@@ -482,6 +484,64 @@ export function setupEventListeners() {
           console.error('Error saving prompt to ComfyUI:', error);
           const { showToast } = await import('../utils/index.js');
           showToast('Failed to save prompt for ComfyUI', 'error');
+        }
+      },
+      exportDataBtn: async () => {
+        try {
+          const { exportAllData } = await import('../utils/export-import.js');
+          await exportAllData();
+        } catch (error) {
+          console.error('Error exporting data:', error);
+          const { showToast } = await import('../utils/index.js');
+          showToast('Failed to export data', 'error');
+        }
+      },
+      importDataBtn: async () => {
+        try {
+          const { importData } = await import('../utils/export-import.js');
+          const confirmed = confirm('Importing data will replace your current data. A backup will be created automatically. Continue?');
+          if (confirmed) {
+            await importData();
+          }
+        } catch (error) {
+          console.error('Error importing data:', error);
+          const { showToast } = await import('../utils/index.js');
+          showToast('Failed to import data', 'error');
+        }
+      },
+      verifyBackupBtn: async () => {
+        try {
+          const { showToast } = await import('../utils/index.js');
+          if (!window.electronAPI || typeof window.electronAPI.verifyBackup !== 'function') {
+            showToast('Verification functionality not available', 'error');
+            return;
+          }
+          
+          // Use IPC to show file picker
+          const result = await window.electronAPI.openBackupFileDialog();
+          
+          if (result.cancelled || !result.filePath) {
+            return;
+          }
+          
+          showToast('Verifying backup...', 'info');
+          const verifyResult = await window.electronAPI.verifyBackup(result.filePath);
+          
+          if (verifyResult.valid) {
+            showToast('Backup verification passed!', 'success');
+            console.log('Backup Summary:', verifyResult.summary);
+            const summary = verifyResult.summary || {};
+            alert(`Backup Verification Passed!\n\nSummary:\n- Snippets: ${summary.snippets || 0}\n- Boards: ${summary.boards || 0}\n- Characters: ${summary.characters || 0}\n- Character Images: ${summary.characterImages || 0}\n- Board Images: ${summary.boardImages || 0}\n- Profiles: ${summary.profiles || 0}\n- Wildcards: ${summary.wildcards || 0}`);
+          } else {
+            showToast(`Backup verification found ${verifyResult.issues.length} issue(s)`, 'error');
+            const issuesText = verifyResult.issues.join('\n');
+            const warningsText = verifyResult.warnings && verifyResult.warnings.length > 0 ? '\n\nWarnings:\n' + verifyResult.warnings.join('\n') : '';
+            alert(`Backup Verification Failed!\n\nIssues:\n${issuesText}${warningsText}`);
+          }
+        } catch (error) {
+          console.error('Error verifying backup:', error);
+          const { showToast } = await import('../utils/index.js');
+          showToast('Failed to verify backup', 'error');
         }
       },
       checkForUpdatesBtn: async () => {

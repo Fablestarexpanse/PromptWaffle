@@ -201,18 +201,102 @@ export async function handleReferenceImageUpload() {
     );
     return;
   }
+  // Process each selected image
   for (const filePath of result.filePaths) {
-    const imageObj = {
-      id: `img-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      filename: filePath.split(/[/\\]/).pop(),
-      path: filePath,
-      addedAt: new Date().toISOString()
-    };
-    activeBoard.images.push(imageObj);
-    showToast(`Added reference image: ${imageObj.filename}`, 'success');
+    let loadingThumb = null;
+    try {
+      const imageId = `img-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const originalFilename = filePath.split(/[/\\]/).pop();
+      
+      // Show loading indicator in the UI
+      const container = document.getElementById('referenceImagesContainer');
+      if (container) {
+        loadingThumb = document.createElement('div');
+        loadingThumb.className = 'reference-image-thumb loading-thumb';
+        loadingThumb.style.width = '120px';
+        loadingThumb.style.height = '120px';
+        loadingThumb.style.minWidth = '120px';
+        loadingThumb.style.minHeight = '120px';
+        loadingThumb.style.maxWidth = '120px';
+        loadingThumb.style.maxHeight = '120px';
+        loadingThumb.style.overflow = 'hidden';
+        loadingThumb.style.borderRadius = '8px';
+        loadingThumb.style.display = 'flex';
+        loadingThumb.style.alignItems = 'center';
+        loadingThumb.style.justifyContent = 'center';
+        loadingThumb.style.background = 'var(--bg-input)';
+        loadingThumb.style.border = '1px solid var(--border-subtle)';
+        loadingThumb.innerHTML = `
+          <div style="text-align: center; color: var(--text-secondary);">
+            <div style="width: 32px; height: 32px; border: 3px solid var(--border-subtle); border-top-color: var(--accent-primary); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 8px;"></div>
+            <div style="font-size: 11px;">Loading...</div>
+            <div style="font-size: 10px; color: var(--text-muted); margin-top: 4px; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${originalFilename}</div>
+          </div>
+        `;
+        
+        // Add to grid if it exists, otherwise append directly
+        const imagesGrid = container.querySelector('.reference-images-grid');
+        if (imagesGrid) {
+          imagesGrid.appendChild(loadingThumb);
+        } else {
+          // Create grid if it doesn't exist
+          const grid = document.createElement('div');
+          grid.className = 'reference-images-grid';
+          grid.appendChild(loadingThumb);
+          container.appendChild(grid);
+        }
+      }
+      
+      // Read the image file
+      showToast(`Processing image: ${originalFilename}...`, 'info');
+      const imageBuffer = await window.electronAPI.loadImageFile(filePath);
+      if (!imageBuffer) {
+        if (loadingThumb) loadingThumb.remove();
+        showToast(`Failed to read image: ${originalFilename}`, 'error');
+        continue;
+      }
+      
+      // Get file extension
+      const extension = originalFilename.split('.').pop() || 'png';
+      const newFilename = `${imageId}.${extension}`;
+      
+      // Copy image to app directory for portability
+      showToast(`Saving image: ${originalFilename}...`, 'info');
+      const saveResult = await window.electronAPI.saveBoardImage(
+        activeBoard.id,
+        Array.from(new Uint8Array(imageBuffer)),
+        newFilename
+      );
+      
+      if (!saveResult || !saveResult.success) {
+        if (loadingThumb) loadingThumb.remove();
+        showToast(`Failed to save image: ${originalFilename}`, 'error');
+        continue;
+      }
+      
+      // Create image object with relative path
+      const imageObj = {
+        id: imageId,
+        filename: originalFilename,
+        path: saveResult.relativePath, // Relative path for portability
+        addedAt: new Date().toISOString()
+      };
+      
+      activeBoard.images.push(imageObj);
+      
+      // Remove loading indicator - the image will appear when renderBoardImages is called
+      if (loadingThumb) loadingThumb.remove();
+      showToast(`Added reference image: ${originalFilename}`, 'success');
+    } catch (error) {
+      console.error('Error processing image:', error);
+      showToast(`Error adding image: ${error.message}`, 'error');
+      // Remove loading indicator on error
+      if (loadingThumb) loadingThumb.remove();
+    }
   }
   await saveBoards();
   triggerAutosave();
+  // Re-render board images to show the newly added images
   await renderBoardImages();
   if (activeBoard) {
     schedulePartialSidebarUpdate(activeBoard.id);
@@ -241,13 +325,63 @@ export async function renderBoardImages() {
     imagesGrid.className = 'reference-images-grid';
     
     // Show up to 6 images
-    activeBoard.images.slice(0, 6).forEach(imageObj => {
+    for (const imageObj of activeBoard.images.slice(0, 6)) {
       const thumbDiv = document.createElement('div');
       thumbDiv.className = 'reference-image-thumb';
       thumbDiv.title = imageObj.filename;
+      // Ensure thumbnail has fixed dimensions
+      thumbDiv.style.width = '120px';
+      thumbDiv.style.height = '120px';
+      thumbDiv.style.minWidth = '120px';
+      thumbDiv.style.minHeight = '120px';
+      thumbDiv.style.maxWidth = '120px';
+      thumbDiv.style.maxHeight = '120px';
+      thumbDiv.style.overflow = 'hidden';
+      thumbDiv.style.borderRadius = '8px';
       
       const img = document.createElement('img');
-      img.src = `file://${imageObj.path}`;
+      // Handle both relative (new) and absolute (legacy) paths
+      let imageSrc = '';
+      if (imageObj.path && imageObj.path.startsWith('snippets/')) {
+        // Relative path - load via IPC and create blob URL
+        try {
+          const imageData = await window.electronAPI.loadImage(imageObj.path);
+          if (imageData && Array.isArray(imageData) && imageData.length > 0) {
+            // Convert array to Uint8Array
+            const uint8Array = new Uint8Array(imageData);
+            // Determine MIME type from filename
+            const ext = imageObj.filename.split('.').pop()?.toLowerCase() || 'png';
+            const mimeTypes = {
+              'png': 'image/png',
+              'jpg': 'image/jpeg',
+              'jpeg': 'image/jpeg',
+              'gif': 'image/gif',
+              'webp': 'image/webp',
+              'bmp': 'image/bmp'
+            };
+            const mimeType = mimeTypes[ext] || 'image/png';
+            const blob = new Blob([uint8Array], { type: mimeType });
+            imageSrc = URL.createObjectURL(blob);
+          } else {
+            // Fallback: try file:// protocol (may not work for relative paths)
+            imageSrc = `file:///${imageObj.path.replace(/\\/g, '/')}`;
+          }
+        } catch (e) {
+          console.warn('Error loading relative path image, trying fallback:', e);
+          // Fallback: try file:// protocol
+          imageSrc = `file:///${imageObj.path.replace(/\\/g, '/')}`;
+        }
+      } else {
+        // Absolute path (legacy) - use as-is
+        const path = imageObj.path || imageObj.imagePath || '';
+        imageSrc = `file://${path.replace(/\\/g, '/')}`;
+      }
+      // Set image styling to ensure it fits within the thumbnail container
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.objectFit = 'cover';
+      img.style.display = 'block';
+      img.src = imageSrc;
       img.alt = imageObj.filename;
       img.onerror = () => {
         img.src = '';
@@ -287,7 +421,7 @@ export async function renderBoardImages() {
       controlsOverlay.appendChild(removeBtn);
       thumbDiv.appendChild(controlsOverlay);
       imagesGrid.appendChild(thumbDiv);
-    });
+    }
     
     // Add the grid to the container
     container.appendChild(imagesGrid);
@@ -437,17 +571,59 @@ async function renderLivePreviewThumbnail(container) {
       // Add controls overlay
       const controlsOverlay = document.createElement('div');
       controlsOverlay.className = 'controls-overlay';
+      controlsOverlay.style.position = 'absolute';
+      controlsOverlay.style.top = '4px';
+      controlsOverlay.style.right = '4px';
+      controlsOverlay.style.display = 'flex';
+      controlsOverlay.style.flexDirection = 'column';
+      controlsOverlay.style.gap = '4px';
+      controlsOverlay.style.zIndex = '10';
+      controlsOverlay.style.opacity = '0';
+      controlsOverlay.style.transition = 'opacity 0.2s ease';
+      
       // Expand button - opens in modal like other thumbnails
       const expandBtn = document.createElement('button');
       expandBtn.innerHTML = '<i data-feather="maximize-2"></i>';
       expandBtn.title = 'View full size';
       expandBtn.style.cursor = 'pointer';
+      expandBtn.style.background = '#40444b';
+      expandBtn.style.border = 'none';
+      expandBtn.style.borderRadius = '4px';
+      expandBtn.style.color = '#dcddde';
+      expandBtn.style.padding = '4px';
+      expandBtn.style.width = '24px';
+      expandBtn.style.height = '24px';
+      expandBtn.style.display = 'flex';
+      expandBtn.style.alignItems = 'center';
+      expandBtn.style.justifyContent = 'center';
+      expandBtn.style.transition = 'all 0.2s ease';
+      expandBtn.style.opacity = '0.8';
       expandBtn.onclick = e => {
         e.stopPropagation();
+        e.preventDefault();
         // Open the live preview image in a modal
         viewLivePreviewImage(latestImage.name, imagePath);
       };
+      expandBtn.onmouseenter = () => {
+        expandBtn.style.background = '#5865f2';
+        expandBtn.style.opacity = '1';
+        expandBtn.style.transform = 'scale(1.1)';
+      };
+      expandBtn.onmouseleave = () => {
+        expandBtn.style.background = '#40444b';
+        expandBtn.style.opacity = '0.8';
+        expandBtn.style.transform = 'scale(1)';
+      };
       controlsOverlay.appendChild(expandBtn);
+      
+      // Show controls on hover
+      liveThumbDiv.onmouseenter = () => {
+        controlsOverlay.style.opacity = '1';
+      };
+      liveThumbDiv.onmouseleave = () => {
+        controlsOverlay.style.opacity = '0';
+      };
+      
       liveThumbDiv.appendChild(controlsOverlay);
       container.appendChild(liveThumbDiv);
       // Initialize Feather icons for the new buttons
@@ -741,7 +917,7 @@ async function updateLivePreviewThumbnail(latestImage) {
     await renderBoardImages();
   }
 }
-export function viewFullImage(imageId) {
+export async function viewFullImage(imageId) {
   const activeBoard = getActiveBoard();
   const image = activeBoard.images?.find(img => img.id === imageId);
   if (!image) return;
@@ -765,9 +941,37 @@ export function viewFullImage(imageId) {
   document.body.appendChild(overlay);
   // Load image using the path property
   let imageSrc = '';
+  let blobUrl = null;
   try {
-    // Use the file:// protocol to load the image directly
-    imageSrc = `file://${image.path}`;
+    // Handle both relative (new) and absolute (legacy) paths
+    if (image.path && image.path.startsWith('snippets/')) {
+      // Relative path - load via IPC and create blob URL
+      try {
+        const imageData = await window.electronAPI.loadImage(image.path);
+        if (imageData && Array.isArray(imageData) && imageData.length > 0) {
+          // Convert array to Uint8Array
+          const uint8Array = new Uint8Array(imageData);
+          const ext = image.filename.split('.').pop()?.toLowerCase() || 'png';
+          const mimeTypes = {
+            'png': 'image/png', 'jpg': 'image/jpeg', 'jpeg': 'image/jpeg',
+            'gif': 'image/gif', 'webp': 'image/webp', 'bmp': 'image/bmp'
+          };
+          const mimeType = mimeTypes[ext] || 'image/png';
+          const blob = new Blob([uint8Array], { type: mimeType });
+          blobUrl = URL.createObjectURL(blob);
+          imageSrc = blobUrl;
+        } else {
+          imageSrc = `file:///${image.path.replace(/\\/g, '/')}`;
+        }
+      } catch (e) {
+        console.warn('Error loading relative path image:', e);
+        imageSrc = `file:///${image.path.replace(/\\/g, '/')}`;
+      }
+    } else {
+      // Absolute path (legacy) - use as-is
+      const path = image.path || image.imagePath || '';
+      imageSrc = `file://${path.replace(/\\/g, '/')}`;
+    }
     // Test if the image loads successfully
     const testImg = new Image();
     testImg.onload = () => {
@@ -776,6 +980,11 @@ export function viewFullImage(imageId) {
       loadingDiv.innerHTML = `<img src="${imageSrc}" alt="${image.filename}" style="max-width: 100%; max-height: 70vh; object-fit: contain;">`;
     };
     testImg.onerror = () => {
+      // Clean up blob URL if created
+      if (blobUrl) {
+        URL.revokeObjectURL(blobUrl);
+        blobUrl = null;
+      }
       // Image failed to load, show error
       console.warn('Failed to load image:', image.path);
       const loadingDiv = overlay.querySelector('.image-viewer-loading');
@@ -789,7 +998,19 @@ export function viewFullImage(imageId) {
           </div>
         `;
     };
+    testImg.onload = () => {
+      // Image loaded successfully, replace loading text
+      const loadingDiv = overlay.querySelector('.image-viewer-loading');
+      loadingDiv.innerHTML = `<img src="${imageSrc}" alt="${image.filename}" style="max-width: 100%; max-height: 70vh; object-fit: contain;">`;
+    };
     testImg.src = imageSrc;
+    
+    // Clean up blob URL when overlay is removed
+    overlay.addEventListener('remove', () => {
+      if (blobUrl) {
+        URL.revokeObjectURL(blobUrl);
+      }
+    });
   } catch (error) {
     console.warn('Error loading image for', image.filename, ':', error.message);
     const loadingDiv = overlay.querySelector('.image-viewer-loading');
@@ -818,31 +1039,42 @@ export function viewFullImage(imageId) {
 }
 export async function removeReferenceImage(imageId) {
   const activeBoard = getActiveBoard();
-  if (!activeBoard || !activeBoard.images) return;
-  const imageIndex = activeBoard.images.findIndex(img => img.id === imageId);
-  if (imageIndex === -1) return;
-  const image = activeBoard.images[imageIndex];
-  try {
-    // Delete image and thumbnail files from disk
-    if (image.imagePath) {
-      await window.electronAPI.deleteImage(image.imagePath);
-    }
-    if (image.thumbnailPath) {
-      await window.electronAPI.deleteThumbnail(image.thumbnailPath);
-    }
-    // Remove from board's images array
-    activeBoard.images.splice(imageIndex, 1);
-    // Save and refresh UI
-    await saveBoards();
-    triggerAutosave(); // Add autosave trigger
-    await renderBoardImages();
-    // Schedule partial sidebar update for better performance
-    schedulePartialSidebarUpdate(activeBoard.id);
-    showToast(`Removed image: ${image.filename}`, 'success');
-  } catch (error) {
-    console.error('Error removing image files:', error);
-    showToast(`Error removing image: ${image.filename}`, 'error');
+  if (!activeBoard || !activeBoard.images) {
+    return;
   }
+
+  const imageIndex = activeBoard.images.findIndex(img => img.id === imageId);
+  if (imageIndex === -1) {
+    return;
+  }
+
+  const image = activeBoard.images[imageIndex];
+  
+  // Delete image file from app directory if it's a relative path (new format)
+  if (image.path && image.path.startsWith('snippets/')) {
+    try {
+      await window.electronAPI.deleteBoardImage(image.path);
+    } catch (error) {
+      console.error('Error deleting board image file:', error);
+      // Continue with removal even if file deletion fails
+    }
+  } else if (image.imagePath) {
+    // Legacy absolute path handling
+    try {
+      await window.electronAPI.deleteImage(image.imagePath);
+    } catch (error) {
+      console.error('Error deleting legacy image file:', error);
+    }
+  }
+
+  // Remove from board images array
+  activeBoard.images.splice(imageIndex, 1);
+  await saveBoards();
+  triggerAutosave();
+  await renderBoardImages();
+  // Schedule partial sidebar update for better performance
+  schedulePartialSidebarUpdate(activeBoard.id);
+  showToast(`Removed image: ${image.filename}`, 'success');
 }
 export function addImagePreviewToSidebar() {
   // This will be called during sidebar rendering

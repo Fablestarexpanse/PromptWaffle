@@ -1,10 +1,6 @@
-urban cityscape
-forest
-beach
-mountains
-desert
-studio
+urban
+nature
 indoor
-outdoor
-fantasy realm
-sci-fi environment
+fantasy world
+space
+underwater

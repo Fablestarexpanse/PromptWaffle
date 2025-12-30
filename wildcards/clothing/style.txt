@@ -1,10 +1,6 @@
-casual wear
-formal wear
-business attire
-street fashion
-vintage clothing
-modern fashion
-elegant dress
-sportswear
-bohemian style
-gothic fashion
+casual
+formal
+fantasy
+sci-fi
+military
+vintage

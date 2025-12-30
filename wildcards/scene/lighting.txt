@@ -1,10 +1,6 @@
-natural lighting
-studio lighting
-dramatic lighting
-soft lighting
-harsh lighting
+natural light
+dramatic light
+soft light
 golden hour
-blue hour
-neon lighting
-candlelight
-moonlight
+night
+artificial light

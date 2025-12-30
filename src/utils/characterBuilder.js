@@ -623,6 +623,27 @@ class CharacterBuilder {
       // Save the updated character
       await this.saveCharacter();
 
+      // Force clear compiled prompt cache to ensure updated content is shown
+      try {
+        const { clearCompiledPromptCache } = await import('../bootstrap/boards.js');
+        if (clearCompiledPromptCache) {
+          clearCompiledPromptCache();
+        }
+      } catch (error) {
+        console.warn('Error clearing compiled prompt cache:', error);
+      }
+
+      // Re-render the board to update any cards using this character
+      try {
+        const { renderBoard, updateCompiledPrompt } = await import('../bootstrap/boards.js');
+        await renderBoard();
+        // Also update the compiled prompt to reflect changes
+        updateCompiledPrompt(true); // Force update
+        console.log('Board re-rendered after character update');
+      } catch (error) {
+        console.warn('Error re-rendering board after character update:', error);
+      }
+
       // Show success notification
       const { showToast } = await import('./index.js');
       showToast(`Character "${this.currentCharacter.name || 'Unnamed'}" updated successfully!`, 'success');
@@ -857,6 +878,24 @@ class CharacterBuilder {
       // Save to file in snippet format
       await window.electronAPI.writeFile(this.currentCharacter.filePath, JSON.stringify(snippetData, null, 2));
 
+      // Update snippet cache immediately (don't wait for file read)
+      const snippets = AppState.getSnippets();
+      snippets[this.currentCharacter.filePath] = snippetData;
+      AppState.setSnippets(snippets);
+      console.log('Snippet cache updated immediately with path:', this.currentCharacter.filePath);
+      console.log('Updated snippet data:', snippetData);
+      console.log('Cache now contains:', Object.keys(snippets).length, 'snippets');
+      
+      // Verify the update worked
+      const verifySnippet = AppState.getSnippets()[this.currentCharacter.filePath];
+      if (verifySnippet && verifySnippet.text === snippetData.text) {
+        console.log('✓ Snippet cache update verified successfully');
+      } else {
+        console.error('✗ Snippet cache update verification failed!');
+        console.error('Expected text:', snippetData.text);
+        console.error('Actual text:', verifySnippet?.text);
+      }
+
       // Update characters array
       const existingIndex = this.characters.findIndex(c => c.id === this.currentCharacter.id);
       if (existingIndex >= 0) {
@@ -869,8 +908,8 @@ class CharacterBuilder {
       this.updateCharacterLibrary();
       this.updatePreview();
 
-      // Also add to sidebar as a snippet
-      await this.addCharacterToSidebar();
+      // Also add to sidebar as a snippet (pass the snippetData to avoid re-reading)
+      await this.addCharacterToSidebar(snippetData);
 
       // Show success notification
       const { showToast } = await import('./index.js');
@@ -1255,28 +1294,42 @@ class CharacterBuilder {
 
   /**
    * Add character to sidebar as a snippet (without adding to board)
+   * @param {Object} snippetData - Optional snippet data to use instead of reading from file
    */
-  async addCharacterToSidebar() {
+  async addCharacterToSidebar(snippetData = null) {
     console.log('addCharacterToSidebar called, currentCharacter:', this.currentCharacter);
     if (!this.currentCharacter) {
       console.warn('No current character to add to sidebar');
       return;
     }
 
-    const characterData = this.getCharacterFromForm();
-    console.log('Character data from form:', characterData);
-    const prompt = this.generateCharacterPrompt(characterData);
-    console.log('Generated prompt:', prompt);
+    // Use provided snippetData or read from file
+    if (!snippetData) {
+      const characterData = this.getCharacterFromForm();
+      console.log('Character data from form:', characterData);
+      const prompt = this.generateCharacterPrompt(characterData);
+      console.log('Generated prompt:', prompt);
 
-    if (prompt.trim()) {
+      if (!prompt.trim()) {
+        console.warn('No character prompt generated');
+        return;
+      }
+
       try {
         // Read the saved snippet data from the file
         console.log('Reading snippet data from file:', this.currentCharacter.filePath);
         const content = await window.electronAPI.readFile(this.currentCharacter.filePath);
-        const snippetData = JSON.parse(content);
+        snippetData = JSON.parse(content);
         console.log('Snippet data read from file:', snippetData);
-        
-        // Add to AppState snippets
+      } catch (error) {
+        console.error('Error reading snippet data from file:', error);
+        return;
+      }
+    }
+
+    if (snippetData) {
+      try {
+        // Add to AppState snippets (update cache if not already updated)
         const snippets = AppState.getSnippets();
         snippets[this.currentCharacter.filePath] = snippetData;
         AppState.setSnippets(snippets);
@@ -1305,12 +1358,84 @@ class CharacterBuilder {
               }
             }
             
-            // If characters folder exists, add the snippet to it
-            if (charactersFolder && charactersFolder.children) {
-              charactersFolder.children.push(snippetEntry);
-            } else {
-              // If no characters folder, add to root level
-              window.sidebarTree.push(snippetEntry);
+            // Normalize path for comparison (handle both forward and backslashes)
+            const normalizePath = (path) => {
+              if (!path) return '';
+              return path.replace(/\\/g, '/').toLowerCase().trim();
+            };
+            
+            const targetPathNormalized = normalizePath(this.currentCharacter.filePath);
+            console.log('Looking for snippet with normalized path:', targetPathNormalized);
+            
+            // Check if snippet already exists in sidebar tree and update it instead of adding duplicate
+            const findAndUpdateSnippet = (tree, targetPath) => {
+              for (let i = 0; i < tree.length; i++) {
+                const entry = tree[i];
+                const entryPathNormalized = normalizePath(entry.path);
+                
+                if (entry.type === 'snippet' && entryPathNormalized === targetPath) {
+                  // Update existing snippet entry
+                  console.log('Found existing snippet at index', i, 'with path:', entry.path);
+                  entry.content = snippetData;
+                  console.log('Updated snippet content');
+                  return true;
+                }
+                if (entry.children && entry.children.length > 0) {
+                  if (findAndUpdateSnippet(entry.children, targetPath)) {
+                    return true;
+                  }
+                }
+              }
+              return false;
+            };
+            
+            // Try to update existing snippet first
+            const snippetUpdated = findAndUpdateSnippet(window.sidebarTree, targetPathNormalized);
+            console.log('Snippet update check result:', snippetUpdated, 'for path:', this.currentCharacter.filePath);
+            
+            if (!snippetUpdated) {
+              // Snippet doesn't exist yet, add it
+              console.log('Snippet not found in sidebar tree, adding new entry');
+              
+              // Check if it already exists in the characters folder before adding
+              if (charactersFolder && charactersFolder.children) {
+                const existsInFolder = charactersFolder.children.some(
+                  child => child.type === 'snippet' && normalizePath(child.path) === targetPathNormalized
+                );
+                
+                if (!existsInFolder) {
+                  console.log('Adding snippet to characters folder');
+                  charactersFolder.children.push(snippetEntry);
+                } else {
+                  console.log('Snippet already exists in characters folder, updating instead');
+                  const existingIndex = charactersFolder.children.findIndex(
+                    child => child.type === 'snippet' && normalizePath(child.path) === targetPathNormalized
+                  );
+                  if (existingIndex >= 0) {
+                    charactersFolder.children[existingIndex].content = snippetData;
+                    console.log('Updated existing snippet in characters folder');
+                  }
+                }
+              } else {
+                // Check if it exists in root before adding
+                const existsInRoot = window.sidebarTree.some(
+                  entry => entry.type === 'snippet' && normalizePath(entry.path) === targetPathNormalized
+                );
+                
+                if (!existsInRoot) {
+                  console.log('Adding snippet to root level');
+                  window.sidebarTree.push(snippetEntry);
+                } else {
+                  console.log('Snippet already exists in root, updating instead');
+                  const existingIndex = window.sidebarTree.findIndex(
+                    entry => entry.type === 'snippet' && normalizePath(entry.path) === targetPathNormalized
+                  );
+                  if (existingIndex >= 0) {
+                    window.sidebarTree[existingIndex].content = snippetData;
+                    console.log('Updated existing snippet in root');
+                  }
+                }
+              }
             }
             
             // Re-render the sidebar while preserving folder states
@@ -1325,8 +1450,6 @@ class CharacterBuilder {
       } catch (error) {
         console.error('Error adding character to sidebar:', error);
       }
-    } else {
-      console.warn('No character prompt generated');
     }
   }
 

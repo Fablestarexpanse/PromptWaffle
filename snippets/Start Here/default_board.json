@@ -2,44 +2,9 @@
   "id": "board-default",
   "name": "Default Board",
   "tags": [],
-  "cards": [
-    {
-      "id": "card-1763619302091",
-      "snippetPath": "Start Here/default_cyberpunk.json",
-      "x": 140,
-      "y": 86.859375,
-      "locked": false,
-      "color": "#3498DB",
-      "width": 406,
-      "height": 228
-    },
-    {
-      "id": "card-1763789409619",
-      "snippetPath": "Start Here/default_cyberpunk.json",
-      "x": 449.57000732421875,
-      "y": 494.34796142578125,
-      "locked": false,
-      "color": "#E74C3C"
-    },
-    {
-      "id": "card-1763789411205",
-      "snippetPath": "Start Here/default_space.json",
-      "x": 331.57000732421875,
-      "y": 386.34796142578125,
-      "locked": false,
-      "color": "#2ECC71"
-    },
-    {
-      "id": "card-1763789412930",
-      "snippetPath": "Start Here/default_photorealistic.json",
-      "x": 846.5700073242188,
-      "y": 276.34796142578125,
-      "locked": false,
-      "color": "#843CC3"
-    }
-  ],
+  "cards": [],
   "groups": [],
   "images": [],
-  "createdAt": "2025-09-06T21:36:49.108Z",
-  "modifiedAt": "2025-09-06T21:36:49.109Z"
+  "createdAt": "2025-12-24T02:15:05.248Z",
+  "modifiedAt": "2025-12-24T02:15:05.248Z"
 }

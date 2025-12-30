@@ -228,48 +228,130 @@ async function stopDrag() {
   activeCard = null;
 }
 let resizeData = null;
+let resizeAnimationFrame = null;
+let lastResizeUpdate = 0;
+const RESIZE_UPDATE_THROTTLE = 16; // ~60fps
+
 function startResize(e, cardId) {
   e.preventDefault();
   e.stopPropagation();
   const cardElement = document.getElementById(cardId);
   if (!cardElement) return;
+  
+  // Get card data from model
+  const currentBoard = getActiveBoard();
+  if (!currentBoard) return;
+  const card = currentBoard.cards.find(c => c.id === cardId);
+  if (!card || card.locked) return;
+  
+  // Cache initial values
+  const rect = cardElement.getBoundingClientRect();
+  
   resizeData = {
     id: cardId,
     element: cardElement,
-    originalWidth: cardElement.offsetWidth,
-    originalHeight: cardElement.offsetHeight,
+    originalWidth: card.width || rect.width,
+    originalHeight: card.height || rect.height,
     originalMouseX: e.clientX,
-    originalMouseY: e.clientY
+    originalMouseY: e.clientY,
+    minWidth: 220, // Minimum card width
+    minHeight: 140  // Minimum card height
   };
-  document.addEventListener('mousemove', resize);
-  document.addEventListener('mouseup', stopResize);
+  
+  // Add resizing class to disable transitions
+  cardElement.classList.add('resizing');
+  cardElement.style.willChange = 'width, height';
+  
+  // Use passive: false to allow preventDefault if needed
+  document.addEventListener('mousemove', handleResizeMove, { passive: false });
+  document.addEventListener('mouseup', stopResize, { passive: true });
 }
-function resize(e) {
+
+function handleResizeMove(e) {
   if (!resizeData) return;
-  const width =
-    resizeData.originalWidth + (e.clientX - resizeData.originalMouseX);
-  const height =
-    resizeData.originalHeight + (e.clientY - resizeData.originalMouseY);
-  resizeData.element.style.width = `${Math.max(100, width)}px`;
-  resizeData.element.style.height = `${Math.max(50, height)}px`;
+  e.preventDefault();
+  
+  // Throttle updates using requestAnimationFrame
+  const now = performance.now();
+  if (now - lastResizeUpdate < RESIZE_UPDATE_THROTTLE) {
+    if (resizeAnimationFrame) return;
+    resizeAnimationFrame = requestAnimationFrame(() => {
+      resizeAnimationFrame = null;
+      performResize(e);
+    });
+    return;
+  }
+  
+  lastResizeUpdate = now;
+  performResize(e);
 }
+
+function performResize(e) {
+  if (!resizeData) return;
+  
+  // Calculate new dimensions
+  const deltaX = e.clientX - resizeData.originalMouseX;
+  const deltaY = e.clientY - resizeData.originalMouseY;
+  
+  const newWidth = Math.max(resizeData.minWidth, resizeData.originalWidth + deltaX);
+  const newHeight = Math.max(resizeData.minHeight, resizeData.originalHeight + deltaY);
+  
+  // Update element size directly (no transform needed for resize)
+  resizeData.element.style.width = `${newWidth}px`;
+  resizeData.element.style.height = `${newHeight}px`;
+  
+  // Update min-width class
+  if (newWidth <= resizeData.minWidth) {
+    resizeData.element.classList.add('min-width');
+  } else {
+    resizeData.element.classList.remove('min-width');
+  }
+}
+
 async function stopResize() {
   if (!resizeData) return;
+  
+  // Cancel any pending animation frame
+  if (resizeAnimationFrame) {
+    cancelAnimationFrame(resizeAnimationFrame);
+    resizeAnimationFrame = null;
+  }
+  
   const currentBoard = getActiveBoard();
   if (currentBoard) {
     const card = currentBoard.cards.find(c => c.id === resizeData.id);
     if (card) {
-      card.width = parseInt(resizeData.element.style.width, 10);
-      card.height = parseInt(resizeData.element.style.height, 10);
+      // Get final dimensions from element
+      const finalWidth = parseInt(resizeData.element.style.width, 10) || resizeData.originalWidth;
+      const finalHeight = parseInt(resizeData.element.style.height, 10) || resizeData.originalHeight;
+      
+      card.width = Math.max(resizeData.minWidth, finalWidth);
+      card.height = Math.max(resizeData.minHeight, finalHeight);
+      
       await saveBoards();
       triggerAutosave();
     }
   }
-  document.removeEventListener('mousemove', resize);
+  
+  // Remove resizing class and restore transitions
+  resizeData.element.classList.remove('resizing');
+  resizeData.element.style.willChange = '';
+  
+  document.removeEventListener('mousemove', handleResizeMove);
   document.removeEventListener('mouseup', stopResize);
   resizeData = null;
+  lastResizeUpdate = 0;
 }
 const compiledCache = new Map();
+
+/**
+ * Clear the compiled prompt cache
+ */
+export function clearCompiledPromptCache() {
+  compiledCache.clear();
+  console.log('Compiled prompt cache cleared');
+}
+
 function generateCacheKey(board, showColors) {
   const cardData = board.cards.map(c => ({
     id: c.id,
@@ -324,6 +406,7 @@ export function updateCompiledPrompt(forceUpdate = false) {
   if (!activeBoard || !activeBoard.cards) {
     container.innerHTML = '';
     return;
+
   }
   const showCompiledColors = AppState.getShowCompiledColors();
   const cacheKey = generateCacheKey(activeBoard, showCompiledColors);
@@ -376,7 +459,10 @@ export function renderBoardSelector() {
 
 export function populateBoardSelectDropdown() {
   const boardSelect = document.getElementById('boardSelect');
-  if (!boardSelect) return;
+  if (!boardSelect) {
+    console.warn('Board select dropdown not found');
+    return;
+  }
   
   // Clear existing options except the first placeholder
   while (boardSelect.children.length > 1) {
@@ -384,16 +470,27 @@ export function populateBoardSelectDropdown() {
   }
   
   const boards = AppState.getBoards();
+  if (!boards || boards.length === 0) {
+    console.warn('No boards available to populate dropdown');
+    return;
+  }
+  
   const activeBoardId = AppState.getActiveBoardId();
   
+  // Add all boards to the dropdown
   boards.forEach(board => {
-    if (board && board.id !== activeBoardId) { // Don't show current board
+    if (board && board.id) {
       const option = document.createElement('option');
       option.value = board.id;
-      option.textContent = board.name;
+      option.textContent = board.name || 'Untitled Board';
+      if (board.id === activeBoardId) {
+        option.selected = true;
+      }
       boardSelect.appendChild(option);
     }
   });
+  
+  console.log(`Populated board dropdown with ${boards.length} board(s)`);
 }
 export function updateBoardTagsDisplay() {
   const tagsContainer = document.getElementById('boardTagsDisplay');
@@ -795,6 +892,74 @@ export function cleanupOrphanedCards() {
     return 0;
   }
 }
+/**
+ * Calculate optimal card size based on snippet content
+ * @param {Object} snippet - The snippet object
+ * @returns {Object} - Object with width and height
+ */
+function calculateOptimalCardSize(snippet) {
+  const minWidth = 220;
+  const minHeight = 140;
+  const maxWidth = 800;
+  const maxHeight = 600;
+  
+  // Get the text content
+  const text = snippet.text || snippet.customText || '';
+  if (!text || text.trim().length === 0) {
+    return { width: minWidth, height: minHeight };
+  }
+  
+  // Estimate text dimensions based on actual card styling
+  // Card content uses: font-size ~13px, line-height ~1.3, padding ~12px
+  // Average character width: ~7.5px at 13px font size (monospace-ish estimate)
+  // Line height: ~17px (13px * 1.3)
+  const avgCharWidth = 7.5;
+  const lineHeight = 17;
+  const horizontalPadding = 24; // 12px padding on each side
+  const headerHeight = 36; // Card header height (tags area)
+  const actionsHeight = 32; // Card actions bar height
+  const contentVerticalPadding = 20; // Content area padding (top + bottom, ~10px each)
+  
+  // Calculate text width (estimate based on longest line)
+  const lines = text.split('\n');
+  const longestLine = lines.reduce((longest, line) => 
+    line.length > longest.length ? line : longest, '');
+  const estimatedTextWidth = longestLine.length * avgCharWidth;
+  
+  // Calculate optimal width (with padding and some margin for readability)
+  // Aim for ~60-80 characters per line for good readability
+  const targetCharsPerLine = 70;
+  const targetWidth = targetCharsPerLine * avgCharWidth + horizontalPadding + 20;
+  const optimalWidth = Math.min(
+    maxWidth,
+    Math.max(minWidth, Math.max(targetWidth, estimatedTextWidth + horizontalPadding + 30))
+  );
+  
+  // Calculate optimal height based on number of lines
+  // Account for word wrapping at the calculated width
+  const charsPerLine = Math.floor((optimalWidth - horizontalPadding - 20) / avgCharWidth);
+  let totalLines = 0;
+  for (const line of lines) {
+    if (line.length <= charsPerLine) {
+      totalLines += 1;
+    } else {
+      // Line wraps - calculate how many lines it needs
+      totalLines += Math.ceil(line.length / charsPerLine);
+    }
+  }
+  
+  const estimatedTextHeight = totalLines * lineHeight;
+  const optimalHeight = Math.min(
+    maxHeight,
+    Math.max(minHeight, headerHeight + estimatedTextHeight + contentVerticalPadding + actionsHeight)
+  );
+  
+  return {
+    width: Math.round(optimalWidth),
+    height: Math.round(optimalHeight)
+  };
+}
+
 export async function addCardToBoard(snippetPath, x, y) {
   try {
     if (!snippetPath) {
@@ -842,13 +1007,17 @@ export async function addCardToBoard(snippetPath, x, y) {
           board.cards.length % UI_CONSTANTS.CARD_COLOR_PALETTE.length
         ];
     }
+    
+    // Calculate optimal size based on snippet content
+    const optimalSize = calculateOptimalCardSize(snippet);
+    
     const card = {
       id: `card-${Date.now()}`,
       snippetPath,
       x: cardX,
       y: cardY,
-      width: UI_CONSTANTS.DEFAULT_CARD_WIDTH,
-      height: UI_CONSTANTS.DEFAULT_CARD_HEIGHT,
+      width: optimalSize.width,
+      height: optimalSize.height,
       locked: false,
       color: nextColor
     };
@@ -1001,23 +1170,28 @@ export async function renderBoard() {
     if (activeBoard && activeBoard.cards) {
     // Only render cards that have valid snippets, but don't remove them from the board
     // This prevents temporary cache misses from removing cards permanently
-    const snippets = AppState.getSnippets();
+    // Get fresh snippets reference for each render
+    const getSnippets = () => AppState.getSnippets();
+    const snippets = getSnippets();
     const renderableCards = activeBoard.cards.filter(card => {
-      const snippet = snippets[card.snippetPath];
+      const currentSnippets = getSnippets(); // Get fresh snippets
+      const snippet = currentSnippets[card.snippetPath];
       if (!snippet) {
         console.warn(
           `Skipping render for card with missing snippet: ${card.snippetPath} (card not removed from board)`
         );
         console.warn(
           'Available snippet paths in cache:',
-          Object.keys(snippets)
+          Object.keys(currentSnippets)
         );
         return false;
       }
       return true;
     });
     renderableCards.forEach(card => {
-      const snippet = snippets[card.snippetPath];
+      // Get fresh snippet from cache for each card (ensures we have latest data)
+      const currentSnippets = getSnippets();
+      const snippet = currentSnippets[card.snippetPath];
       
       // Skip cards with missing snippets
       if (!snippet) {
@@ -1265,6 +1439,9 @@ export async function renderBoard() {
   }
   updateCompiledPrompt();
   await renderBoardImages();
+  
+  // Display board name on the canvas
+  displayBoardNameOnCanvas();
   
   // Populate the board select dropdown
   populateBoardSelectDropdown();
@@ -1741,5 +1918,38 @@ export function toggleCompiledPromptExpansion() {
     }
   } catch (error) {
     console.error('Error toggling compiled prompt expansion:', error);
+  }
+}
+
+/**
+ * Display the board name on the canvas
+ */
+function displayBoardNameOnCanvas() {
+  const board = getActiveBoard();
+  const boardContainer = document.getElementById('promptBoard');
+  if (!boardContainer || !board) return;
+  
+  // Remove existing board name display if it exists
+  const existingName = boardContainer.querySelector('.board-name-display');
+  if (existingName) {
+    existingName.remove();
+  }
+  
+  // Create board name display element
+  const nameDisplay = document.createElement('div');
+  nameDisplay.className = 'board-name-display';
+  nameDisplay.innerHTML = `
+    <div class="board-name-content">
+      <i data-feather="layout"></i>
+      <span class="board-name-text">${escapeHtml(board.name || 'Untitled Board')}</span>
+    </div>
+  `;
+  
+  // Insert at the beginning of the board container
+  boardContainer.insertBefore(nameDisplay, boardContainer.firstChild);
+  
+  // Replace Feather icons
+  if (window.feather) {
+    window.feather.replace();
   }
 }

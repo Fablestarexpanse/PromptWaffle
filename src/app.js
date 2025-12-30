@@ -102,6 +102,8 @@ async function init() {
     // 8. Initial UI updates
     bootstrap.updateCompiledPrompt();
     bootstrap.updateBoardTagsDisplay();
+    // Populate board select dropdown
+    bootstrap.populateBoardSelectDropdown();
     // 9. Update snippet colors button state
     const toggleSnippetColorsBtn = document.getElementById(
       'toggleSnippetColorsBtn'
@@ -206,6 +208,16 @@ async function init() {
         tutorial.start();
       }
     }, 1000);
+    // Check for image migration on startup (after a delay)
+    setTimeout(async () => {
+      try {
+        const { promptImageMigration } = await import('./utils/image-migration.js');
+        await promptImageMigration();
+      } catch (error) {
+        console.warn('Image migration check failed:', error);
+      }
+    }, 5000); // Check after 5 seconds
+
     // Check for updates after a delay to avoid blocking startup
     setTimeout(async () => {
       try {

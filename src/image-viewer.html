@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self';
+                script-src 'self';
+                style-src 'self' 'unsafe-inline';
+                img-src 'self' data: file: blob:;
+                object-src 'none';
+                base-uri 'self';
+                form-action 'self';" />
+  <title>Image Viewer - PromptWaffle</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: #1a1a1a;
+      color: #e0e0e0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .image-viewer-header {
+      background: #2a2a2a;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #3a3a3a;
+      -webkit-app-region: drag;
+      flex-shrink: 0;
+    }
+
+    .image-viewer-header h3 {
+      font-size: 14px;
+      font-weight: 500;
+      color: #e0e0e0;
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
+    }
+
+    .image-viewer-header .controls {
+      display: flex;
+      gap: 8px;
+      -webkit-app-region: no-drag;
+    }
+
+    .image-viewer-header button {
+      background: transparent;
+      border: none;
+      color: #e0e0e0;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .image-viewer-header button:hover {
+      background: #3a3a3a;
+    }
+
+    .image-viewer-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow: auto;
+      background: #1a1a1a;
+    }
+
+    .image-viewer-content img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 4px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .image-viewer-loading {
+      text-align: center;
+      color: #888;
+      font-size: 14px;
+    }
+
+    .image-viewer-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(26, 26, 26, 0.9);
+      padding: 8px 16px;
+      font-size: 11px;
+      color: #888;
+      border-top: 1px solid #3a3a3a;
+      display: none;
+    }
+
+    .image-viewer-info.visible {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="image-viewer-header">
+    <h3 id="imageTitle">Image Viewer</h3>
+    <div class="controls">
+      <button id="minimizeBtn" title="Minimize">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="2" y1="8" x2="14" y2="8" />
+        </svg>
+      </button>
+      <button id="maximizeBtn" title="Maximize">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="2" width="12" height="12" />
+        </svg>
+      </button>
+      <button id="closeBtn" title="Close">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="4" y1="4" x2="12" y2="12" />
+          <line x1="12" y1="4" x2="4" y2="12" />
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div class="image-viewer-content" id="imageContainer">
+    <div class="image-viewer-loading">Loading image...</div>
+  </div>
+  <div class="image-viewer-info" id="imageInfo"></div>
+
+  <script>
+    const { ipcRenderer } = require('electron');
+
+    let currentImageData = null;
+
+    // Handle window controls
+    document.getElementById('closeBtn').addEventListener('click', () => {
+      if (window.electronAPI && window.electronAPI.closeImageViewer) {
+        window.electronAPI.closeImageViewer();
+      } else {
+        // Fallback: use IPC directly
+        ipcRenderer.invoke('close-image-viewer');
+      }
+    });
+
+    document.getElementById('minimizeBtn').addEventListener('click', () => {
+      if (window.electronAPI && window.electronAPI.minimizeImageViewer) {
+        window.electronAPI.minimizeImageViewer();
+      } else {
+        ipcRenderer.invoke('minimize-image-viewer');
+      }
+    });
+
+    document.getElementById('maximizeBtn').addEventListener('click', () => {
+      if (window.electronAPI && window.electronAPI.maximizeImageViewer) {
+        window.electronAPI.maximizeImageViewer();
+      } else {
+        ipcRenderer.invoke('maximize-image-viewer');
+      }
+    });
+
+    // Listen for image data from main process
+    ipcRenderer.on('load-image', (event, imageData) => {
+      currentImageData = imageData;
+      displayImage(imageData);
+    });
+
+    function displayImage(imageData) {
+      const container = document.getElementById('imageContainer');
+      const title = document.getElementById('imageTitle');
+      const info = document.getElementById('imageInfo');
+
+      // Update title
+      title.textContent = imageData.filename || 'Image Viewer';
+
+      // Clear container
+      container.innerHTML = '';
+
+      // Create image element
+      const img = document.createElement('img');
+      img.alt = imageData.filename || 'Image';
+
+      // Handle image path
+      let imageSrc = '';
+      if (imageData.path) {
+        // Normalize path for file:// protocol
+        let normalizedPath = imageData.path.replace(/\\/g, '/');
+        // For Windows paths, handle drive letter properly
+        if (normalizedPath.match(/^[a-zA-Z]:/)) {
+          imageSrc = `file:///${normalizedPath}`;
+        } else {
+          imageSrc = `file://${normalizedPath}`;
+        }
+      } else if (imageData.dataUrl) {
+        imageSrc = imageData.dataUrl;
+      }
+
+      if (!imageSrc) {
+        container.innerHTML = '<div class="image-viewer-loading">No image data available</div>';
+        return;
+      }
+
+      // Show loading state
+      container.innerHTML = '<div class="image-viewer-loading">Loading image...</div>';
+
+      // Load image
+      img.onload = () => {
+        container.innerHTML = '';
+        container.appendChild(img);
+
+        // Update info
+        if (imageData.size || imageData.mtime) {
+          let infoText = '';
+          if (imageData.size) {
+            const sizeKB = (imageData.size / 1024).toFixed(2);
+            infoText += `Size: ${sizeKB} KB`;
+          }
+          if (imageData.mtime) {
+            const date = new Date(imageData.mtime);
+            if (infoText) infoText += ' | ';
+            infoText += `Modified: ${date.toLocaleString()}`;
+          }
+          if (imageData.path) {
+            if (infoText) infoText += ' | ';
+            infoText += `Path: ${imageData.path}`;
+          }
+          info.textContent = infoText;
+          info.classList.add('visible');
+        }
+      };
+
+      img.onerror = () => {
+        container.innerHTML = '<div class="image-viewer-loading">Failed to load image</div>';
+        console.error('Failed to load image:', imageSrc);
+      };
+
+      img.src = imageSrc;
+    }
+
+    // Handle window close
+    window.addEventListener('beforeunload', () => {
+      ipcRenderer.removeAllListeners('load-image');
+    });
+  </script>
+</body>
+</html>
+

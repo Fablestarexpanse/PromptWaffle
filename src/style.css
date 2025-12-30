@@ -1170,6 +1170,42 @@ body {
   transition: var(--transition-fast);
 }
 
+/* Board name display on canvas */
+.board-name-display {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 100;
+  pointer-events: none;
+  user-select: none;
+}
+
+.board-name-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(34, 38, 46, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border-medium);
+  border-radius: 8px;
+  padding: 8px 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.board-name-content i {
+  width: 16px;
+  height: 16px;
+  color: var(--accent-primary);
+}
+
+.board-name-text {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
 /* Reference Images Container */
 .reference-images-container {
   padding: 0.6rem;
@@ -1268,6 +1304,26 @@ body {
 .board-card.dragging * {
   pointer-events: none;
   user-select: none;
+  /* Disable transitions on all child elements too */
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Disable transitions during resize for smooth performance */
+.board-card.resizing {
+  transition: none !important;
+  z-index: 1000;
+  cursor: nwse-resize !important;
+  user-select: none;
+  /* Force GPU acceleration */
+  will-change: width, height;
+  /* Disable all animations and transitions */
+  animation: none !important;
+  /* Optimize rendering */
+  backface-visibility: hidden;
+}
+
+.board-card.resizing * {
   /* Disable transitions on all child elements too */
   transition: none !important;
   animation: none !important;
@@ -3432,6 +3488,12 @@ select {
   flex-direction: column;
   gap: 4px;
   z-index: 10;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.live-preview-thumb:hover .controls-overlay {
+  opacity: 1;
 }
 
 .live-preview-thumb .controls-overlay button {

@@ -1,0 +1,5 @@
+blonde
+brown
+black
+red
+gray
