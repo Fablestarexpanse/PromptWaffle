@@ -385,7 +385,6 @@ electron-builder.json.local
 snippets/*
 !snippets/Start Here/
 !snippets/Start Here/*.json
-!snippets/Start Here/README.md
 !boards/
 boards/*
 !boards/Default Board.json
@@ -432,4 +431,16 @@ KNOWN_ISSUES.md
 FIXES_APPLIED.md
 AUDIT_SUMMARY.md
 COMMIT_INSTRUCTIONS.md
+BACKUP_RESTORE_GUIDE.md
+FILE_HANDLING_AUDIT.md
+FILE_HANDLING_SUMMARY.md
+FULL_AUDIT_REPORT.md
+IMPROVEMENT_PLAN_B_TO_A_PLUS.md
+TOP_IMPROVEMENTS_SUMMARY.md
+LOGGING_MIGRATION.md
+COMFYUI_INTEGRATION_README.md
+
+# Extra README files (keep only main README.md)
+profiles/README.md
+snippets/Start Here/README.md
 
